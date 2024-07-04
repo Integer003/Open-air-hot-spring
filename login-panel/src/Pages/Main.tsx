@@ -4,16 +4,17 @@ import axios, { isAxiosError } from 'axios'
 import { API } from 'Plugins/CommonUtils/API'
 import { OperatorLoginMessage } from 'Plugins/OperatorAPI/OperatorLoginMessage'
 import { OperatorRegisterMessage } from 'Plugins/OperatorAPI/OperatorRegisterMessage'
-import { UserLoginMessage } from 'Plugins/UserAPI/UserLoginMessage'
-import { UserRegisterMessage } from 'Plugins/UserAPI/UserRegisterMessage'
+import { SellerLoginMessage } from 'Plugins/SellerAPI/SellerLoginMessage'
+import { SellerRegisterMessage } from 'Plugins/SellerAPI/SellerRegisterMessage'
 import { RegulatorLoginMessage} from 'Plugins/RegulatorAPI/RegulatorLoginMessage'
 import { RegulatorRegisterMessage} from 'Plugins/RegulatorAPI/RegulatorRegisterMessage'
-import { AddUserMessage } from 'Plugins/OperatorAPI/AddUserMessage'
+import { AddSellerMessage } from 'Plugins/OperatorAPI/AddSellerMessage'
 import { useHistory } from 'react-router';
 import logo from '../images/summer.png';
 
 import {
     AppBar,
+    Alert,
     Toolbar,
     Typography,
     Button,
@@ -67,7 +68,7 @@ export function Main(){
     const history=useHistory()
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [userType, setUserType] = useState('user'); // 默认用户类型为user
+    const [userType, setUserType] = useState('Seller'); // 默认用户类型为Seller
     const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
     const [language, setLanguage] = useState('zh'); // 默认语言为中文
 
@@ -78,6 +79,24 @@ export function Main(){
             });
             console.log('Response status:', response.status);
             console.log('Response body:', response.data);
+            if(response.data=="Valid Seller") {
+                history.push('/SellerMain');
+            }
+            else if (response.data=="Invalid Seller"){
+                alert("登陆失败！请确认用户名&密码！");
+            }
+            else if(response.data=="Valid Regulator") {
+                history.push('/RegulatorMain');
+            }
+            else if (response.data=="Invalid Regulator"){
+                alert("登陆失败！请确认用户名&密码！");
+            }
+            else if(response.data=="Valid Operator") {
+                history.push('/OperatorMain');
+            }
+            else if (response.data=="Invalid Operator"){
+                alert("登陆失败！请确认用户名&密码！");
+            }
         } catch (error) {
             if (isAxiosError(error)) {
                 // Check if the error has a response and a data property
@@ -93,9 +112,8 @@ export function Main(){
     };
 
     const handleLogin = () => {
-        if (userType === 'user') {
-            sendPostRequest(new UserLoginMessage(username, password));
-            history.push('/UserMain');
+        if (userType === 'Seller') {
+            sendPostRequest(new SellerLoginMessage(username, password));
         } else if(userType === 'regulator') {
             sendPostRequest(new RegulatorLoginMessage(username, password));
         } else if (userType === 'operator') {
@@ -103,15 +121,6 @@ export function Main(){
         }
     };
 
-    // const handleRegister = () => {
-    //     if (userType === 'user') {
-    //         sendPostRequest(new OperatorRegisterMessage(username, password));
-    //     } else if (userType === 'regulator') {
-    //         sendPostRequest(new RegulatorRegisterMessage(username, password));
-    //     } else if (userType === 'operator') {
-    //         sendPostRequest(new OperatorRegisterMessage(username, password));
-    //     }
-    // };
 
     const toggleTheme = () => {
         setThemeMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
@@ -139,11 +148,12 @@ export function Main(){
                 </Toolbar>
             </AppBar>
             <Container maxWidth="md">
+                <FormControl sx={{ width: '400px' }}>
                 <Box sx={{ mt: 4, textAlign: 'center' }}>
                     <Typography variant="h1" sx={{ fontSize: '2rem' }}>
                         {language === 'zh' ? '登录' : 'Login'}
                     </Typography>
-                    <Grid container spacing={2} justifyContent="center">
+                    <Grid container spacing={2} justifyContent="center" direction="column">
                         <Grid item xs={12} sm={6} md={4}>
                             <TextField
                                 label={language === 'zh' ? '用户名' : 'Username'}
@@ -165,8 +175,7 @@ export function Main(){
                                 sx={{ mb: 2 }}
                             />
                         </Grid>
-                        <Grid item xs={12} md={4}>
-                            <FormControl fullWidth>
+                        <Grid item xs={6} md={4}>
                                 <InputLabel>
                                     {language === 'zh' ? '用户类型' : 'User type'}
                                 </InputLabel>
@@ -174,13 +183,11 @@ export function Main(){
                                     value={userType}
                                     onChange={(e) => setUserType(e.target.value as string)}
                                 >
-                                    <MenuItem value="user">{language === 'zh' ? '用户' : 'User'}</MenuItem>
-                                    <MenuItem value="regulator">{language === 'zh' ? '监管方' : 'Regulator'}</MenuItem>
-                                    <MenuItem value="operator">{language === 'zh' ? '运营方' : 'Operator'}</MenuItem>
+                                    <MenuItem value="Seller">{language === 'zh' ? '用户' : 'Seller'}</MenuItem>
+                                    <MenuItem value="Regulator">{language === 'zh' ? '监管方' : 'Regulator'}</MenuItem>
+                                    <MenuItem value="Operator">{language === 'zh' ? '运营方' : 'Operator'}</MenuItem>
                                 </Select>
-                            </FormControl>
                         </Grid>
-                        <Grid item xs={12}>
                             <Button
                                 variant="contained"
                                 color="primary"
@@ -197,12 +204,12 @@ export function Main(){
                             >
                                 {language === 'zh' ? '还没有账号？去注册' : 'Don\'t have an account? Register'}
                             </Button>
-                        </Grid>
                     </Grid>
                 </Box>
+             </FormControl>
             </Container>
         </ThemeProvider>
     );
-};
+}
 
 

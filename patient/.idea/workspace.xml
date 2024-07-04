@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="67e348e8-38e3-4e77-917e-836fa4b5ba9d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../doctor/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/build.sbt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/server_config.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/APIs/OperatorAPI/AddSellerMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/APIs/OperatorAPI/LoginMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/APIs/OperatorAPI/OperatorMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/APIs/OperatorAPI/RegisterMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/APIs/SellerAPI/SellerLoginMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/APIs/SellerAPI/SellerMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/APIs/SellerAPI/SellerQueryMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/APIs/SellerAPI/SellerRegisterMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/API/API.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/API/MessageSerializer.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/API/PlanContext.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/API/Planner.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/API/TraceID.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/DBAPI/DidRollbackException.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/DBAPI/EndTransactionMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/DBAPI/InitSchemaMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/DBAPI/ReadDBRowsMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/DBAPI/ReadDBValueMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/DBAPI/RollbackException.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/DBAPI/StartTransactionMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/DBAPI/WriteDBListMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/DBAPI/WriteDBMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/DBAPI/package.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/IOUtils.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/Object/ParameterList.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/Object/SqlParameter.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/ServiceUtils.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Common/SqlUtils.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Global/GlobalVariables.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Global/ServerConfig.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Global/ServiceCenter.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Impl/AddSellerMessagePlanner.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Impl/LoginMessagePlanner.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Impl/RegisterMessagePlanner.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Process/Init.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Process/Routes.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Process/Server.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor/src/main/scala/Process/Utils.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../login-panel/src/Pages/RegisterPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../login-panel/src/Pages/RegisterPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.sbt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_config.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/APIs/OperatorAPI/AddSellerMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/APIs/OperatorAPI/LoginMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/APIs/OperatorAPI/OperatorMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/APIs/OperatorAPI/RegisterMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/APIs/SellerAPI/SellerLoginMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/APIs/SellerAPI/SellerMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/APIs/SellerAPI/SellerQueryMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/APIs/SellerAPI/SellerRegisterMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/API/API.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/API/MessageSerializer.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/API/PlanContext.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/API/Planner.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/API/TraceID.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/DBAPI/DidRollbackException.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/DBAPI/EndTransactionMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/DBAPI/InitSchemaMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/DBAPI/ReadDBRowsMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/DBAPI/ReadDBValueMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/DBAPI/RollbackException.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/DBAPI/StartTransactionMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/DBAPI/WriteDBListMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/DBAPI/WriteDBMessage.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/DBAPI/package.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/IOUtils.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/Object/ParameterList.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/Object/SqlParameter.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/ServiceUtils.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Common/SqlUtils.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Global/GlobalVariables.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Global/ServerConfig.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Global/ServiceCenter.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Impl/SellerLoginMessagePlanner.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Impl/SellerQueryMessagePlanner.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Impl/SellerRegisterMessagePlanner.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Process/Init.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Process/Routes.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Process/Server.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/Process/Utils.scala" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$/..">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="SBT">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="2" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2iePyxg5mnoY4GYU1WWtUekaVmg" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Server.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/integer/Desktop/THU_1c/1Type_safe_practices_for_frontend_and_backend_development/Open-air-hot-spring/patient&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="ScalaProjectSettings">
+    <option name="migrateConfigurationsNotificationShown" value="true" />
+    <option name="scala3DisclaimerShown" value="true" />
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="67e348e8-38e3-4e77-917e-836fa4b5ba9d" name="Changes" comment="" />
+      <created>1719848327789</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1719848327789</updated>
+      <workItem from="1719848328832" duration="5015000" />
+      <workItem from="1720071722517" duration="2396000" />
+      <workItem from="1720098700484" duration="3702000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

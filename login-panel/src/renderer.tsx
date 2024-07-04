@@ -5,7 +5,9 @@ import { HashRouter, Route, Switch } from 'react-router-dom'
 import { Main } from 'Pages/Main'
 import { AnotherPage } from 'Pages/AnotherPage'
 import { RegisterPage } from 'Pages/RegisterPage'
-import { UserMain } from 'Pages/UserMain'
+import { SellerMain } from 'Pages/SellerMain'
+import { RegulatorMain } from 'Pages/RegulatorMain'
+import { OperatorMain } from 'Pages/OperatorMain'
 
 const Layout = () => {
     return (
@@ -13,7 +15,9 @@ const Layout = () => {
             <Switch>
                 <Route path="/" exact component={Main} />
                 <Route path="/register" exact component={RegisterPage} />
-                <Route path="/UserMain" exact component={UserMain} />
+                <Route path="/UserMain" exact component={SellerMain} />
+                <Route path="/RegulatorMain" exact component={RegulatorMain} />
+                <Route path="/OperatorMain" exact component={OperatorMain} />
             </Switch>
         </HashRouter>
     )

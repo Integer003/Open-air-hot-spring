@@ -4,9 +4,9 @@ import axios, { isAxiosError } from 'axios'
 import { API } from 'Plugins/CommonUtils/API'
 import { OperatorLoginMessage } from 'Plugins/OperatorAPI/OperatorLoginMessage'
 import { OperatorRegisterMessage } from 'Plugins/OperatorAPI/OperatorRegisterMessage'
-import { UserLoginMessage } from 'Plugins/UserAPI/UserLoginMessage'
-import { UserRegisterMessage } from 'Plugins/UserAPI/UserRegisterMessage'
-import { AddUserMessage } from 'Plugins/OperatorAPI/AddUserMessage'
+import { SellerLoginMessage } from 'Plugins/SellerAPI/SellerLoginMessage'
+import { SellerRegisterMessage } from 'Plugins/SellerAPI/SellerRegisterMessage'
+import { AddSellerMessage } from 'Plugins/OperatorAPI/AddSellerMessage'
 import logo from '../images/summer.png';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
@@ -69,7 +69,7 @@ export function RegisterPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [userType, setUserType] = useState('doctor'); // 默认用户类型
+    const [userType, setUserType] = useState('Seller'); // 默认用户类型
     const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
     const [language, setLanguage] = useState('zh'); // 默认语言为中文
 
@@ -81,11 +81,15 @@ export function RegisterPage() {
             });
             console.log('Response status:', response.status);
             console.log('Response body:', response.data);
+            if (response.data == "lalalalala") { alert(response.data); }
         } catch (error) {
             if (isAxiosError(error)) {
                 // Check if the error has a response and a data property
                 if (error.response && error.response.data) {
-                    console.error('Error sending request:', error.response.data);
+                    if(error.response.data=="already registered"){
+                        alert("用户名已存在！");
+                    }
+
                 } else {
                     console.error('Error sending request:', error.message);
                 }
@@ -93,6 +97,8 @@ export function RegisterPage() {
                 console.error('Unexpected error:', error);
             }
         }
+        alert("注册成功！");
+        history.push('/');
     };
 
     const isFormValid = () => {
@@ -104,10 +110,10 @@ export function RegisterPage() {
             alert('密码和确认密码不匹配，请重新输入！');
             return;
         }
-        if (userType === 'User') {
-            sendPostRequest(new OperatorRegisterMessage(username, password));
+        if (userType === 'Seller') {
+            sendPostRequest(new SellerRegisterMessage(username, password));
         } else {
-            sendPostRequest(new UserRegisterMessage(username, password));
+            sendPostRequest(new OperatorRegisterMessage(username, password));
         }
     };
 
@@ -142,7 +148,7 @@ export function RegisterPage() {
                 </Typography>
 
 
-                <Grid container spacing={2} justifyContent="center">
+                <Grid container spacing={2} justifyContent="center" direction="column">
                     <Grid item xs={12} sm={6} md={4}>
                         <TextField
                             label={language === 'zh' ? '用户名' : 'Username'}
@@ -184,9 +190,9 @@ export function RegisterPage() {
                                 value={userType}
                                 onChange={(e) => setUserType(e.target.value as string)}
                             >
-                                <MenuItem value="doctor">{language === 'zh' ? '用户' : 'User'}</MenuItem>
-                                <MenuItem value="patient">{language === 'zh' ? '监管方' : 'Regulator'}</MenuItem>
-                                <MenuItem value="patient">{language === 'zh' ? '运营方' : 'Operator'}</MenuItem>
+                                <MenuItem value="Seller">{language === 'zh' ? '用户' : 'Seller'}</MenuItem>
+                                <MenuItem value="Regulator">{language === 'zh' ? '监管方' : 'Regulator'}</MenuItem>
+                                <MenuItem value="Operator">{language === 'zh' ? '运营方' : 'Operator'}</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>
