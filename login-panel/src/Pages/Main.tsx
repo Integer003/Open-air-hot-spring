@@ -95,6 +95,7 @@ export function Main(){
     const handleLogin = () => {
         if (userType === 'user') {
             sendPostRequest(new UserLoginMessage(username, password));
+            history.push('/UserMain');
         } else if(userType === 'regulator') {
             sendPostRequest(new RegulatorLoginMessage(username, password));
         } else if (userType === 'operator') {
@@ -102,15 +103,15 @@ export function Main(){
         }
     };
 
-    const handleRegister = () => {
-        if (userType === 'user') {
-            sendPostRequest(new OperatorRegisterMessage(username, password));
-        } else if (userType === 'regulator') {
-            sendPostRequest(new RegulatorRegisterMessage(username, password));
-        } else if (userType === 'operator') {
-            sendPostRequest(new OperatorRegisterMessage(username, password));
-        }
-    };
+    // const handleRegister = () => {
+    //     if (userType === 'user') {
+    //         sendPostRequest(new OperatorRegisterMessage(username, password));
+    //     } else if (userType === 'regulator') {
+    //         sendPostRequest(new RegulatorRegisterMessage(username, password));
+    //     } else if (userType === 'operator') {
+    //         sendPostRequest(new OperatorRegisterMessage(username, password));
+    //     }
+    // };
 
     const toggleTheme = () => {
         setThemeMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
@@ -140,10 +141,10 @@ export function Main(){
             <Container maxWidth="md">
                 <Box sx={{ mt: 4, textAlign: 'center' }}>
                     <Typography variant="h1" sx={{ fontSize: '2rem' }}>
-                        {language === 'zh' ? '登录/注册' : 'Login/Register'}
+                        {language === 'zh' ? '登录' : 'Login'}
                     </Typography>
                     <Grid container spacing={2} justifyContent="center">
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={6} md={4}>
                             <TextField
                                 label={language === 'zh' ? '用户名' : 'Username'}
                                 variant="outlined"
@@ -153,7 +154,7 @@ export function Main(){
                                 sx={{ mb: 2 }}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={6} md={4}>
                             <TextField
                                 label={language === 'zh' ? '密码' : 'Password'}
                                 variant="outlined"
@@ -164,7 +165,7 @@ export function Main(){
                                 sx={{ mb: 2 }}
                             />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} md={4}>
                             <FormControl fullWidth>
                                 <InputLabel>
                                     {language === 'zh' ? '用户类型' : 'User type'}
@@ -189,20 +190,12 @@ export function Main(){
                                 {language === 'zh' ? '登录' : 'Login'}
                             </Button>
                             <Button
-                                variant="contained"
-                                color="secondary"
-                                onClick={handleRegister}
-                                sx={{ m: 1 }}
-                            >
-                                {language === 'zh' ? '注册' : 'Register'}
-                            </Button>
-                            <Button
                                 variant="outlined"
                                 color="primary"
-                                onClick={() => history.push('/another')}
-                                sx={{ m: 1 }}
+                                onClick={() => history.push('/register')} // 假设注册页面的路由是'/register'
+                                sx={{ mt: 3, mb: 2 }}
                             >
-                                {language === 'zh' ? '跳转到另一个页面' : 'Go to Another Page'}
+                                {language === 'zh' ? '还没有账号？去注册' : 'Don\'t have an account? Register'}
                             </Button>
                         </Grid>
                     </Grid>
