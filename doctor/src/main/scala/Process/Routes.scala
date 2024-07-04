@@ -14,8 +14,8 @@ import org.http4s.dsl.io.*
 object Routes:
   private def executePlan(messageType:String, str: String): IO[String]=
     messageType match {
-      case "AddPatientMessage" =>
-        IO(decode[AddPatientMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for AddPatientMessage")))
+      case "AddSellerMessage" =>
+        IO(decode[AddSellerMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for AddPatientMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }

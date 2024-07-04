@@ -3,10 +3,10 @@ package Impl
 import cats.effect.IO
 import io.circe.generic.auto.*
 import Common.API.{PlanContext, Planner}
-import Common.DBAPI.{writeDB, *}
+import Common.DBAPI.*
 import Common.Object.{ParameterList, SqlParameter}
 import Common.ServiceUtils.schemaName
-import APIs.PatientAPI.PatientQueryMessage
+import APIs.SellerAPI.SellerQueryMessage
 import cats.effect.IO
 import io.circe.generic.auto.*
 

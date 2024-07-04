@@ -15,17 +15,17 @@ object Routes:
   private def executePlan(messageType:String, str: String): IO[String]=
     messageType match {
       case "PatientLoginMessage" =>
-        IO(decode[PatientLoginMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for PatientLoginMessage")))
+        IO(decode[SellerLoginMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for PatientLoginMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
       case "PatientQueryMessage" =>
-        IO(decode[PatientQueryMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for PatientQueryMessage")))
+        IO(decode[SellerQueryMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for PatientQueryMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
       case "PatientRegisterMessage" =>
-        IO(decode[PatientRegisterMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for PatientRegisterMessage")))
+        IO(decode[SellerRegisterMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for PatientRegisterMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
