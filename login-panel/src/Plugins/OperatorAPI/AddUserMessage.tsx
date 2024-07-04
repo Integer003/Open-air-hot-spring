@@ -1,7 +1,7 @@
 // 定义和实现添加病人信息的逻辑
-import { DoctorMessage } from 'Plugins/DoctorAPI/DoctorMessage'
+import { OperatorMessage } from 'Plugins/OperatorAPI/OperatorMessage'
 
-export class AddPatientMessage extends DoctorMessage{
+export class AddUserMessage extends OperatorMessage{
     doctorName: string;
     patientName: string;
 

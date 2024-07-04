@@ -1,7 +1,7 @@
-// 定义和实现医生登录的逻辑
-import { DoctorMessage } from 'Plugins/DoctorAPI/DoctorMessage'
+// 定义和实现医生注册的逻辑
+import { OperatorMessage } from 'Plugins/OperatorAPI/OperatorMessage'
 
-export class LoginMessage extends DoctorMessage {
+export class OperatorRegisterMessage extends OperatorMessage {
     userName: string;
     password: string;
 

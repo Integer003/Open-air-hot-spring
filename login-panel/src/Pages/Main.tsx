@@ -2,11 +2,13 @@
 import React, { useState } from 'react';
 import axios, { isAxiosError } from 'axios'
 import { API } from 'Plugins/CommonUtils/API'
-import { LoginMessage } from 'Plugins/DoctorAPI/LoginMessage'
-import { RegisterMessage } from 'Plugins/DoctorAPI/RegisterMessage'
-import { PatientLoginMessage } from 'Plugins/PatientAPI/PatientLoginMessage'
-import { PatientRegisterMessage } from 'Plugins/PatientAPI/PatientRegisterMessage'
-import { AddPatientMessage } from 'Plugins/DoctorAPI/AddPatientMessage'
+import { OperatorLoginMessage } from 'Plugins/OperatorAPI/OperatorLoginMessage'
+import { OperatorRegisterMessage } from 'Plugins/OperatorAPI/OperatorRegisterMessage'
+import { UserLoginMessage } from 'Plugins/UserAPI/UserLoginMessage'
+import { UserRegisterMessage } from 'Plugins/UserAPI/UserRegisterMessage'
+import { RegulatorLoginMessage} from 'Plugins/RegulatorAPI/RegulatorLoginMessage'
+import { RegulatorRegisterMessage} from 'Plugins/RegulatorAPI/RegulatorRegisterMessage'
+import { AddUserMessage } from 'Plugins/OperatorAPI/AddUserMessage'
 import { useHistory } from 'react-router';
 import logo from '../images/summer.png';
 
@@ -65,7 +67,7 @@ export function Main(){
     const history=useHistory()
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [userType, setUserType] = useState('doctor'); // 默认用户类型为医生
+    const [userType, setUserType] = useState('user'); // 默认用户类型为user
     const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
     const [language, setLanguage] = useState('zh'); // 默认语言为中文
 
@@ -92,17 +94,21 @@ export function Main(){
 
     const handleLogin = () => {
         if (userType === 'user') {
-            sendPostRequest(new LoginMessage(username, password));
-        } else {
-            sendPostRequest(new PatientLoginMessage(username, password));
+            sendPostRequest(new UserLoginMessage(username, password));
+        } else if(userType === 'regulator') {
+            sendPostRequest(new RegulatorLoginMessage(username, password));
+        } else if (userType === 'operator') {
+            sendPostRequest(new OperatorLoginMessage(username, password));
         }
     };
 
     const handleRegister = () => {
-        if (userType === 'User') {
-            sendPostRequest(new RegisterMessage(username, password));
-        } else {
-            sendPostRequest(new PatientRegisterMessage(username, password));
+        if (userType === 'user') {
+            sendPostRequest(new OperatorRegisterMessage(username, password));
+        } else if (userType === 'regulator') {
+            sendPostRequest(new RegulatorRegisterMessage(username, password));
+        } else if (userType === 'operator') {
+            sendPostRequest(new OperatorRegisterMessage(username, password));
         }
     };
 
@@ -167,9 +173,9 @@ export function Main(){
                                     value={userType}
                                     onChange={(e) => setUserType(e.target.value as string)}
                                 >
-                                    <MenuItem value="doctor">{language === 'zh' ? '用户' : 'User'}</MenuItem>
-                                    <MenuItem value="patient">{language === 'zh' ? '监管方' : 'Regulator'}</MenuItem>
-                                    <MenuItem value="patient">{language === 'zh' ? '运营方' : 'Operator'}</MenuItem>
+                                    <MenuItem value="user">{language === 'zh' ? '用户' : 'User'}</MenuItem>
+                                    <MenuItem value="regulator">{language === 'zh' ? '监管方' : 'Regulator'}</MenuItem>
+                                    <MenuItem value="operator">{language === 'zh' ? '运营方' : 'Operator'}</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>

@@ -1,6 +1,6 @@
-import { PatientMessage } from 'Plugins/PatientAPI/PatientMessage'
+import { UserMessage } from 'Plugins/UserAPI/UserMessage'
 
-export class PatientRegisterMessage extends PatientMessage {
+export class UserLoginMessage extends UserMessage {
     userName: string;
     password: string;
 

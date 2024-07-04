@@ -1,6 +1,7 @@
-import { PatientMessage } from 'Plugins/PatientAPI/PatientMessage'
+// 定义和实现医生登录的逻辑
+import { OperatorMessage } from 'Plugins/OperatorAPI/OperatorMessage'
 
-export class PatientLoginMessage extends PatientMessage {
+export class OperatorLoginMessage extends OperatorMessage {
     userName: string;
     password: string;
 

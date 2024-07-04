@@ -1,7 +1,6 @@
-// 定义和实现医生注册的逻辑
-import { DoctorMessage } from 'Plugins/DoctorAPI/DoctorMessage'
+import { UserMessage } from 'Plugins/UserAPI/UserMessage'
 
-export class RegisterMessage extends DoctorMessage {
+export class UserRegisterMessage extends UserMessage {
     userName: string;
     password: string;
 
