@@ -1,13 +1,14 @@
-// 定义和实现添加病人信息的逻辑
+// 定义和实现添加 User 信息的逻辑
 import { OperatorMessage } from 'Plugins/OperatorAPI/OperatorMessage'
 
 export class AddUserMessage extends OperatorMessage{
-    doctorName: string;
-    patientName: string;
+    operatorName: string;
+    userName: string;
 
-    constructor(doctorName:string, patientName:string) {
+    constructor(operatorName:string, userName:string) {
         super();
-        this.doctorName = doctorName;
-        this.patientName = patientName;
+        this.operatorName = operatorName;
+        this.userName = userName;
     }
 }
+

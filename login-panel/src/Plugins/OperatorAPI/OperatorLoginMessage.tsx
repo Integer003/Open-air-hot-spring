@@ -1,4 +1,4 @@
-// 定义和实现医生登录的逻辑
+// 定义和实现 Operator 登录的逻辑
 import { OperatorMessage } from 'Plugins/OperatorAPI/OperatorMessage'
 
 export class OperatorLoginMessage extends OperatorMessage {
