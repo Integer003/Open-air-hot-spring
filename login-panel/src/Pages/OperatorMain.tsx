@@ -154,7 +154,7 @@ export function OperatorMain(){
             <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                        尊敬的用户，您好！
+                        尊敬的运营商，您好！
                         <img src={logo} alt="logo" style={{ width: '40px', height: '40px' }}/>
                     </Typography>
                     <IconButton color="inherit" onClick={toggleTheme}>
@@ -208,7 +208,7 @@ export function OperatorMain(){
                                 </ListItemIcon>
                                 <ListItemText primary="消息" />
                             </ListItemButton>
-                            <ListItemButton onClick={() => history.push('/Main')}>
+                            <ListItemButton onClick={() => history.push('/')}>
                                 <ListItemIcon>
                                     <LogoutIcon />
                                 </ListItemIcon>

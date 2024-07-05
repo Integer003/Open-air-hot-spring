@@ -25,9 +25,7 @@ case class RegisterMessagePlanner(userName: String, password: String,override va
         writeDB(s"INSERT INTO ${schemaName}.user_name (user_name, password) VALUES (?, ?)",
           List(SqlParameter("String", userName),
                SqlParameter("String", password)
-          )).map{
-          _ => "lalalalala"
-        }
+          ))
       }
     }
   }

@@ -83,7 +83,9 @@ export function RegisterPage() {
             });
             console.log('Response status:', response.status);
             console.log('Response body:', response.data);
-            if (response.data == "lalalalala") { alert(response.data); }
+            // if (response.data == "lalalalala") { alert(response.data); }
+            alert("注册成功！");
+            history.push('/');
         } catch (error) {
             if (isAxiosError(error)) {
                 alert("注册失败！");
@@ -97,8 +99,6 @@ export function RegisterPage() {
                 console.error('Unexpected error:', error);
             }
         }
-        alert("注册成功！");
-        history.push('/');
     };
 
     const isFormValid = () => {

@@ -10,6 +10,9 @@ import { API } from 'Plugins/CommonUtils/API'
 import { useHistory } from 'react-router-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import logo from '../images/summer.png';
+import cppImage from '../images/c-.png'
+import pythonImage from '../images/python.png'
+import scalaImage from '../images/scala.png'
 
 import {
     AppBar,
@@ -34,6 +37,9 @@ import {
     ListItemButton,
     ListItemIcon,
     ListItemText,
+    Card,
+    CardContent,
+    CardMedia,
 } from '@mui/material';
 import { Brightness4, Brightness7, Language } from '@mui/icons-material';
 import HomeIcon from '@mui/icons-material/Home';
@@ -99,6 +105,40 @@ type ThemeMode = 'light' | 'dark';
 
 const drawerWidth = 240;
 
+const products = [
+    { id: 1, title: 'C++', image: cppImage, description: 'C++ is a beautiful language' },
+    { id: 2, title: 'python', image: pythonImage, description: 'python is a beautiful language' },
+    { id: 3, title: 'scala', image: scalaImage, description: 'but scala is the most beautiful language' },
+    // 在此处添加更多商品
+];
+
+const ProductList = () => (
+    <Grid container spacing={2}>
+        {products.map((product) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
+                <Button>
+                <Card>
+                    <CardMedia
+                        component="img"
+                        height="140"
+                        image={product.image}
+                        alt={product.title}
+                        sx={{ height: 200, objectFit: 'contain' }} // resize the image
+                    />
+                    <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                            {product.title}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            {product.description}
+                        </Typography>
+                    </CardContent>
+                </Card>
+                </Button>
+            </Grid>
+        ))}
+    </Grid>
+);
 
 
 export function SellerMain(){
@@ -220,10 +260,8 @@ export function SellerMain(){
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <Toolbar />
                 这里是商品浏览区域
-                {/* 商品浏览区域 */}
                 <Box sx={{ mt: 2 }}>
-                    {/* 这里可以放置商品列表组件 */}
-                    这里时商品列表组件
+                    <ProductList />
                 </Box>
             </Box>
                 {!mobileOpen && (
