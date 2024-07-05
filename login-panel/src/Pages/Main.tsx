@@ -1,14 +1,15 @@
 // 主页面组件，可能是应用加载时首先展示的页面
+// Hook是与外界交互变化，历史就是最简单的hook。让GPT帮你写，然后让他帮你解释。使用hook定义的东西需要用use开头
 import React, { useState } from 'react';
 import axios, { isAxiosError } from 'axios'
 import { API } from 'Plugins/CommonUtils/API'
 import { OperatorLoginMessage } from 'Plugins/OperatorAPI/OperatorLoginMessage'
-import { OperatorRegisterMessage } from 'Plugins/OperatorAPI/OperatorRegisterMessage'
+// import { OperatorRegisterMessage } from 'Plugins/OperatorAPI/OperatorRegisterMessage'
 import { SellerLoginMessage } from 'Plugins/SellerAPI/SellerLoginMessage'
-import { SellerRegisterMessage } from 'Plugins/SellerAPI/SellerRegisterMessage'
+// import { SellerRegisterMessage } from 'Plugins/SellerAPI/SellerRegisterMessage'
 import { RegulatorLoginMessage} from 'Plugins/RegulatorAPI/RegulatorLoginMessage'
-import { RegulatorRegisterMessage} from 'Plugins/RegulatorAPI/RegulatorRegisterMessage'
-import { AddSellerMessage } from 'Plugins/OperatorAPI/AddSellerMessage'
+// import { RegulatorRegisterMessage} from 'Plugins/RegulatorAPI/RegulatorRegisterMessage'
+// import { AddSellerMessage } from 'Plugins/OperatorAPI/AddSellerMessage'
 import { useHistory } from 'react-router';
 import logo from '../images/summer.png';
 
@@ -64,6 +65,7 @@ const themes = {
 
 type ThemeMode = 'light' | 'dark';
 
+// 手绘图加截图，GPT可以帮你写得很不错，风格：CSS。交互：纯函数，hooks
 export function Main(){
     const history=useHistory()
     const [username, setUsername] = useState('');
@@ -71,7 +73,8 @@ export function Main(){
     const [userType, setUserType] = useState('Seller'); // 默认用户类型为Seller
     const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
     const [language, setLanguage] = useState('zh'); // 默认语言为中文
-
+    // 前端只用管发送什么信息，包装一个函数，后面怎么发怎么接都是前后端交互的功能。后端接受对应的消息，执行相应的数据库操作，返回相应的值。
+    // 后端一直在固定端口听着在。理解了理论再实际设计。
     const sendPostRequest = async (message: API) => {
         try {
             const response = await axios.post(message.getURL(), JSON.stringify(message), {
@@ -136,7 +139,7 @@ export function Main(){
             <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                        某二手商品交易网
+                        OpenAirHP二手商品交易网
                         <img src={logo} alt="logo" style={{ width: '40px', height: '40px' }} />
                     </Typography>
                     <IconButton color="inherit" onClick={toggleTheme}>
@@ -197,13 +200,13 @@ export function Main(){
                             onClick={() => history.push('/register')} // 假设注册页面的路由是'/register'
                             sx={{ mb: 2 }}
                         >
-                            {language === 'zh' ? '还没有账号？去注册' : 'Don\'t have an account? Register'}
+                            {language === 'zh' ? '还没有账号？去注册' : 'Don\'t have an account? Register!'}
                         </Button>
                     </FormControl>
                 </Box>
             </Container>
         </ThemeProvider>
     );
-};
+}
 
 

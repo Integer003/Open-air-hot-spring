@@ -21,7 +21,6 @@ implicit val loggerFactory: LoggerFactory[IO] = Slf4jFactory.create[IO]
 import scala.compiletime.erasedValue
 
 /** API的基本类型，保存了API返回的数据类型 ReturnType */
-// targetService: API发送的微服务名字。微服务返回一个return类型，微服务与微服务之间的沟通，字符串沟通，必须你序列化变成真正想要的类型。
 abstract class API[T: Decoder](targetService: String):
   type ReturnType = T
 

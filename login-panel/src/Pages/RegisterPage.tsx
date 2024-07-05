@@ -89,6 +89,7 @@ export function RegisterPage() {
         } catch (error) {
             if (isAxiosError(error)) {
                 alert("注册失败！");
+                history.push('/');
                 // Check if the error has a response and a data property
                 if (error.response && error.response.data) {
                     console.error('Error response data:', error.response.data);

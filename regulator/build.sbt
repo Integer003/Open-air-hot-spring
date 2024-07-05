@@ -4,7 +4,7 @@ ThisBuild / scalaVersion := "3.4.0"
 
 lazy val root = (project in file("."))
   .settings(
-    name := "Operator"
+    name := "Regulator"
   )
 
 val http4sVersion = "1.0.0-M40"
@@ -26,5 +26,3 @@ libraryDependencies ++= Seq(
   "joda-time" % "joda-time" % "2.12.7" // Use the latest version available
 )
 scalacOptions ++= Seq("-feature", "-language:implicitConversions")
-
-//可以在此处添加包，然后重新加载一遍，load sbt

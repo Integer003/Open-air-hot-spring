@@ -15,7 +15,7 @@ import org.http4s.client.Client
 import java.nio.channels.ClosedChannelException
 import scala.concurrent.duration.*
 
-// 流式可以实现多人共享文档
+
 object Server extends IOApp:
   given logger: Logger[IO] = Slf4jLogger.getLogger[IO]
 

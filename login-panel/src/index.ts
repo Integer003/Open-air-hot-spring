@@ -1,4 +1,4 @@
-// 这是应用的主入口文件。通常会在这里初始化应用，可能包括引入React、ReactDOM，并将应用挂载到index.html中的根元素
+// 这是应用的主入口文件。通常会在这里初始化应用，可能包括引入React、ReactDOM，并将应用挂载到index.html中的根元素。预加载文件
 import { app, BrowserWindow, ipcMain, Rectangle, session, WebPreferences } from 'electron'
 import * as path from 'path'
 import process from 'process'

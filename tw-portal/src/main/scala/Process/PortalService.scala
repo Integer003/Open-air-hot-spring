@@ -17,6 +17,7 @@ import org.http4s.headers.`Content-Type`
 
 import java.util.UUID
 
+// 控制流
 object PortalService {
   def service(client: Client[IO]): HttpRoutes[IO] = HttpRoutes.of[IO] {
     case GET -> Root / "stream" / serviceName / streamName =>
@@ -25,6 +26,7 @@ object PortalService {
 
     case req@POST -> Root / "api" / serviceName / messageName =>
       println(s"got message $serviceName $messageName")
+      // 发送client, req, serviceName, messageName信息
       handlePostRequest(client, req, serviceName, messageName).flatMap {
         case Right(json) => Ok(json)
         case Left(e) => internalServerError(e)
@@ -35,6 +37,9 @@ object PortalService {
 
   def handlePostRequest(client: Client[IO], req: Request[IO], serviceName: String, messageName: String): IO[Either[Throwable, Json]] = {
     for {
+      // 随机选取一个ID，整个都用相同的ID。后端有很多个微服务，后端能做的操作很少，只有读数据库，写数据库。
+      // 不同的微服务执行不同的信息，但是都是同一个API执行的。
+      // 纯函数做法：monad做
       bodyJson <- req.as[Json]
       planContext = PlanContext(TraceID(UUID.randomUUID().toString), transactionLevel = 0)
       planContextJson = planContext.asJson

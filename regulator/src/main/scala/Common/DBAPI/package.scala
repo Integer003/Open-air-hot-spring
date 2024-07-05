@@ -12,7 +12,6 @@ import org.joda.time.format.ISODateTimeFormat
 
 
 package object DBAPI {
-  // 任何时候有一个DataTime对象，会自动转换成String
   given Conversion[DateTime, String] = dateTime => {
     dateTime.getMillis.toString
   }
@@ -20,7 +19,6 @@ package object DBAPI {
     new DateTime(time.toLong)
   }
 
-  // 事务性
   def startTransaction[A](block: PlanContext ?=> IO[A])(using encoder: Encoder[A], ctx: PlanContext): IO[A] = {
     given newContext: PlanContext = ctx.copy(transactionLevel = ctx.transactionLevel + 1)
 
@@ -51,7 +49,6 @@ package object DBAPI {
     } yield finalResult
   }
 
-  //回滚，保证事务的ACID
   def rollback(): IO[Unit] = IO.raiseError(RollbackException("Rollback"))
 
   def initSchema(schemaName: String)(using Encoder[InitSchemaMessage], PlanContext): IO[String] = InitSchemaMessage(schemaName).send
