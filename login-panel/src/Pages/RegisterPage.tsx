@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom';
 import axios, { isAxiosError } from 'axios'
 import { API } from 'Plugins/CommonUtils/API'
@@ -11,7 +11,9 @@ import { RegulatorRegisterMessage} from 'Plugins/RegulatorAPI/RegulatorRegisterM
 import { RegulatorLoginMessage} from 'Plugins/RegulatorAPI/RegulatorLoginMessage'
 import logo from '../images/summer.png';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-
+import { themes } from './theme/theme';
+import AppBarComponent from './theme/AppBarComponent';
+import { sendPostRequest } from './tool/apiRequest';
 
 import {
     AppBar,
@@ -35,35 +37,6 @@ import {
 } from '@mui/material';
 import { Brightness4, Brightness7, Language } from '@mui/icons-material';
 
-const lightTheme = createTheme({
-    palette: {
-        mode: 'light',
-        primary: {
-            main: '#1976d2',
-        },
-        secondary: {
-            main: '#dc004e',
-        },
-    },
-});
-
-const darkTheme = createTheme({
-    palette: {
-        mode: 'dark',
-        primary: {
-            main: '#90caf9',
-        },
-        secondary: {
-            main: '#f48fb1',
-        },
-    },
-});
-
-const themes = {
-    light: lightTheme,
-    dark: darkTheme,
-};
-
 type ThemeMode = 'light' | 'dark';
 
 export function RegisterPage() {
@@ -76,75 +49,60 @@ export function RegisterPage() {
     const [language, setLanguage] = useState('zh'); // 默认语言为中文
 
 
-    const sendPostRequest = async (message: API) => {
-        try {
-            const response = await axios.post(message.getURL(), JSON.stringify(message), {
-                headers: { 'Content-Type': 'application/json' },
-            });
-            console.log('Response status:', response.status);
-            console.log('Response body:', response.data);
-            // if (response.data == "lalalalala") { alert(response.data); }
-            alert("注册成功！");
-            history.push('/');
-        } catch (error) {
-            if (isAxiosError(error)) {
-                alert("注册失败！");
-                history.push('/');
-                // Check if the error has a response and a data property
-                if (error.response && error.response.data) {
-                    console.error('Error response data:', error.response.data);
-                } else {
-                    console.error('Error sending request:', error.message);
-                }
-            } else {
-                console.error('Unexpected error:', error);
-            }
-        }
+    const isFormValid = () => {
+        return password === confirmPassword && username!='' && password!='';
     };
 
-    const isFormValid = () => {
-        return password === confirmPassword;
-    };
+    const [responseData, setResponseData] = useState<any>(null);
+    const [error, setError] = useState<string | null>(null);
+
 
     const handleRegister = async () => {
         if (!isFormValid()) {
-            alert('密码和确认密码不匹配，请重新输入！');
             return;
         }
-        if (userType === 'Seller') {
-            sendPostRequest(new SellerRegisterMessage(username, password));
-        } else if (userType === 'Operator'){
-            sendPostRequest(new OperatorRegisterMessage(username, password));
-        } else if (userType === 'Regulator'){
-            sendPostRequest(new RegulatorRegisterMessage(username, password));
+        try {
+            let message: API | undefined;
+
+            if (userType === 'Seller') {
+                message = new SellerRegisterMessage(username, password);
+            } else if (userType === 'Regulator') {
+                message = new RegulatorRegisterMessage(username, password);
+            } else if (userType === 'Operator') {
+                message = new OperatorRegisterMessage(username, password);
+            }
+
+            if (!message) {
+                throw new Error('Invalid user type');
+            }
+            const data = await sendPostRequest(message);
+            setResponseData(data);
+        } catch (error) {
+            setError(error.message);
+            alert("注册失败");
         }
     };
 
-    const toggleTheme = () => {
-        setThemeMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-    };
+    useEffect(() => {
+        if (responseData) {
+            if (responseData=="Operation(s) done successfully"){
+                alert("注册成功！");
+                history.push('/');
+            }else{
+                alert("注册失败！");
+            }
+        }
+    }, [responseData]); // 监听responseData的变化
 
-    const toggleLanguage = () => {
-        setLanguage((prevLanguage) => (prevLanguage === 'zh' ? 'en' : 'zh'));
-    };
 
     return (
         <ThemeProvider theme={themes[themeMode]}>
             <CssBaseline />
-            <AppBar position="static">
-                <Toolbar>
-                    <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                        某二手商品交易网
-                        <img src={logo} alt="logo" style={{ width: '40px', height: '40px' }} />
-                    </Typography>
-                    <IconButton color="inherit" onClick={toggleTheme}>
-                        {themeMode === 'light' ? <Brightness4 /> : <Brightness7 />}
-                    </IconButton>
-                    <IconButton color="inherit" onClick={toggleLanguage}>
-                        <Language />
-                    </IconButton>
-                </Toolbar>
-            </AppBar>
+            <AppBarComponent
+                themeMode={themeMode}
+                setThemeMode={setThemeMode}
+                setLanguage={setLanguage}
+            />
             <Container maxWidth="sm" sx={{ mt: 4 }}>
                 <Box sx={{ mb: 4, textAlign: 'center' }}>
                     <Typography variant="h1" sx={{ fontSize: '2rem' }}>

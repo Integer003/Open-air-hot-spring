@@ -2,15 +2,12 @@
 import React, { useState } from 'react';
 import axios, { isAxiosError } from 'axios'
 import { API } from 'Plugins/CommonUtils/API'
-// import { LoginMessage } from 'Plugins/DoctorAPI/LoginMessage'
-// import { RegisterMessage } from 'Plugins/DoctorAPI/RegisterMessage'
-// import { PatientLoginMessage } from 'Plugins/PatientAPI/PatientLoginMessage'
-// import { PatientRegisterMessage } from 'Plugins/PatientAPI/PatientRegisterMessage'
-// import { AddPatientMessage } from 'Plugins/DoctorAPI/AddPatientMessage'
 import { useHistory } from 'react-router-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import logo from '../images/summer.png';
-
+import cppImage from '../images/c-.png'
+import pythonImage from '../images/python.png'
+import scalaImage from '../images/scala.png'
 import {
     AppBar,
     Typography,
@@ -34,6 +31,9 @@ import {
     ListItemButton,
     ListItemIcon,
     ListItemText,
+    Card,
+    CardContent,
+    CardMedia,
 } from '@mui/material';
 import { Brightness4, Brightness7, Language } from '@mui/icons-material';
 import HomeIcon from '@mui/icons-material/Home';
@@ -43,36 +43,10 @@ import MessageIcon from '@mui/icons-material/Message';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { themes } from './theme/theme';
+import AppBarComponent from './theme/AppBarComponent';
+import { sendPostRequest } from './tool/apiRequest';
 
-
-const lightTheme = createTheme({
-    palette: {
-        mode: 'light',
-        primary: {
-            main: '#1976d2',
-        },
-        secondary: {
-            main: '#dc004e',
-        },
-    },
-});
-
-const darkTheme = createTheme({
-    palette: {
-        mode: 'dark',
-        primary: {
-            main: '#90caf9',
-        },
-        secondary: {
-            main: '#f48fb1',
-        },
-    },
-});
-
-const themes = {
-    light: lightTheme,
-    dark: darkTheme,
-};
 
 const UnreadIndicator = ({ count }: { count: number }) => { if (count === 0) return null;
 
@@ -99,6 +73,40 @@ type ThemeMode = 'light' | 'dark';
 
 const drawerWidth = 240;
 
+const products = [
+    { id: 1, title: 'C++', image: cppImage, description: 'C++ is a beautiful language' },
+    { id: 2, title: 'python', image: pythonImage, description: 'python is a beautiful language' },
+    { id: 3, title: 'scala', image: scalaImage, description: 'but scala is the most beautiful language' },
+    // 在此处添加更多商品
+];
+
+const ProductList = () => (
+    <Grid container spacing={2}>
+        {products.map((product) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
+                <Button>
+                    <Card>
+                        <CardMedia
+                            component="img"
+                            height="140"
+                            image={product.image}
+                            alt={product.title}
+                            sx={{ height: 200, objectFit: 'contain' }} // resize the image
+                        />
+                        <CardContent>
+                            <Typography gutterBottom variant="h5" component="div">
+                                {product.title}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                {product.description}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Button>
+            </Grid>
+        ))}
+    </Grid>
+);
 
 
 export function RegulatorMain(){
@@ -111,35 +119,6 @@ export function RegulatorMain(){
 
     const unreadMessagesCount = 5;
 
-    const sendPostRequest = async (message: API) => {
-        try {
-            const response = await axios.post(message.getURL(), JSON.stringify(message), {
-                headers: { 'Content-Type': 'application/json' },
-            });
-            console.log('Response status:', response.status);
-            console.log('Response body:', response.data);
-        } catch (error) {
-            if (isAxiosError(error)) {
-                // Check if the error has a response and a data property
-                if (error.response && error.response.data) {
-                    console.error('Error sending request:', error.response.data);
-                } else {
-                    console.error('Error sending request:', error.message);
-                }
-            } else {
-                console.error('Unexpected error:', error);
-            }
-        }
-    };
-
-
-    const toggleTheme = () => {
-        setThemeMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-    };
-
-    const toggleLanguage = () => {
-        setLanguage((prevLanguage) => (prevLanguage === 'zh' ? 'en' : 'zh'));
-    };
 
     const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -151,20 +130,11 @@ export function RegulatorMain(){
     return (
         <ThemeProvider theme={themes[themeMode]}>
             <CssBaseline />
-            <AppBar position="static">
-                <Toolbar>
-                    <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                        尊敬的用户，您好！
-                        <img src={logo} alt="logo" style={{ width: '40px', height: '40px' }}/>
-                    </Typography>
-                    <IconButton color="inherit" onClick={toggleTheme}>
-                        {themeMode === 'light' ? <Brightness4 /> : <Brightness7 />}
-                    </IconButton>
-                    <IconButton color="inherit" onClick={toggleLanguage}>
-                        <Language />
-                    </IconButton>
-                </Toolbar>
-            </AppBar>
+            <AppBarComponent
+                themeMode={themeMode}
+                setThemeMode={setThemeMode}
+                setLanguage={setLanguage}
+            />
             <div>
                 <Drawer
                     sx={{
@@ -220,10 +190,8 @@ export function RegulatorMain(){
                 <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                     <Toolbar />
                     这里是商品浏览区域
-                    {/* 商品浏览区域 */}
                     <Box sx={{ mt: 2 }}>
-                        {/* 这里可以放置商品列表组件 */}
-                        这里时商品列表组件
+                        <ProductList />
                     </Box>
                 </Box>
                 {!mobileOpen && (
