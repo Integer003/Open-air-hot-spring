@@ -208,7 +208,7 @@ export function SellerMain(){
                             </ListItemIcon>
                             <ListItemText primary="消息" />
                         </ListItemButton>
-                        <ListItemButton onClick={() => history.push('/Main')}>
+                        <ListItemButton onClick={() => history.push('/')}>
                             <ListItemIcon>
                                 <LogoutIcon />
                             </ListItemIcon>

@@ -114,9 +114,9 @@ export function Main(){
     const handleLogin = () => {
         if (userType === 'Seller') {
             sendPostRequest(new SellerLoginMessage(username, password));
-        } else if(userType === 'regulator') {
+        } else if(userType === 'Regulator') {
             sendPostRequest(new RegulatorLoginMessage(username, password));
-        } else if (userType === 'operator') {
+        } else if (userType === 'Operator') {
             sendPostRequest(new OperatorLoginMessage(username, password));
         }
     };
@@ -137,7 +137,7 @@ export function Main(){
                 <Toolbar>
                     <Typography variant="h6" sx={{ flexGrow: 1 }}>
                         某二手商品交易网
-                        <img src={logo} alt="logo" style={{ width: '40px', height: '40px' }}/>
+                        <img src={logo} alt="logo" style={{ width: '40px', height: '40px' }} />
                     </Typography>
                     <IconButton color="inherit" onClick={toggleTheme}>
                         {themeMode === 'light' ? <Brightness4 /> : <Brightness7 />}
@@ -147,69 +147,63 @@ export function Main(){
                     </IconButton>
                 </Toolbar>
             </AppBar>
-            <Container maxWidth="md">
-                <FormControl sx={{ width: '400px' }}>
-                <Box sx={{ mt: 4, textAlign: 'center' }}>
+            <Container maxWidth="sm" sx={{ mt: 4 }}>
+                <Box sx={{ mb: 4, textAlign: 'center' }}>
                     <Typography variant="h1" sx={{ fontSize: '2rem' }}>
                         {language === 'zh' ? '登录' : 'Login'}
                     </Typography>
-                    <Grid container spacing={2} justifyContent="center" direction="column">
-                        <Grid item xs={12} sm={6} md={4}>
-                            <TextField
-                                label={language === 'zh' ? '用户名' : 'Username'}
-                                variant="outlined"
-                                fullWidth
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                sx={{ mb: 2 }}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4}>
-                            <TextField
-                                label={language === 'zh' ? '密码' : 'Password'}
-                                variant="outlined"
-                                type="password"
-                                fullWidth
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                sx={{ mb: 2 }}
-                            />
-                        </Grid>
-                        <Grid item xs={6} md={4}>
-                                <InputLabel>
-                                    {language === 'zh' ? '用户类型' : 'User type'}
-                                </InputLabel>
-                                <Select
-                                    value={userType}
-                                    onChange={(e) => setUserType(e.target.value as string)}
-                                >
-                                    <MenuItem value="Seller">{language === 'zh' ? '用户' : 'Seller'}</MenuItem>
-                                    <MenuItem value="Regulator">{language === 'zh' ? '监管方' : 'Regulator'}</MenuItem>
-                                    <MenuItem value="Operator">{language === 'zh' ? '运营方' : 'Operator'}</MenuItem>
-                                </Select>
-                        </Grid>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={handleLogin}
-                                sx={{ m: 1 }}
-                            >
-                                {language === 'zh' ? '登录' : 'Login'}
-                            </Button>
-                            <Button
-                                variant="outlined"
-                                color="primary"
-                                onClick={() => history.push('/register')} // 假设注册页面的路由是'/register'
-                                sx={{ mt: 3, mb: 2 }}
-                            >
-                                {language === 'zh' ? '还没有账号？去注册' : 'Don\'t have an account? Register'}
-                            </Button>
-                    </Grid>
                 </Box>
-             </FormControl>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <FormControl sx={{ width: '100%' }}>
+                        <TextField
+                            label={language === 'zh' ? '用户名' : 'Username'}
+                            variant="outlined"
+                            fullWidth
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            sx={{ mb: 2 }}
+                        />
+                        <TextField
+                            label={language === 'zh' ? '密码' : 'Password'}
+                            variant="outlined"
+                            type="password"
+                            fullWidth
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            sx={{ mb: 2 }}
+                        />
+                        <FormControl fullWidth sx={{ mb: 2 }}>
+                            <InputLabel>{language === 'zh' ? '用户类型' : 'User type'}</InputLabel>
+                            <Select
+                                value={userType}
+                                onChange={(e) => setUserType(e.target.value as string)}
+                            >
+                                <MenuItem value="Seller">{language === 'zh' ? '用户' : 'Seller'}</MenuItem>
+                                <MenuItem value="Regulator">{language === 'zh' ? '监管方' : 'Regulator'}</MenuItem>
+                                <MenuItem value="Operator">{language === 'zh' ? '运营方' : 'Operator'}</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleLogin}
+                            sx={{ mt: 1, mb: 2 }}
+                        >
+                            {language === 'zh' ? '登录' : 'Login'}
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => history.push('/register')} // 假设注册页面的路由是'/register'
+                            sx={{ mb: 2 }}
+                        >
+                            {language === 'zh' ? '还没有账号？去注册' : 'Don\'t have an account? Register'}
+                        </Button>
+                    </FormControl>
+                </Box>
             </Container>
         </ThemeProvider>
     );
-}
+};
 
 

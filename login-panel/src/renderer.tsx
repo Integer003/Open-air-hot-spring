@@ -15,7 +15,7 @@ const Layout = () => {
             <Switch>
                 <Route path="/" exact component={Main} />
                 <Route path="/register" exact component={RegisterPage} />
-                <Route path="/UserMain" exact component={SellerMain} />
+                <Route path="/SellerMain" exact component={SellerMain} />
                 <Route path="/RegulatorMain" exact component={RegulatorMain} />
                 <Route path="/OperatorMain" exact component={OperatorMain} />
             </Switch>

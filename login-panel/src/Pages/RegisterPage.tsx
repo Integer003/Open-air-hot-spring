@@ -7,6 +7,8 @@ import { OperatorRegisterMessage } from 'Plugins/OperatorAPI/OperatorRegisterMes
 import { SellerLoginMessage } from 'Plugins/SellerAPI/SellerLoginMessage'
 import { SellerRegisterMessage } from 'Plugins/SellerAPI/SellerRegisterMessage'
 import { AddSellerMessage } from 'Plugins/OperatorAPI/AddSellerMessage'
+import { RegulatorRegisterMessage} from 'Plugins/RegulatorAPI/RegulatorRegisterMessage'
+import { RegulatorLoginMessage} from 'Plugins/RegulatorAPI/RegulatorLoginMessage'
 import logo from '../images/summer.png';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
@@ -84,12 +86,10 @@ export function RegisterPage() {
             if (response.data == "lalalalala") { alert(response.data); }
         } catch (error) {
             if (isAxiosError(error)) {
+                alert("注册失败！");
                 // Check if the error has a response and a data property
                 if (error.response && error.response.data) {
-                    if(error.response.data=="already registered"){
-                        alert("用户名已存在！");
-                    }
-
+                    console.error('Error response data:', error.response.data);
                 } else {
                     console.error('Error sending request:', error.message);
                 }
@@ -112,8 +112,10 @@ export function RegisterPage() {
         }
         if (userType === 'Seller') {
             sendPostRequest(new SellerRegisterMessage(username, password));
-        } else {
+        } else if (userType === 'Operator'){
             sendPostRequest(new OperatorRegisterMessage(username, password));
+        } else if (userType === 'Regulator'){
+            sendPostRequest(new RegulatorRegisterMessage(username, password));
         }
     };
 
@@ -127,29 +129,29 @@ export function RegisterPage() {
 
     return (
         <ThemeProvider theme={themes[themeMode]}>
-            <CssBaseline/>
+            <CssBaseline />
             <AppBar position="static">
                 <Toolbar>
-                    <Typography variant="h6" sx={{flexGrow: 1}}>
+                    <Typography variant="h6" sx={{ flexGrow: 1 }}>
                         某二手商品交易网
-                        <img src={logo} alt="logo" style={{width: '40px', height: '40px'}}/>
+                        <img src={logo} alt="logo" style={{ width: '40px', height: '40px' }} />
                     </Typography>
                     <IconButton color="inherit" onClick={toggleTheme}>
-                        {themeMode === 'light' ? <Brightness4/> : <Brightness7/>}
+                        {themeMode === 'light' ? <Brightness4 /> : <Brightness7 />}
                     </IconButton>
                     <IconButton color="inherit" onClick={toggleLanguage}>
-                        <Language/>
+                        <Language />
                     </IconButton>
                 </Toolbar>
             </AppBar>
-            <div>
-                <Typography variant="h1" sx={{fontSize: '2rem', textAlign: 'center'}}>
-                    {language === 'zh' ? '注册' : 'Register'}
-                </Typography>
-
-
-                <Grid container spacing={2} justifyContent="center" direction="column">
-                    <Grid item xs={12} sm={6} md={4}>
+            <Container maxWidth="sm" sx={{ mt: 4 }}>
+                <Box sx={{ mb: 4, textAlign: 'center' }}>
+                    <Typography variant="h1" sx={{ fontSize: '2rem' }}>
+                        {language === 'zh' ? '注册' : 'Register'}
+                    </Typography>
+                </Box>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <FormControl sx={{ width: '100%' }}>
                         <TextField
                             label={language === 'zh' ? '用户名' : 'Username'}
                             variant="outlined"
@@ -158,8 +160,6 @@ export function RegisterPage() {
                             onChange={(e) => setUsername(e.target.value)}
                             sx={{ mb: 2 }}
                         />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={4}>
                         <TextField
                             label={language === 'zh' ? '密码' : 'Password'}
                             variant="outlined"
@@ -169,8 +169,6 @@ export function RegisterPage() {
                             onChange={(e) => setPassword(e.target.value)}
                             sx={{ mb: 2 }}
                         />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={4}>
                         <TextField
                             label={language === 'zh' ? '确认密码' : 'Confirm Password'}
                             variant="outlined"
@@ -180,12 +178,8 @@ export function RegisterPage() {
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             sx={{ mb: 2 }}
                         />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <FormControl fullWidth>
-                            <InputLabel>
-                                {language === 'zh' ? '用户类型' : 'User type'}
-                            </InputLabel>
+                        <FormControl fullWidth sx={{ mb: 2 }}>
+                            <InputLabel>{language === 'zh' ? '用户类型' : 'User type'}</InputLabel>
                             <Select
                                 value={userType}
                                 onChange={(e) => setUserType(e.target.value as string)}
@@ -195,26 +189,26 @@ export function RegisterPage() {
                                 <MenuItem value="Operator">{language === 'zh' ? '运营方' : 'Operator'}</MenuItem>
                             </Select>
                         </FormControl>
-                    </Grid>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleRegister}
-                        disabled={!isFormValid()}
-                    >
-                        {language === 'zh' ? '注册' : 'Register'}
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => history.goBack()}
-                        sx={{m: 1}}
-                    >
-                        {language === 'zh' ? '返回登录' : 'Back to Login'}
-                    </Button>
-                </Grid>
-            </div>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleRegister}
+                            disabled={!isFormValid()}
+                            sx={{ mt: 1, mb: 2 }}
+                        >
+                            {language === 'zh' ? '注册' : 'Register'}
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => history.goBack()}
+                            sx={{ mb: 2 }}
+                        >
+                            {language === 'zh' ? '返回登录' : 'Back to Login'}
+                        </Button>
+                    </FormControl>
+                </Box>
+            </Container>
         </ThemeProvider>
-
     );
 }
