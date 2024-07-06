@@ -14,33 +14,8 @@ import org.http4s.dsl.io.*
 object Routes:
   private def executePlan(messageType:String, str: String): IO[String]=
     messageType match {
-      case "AddSellerMessage" =>
-        IO(decode[AddSellerMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for AddPatientMessage")))
-          .flatMap{m=>
-            m.fullPlan.map(_.asJson.toString)
-          }
-      case "OperatorLoginMessage" =>
-        IO(decode[LoginMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for LoginMessage")))
-          .flatMap{m=>
-            m.fullPlan.map(_.asJson.toString)
-          }
-      case "OperatorRegisterMessage" =>
-        IO(decode[RegisterMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for RegisterMessage")))
-          .flatMap{m=>
-            m.fullPlan.map(_.asJson.toString)
-          }
-      case "GoodsRegisterMessage" =>
-        IO(decode[GoodsRegisterMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for GoodsRegisterMessage")))
-          .flatMap { m =>
-            m.fullPlan.map(_.asJson.toString)
-          }
-      case "GoodsLoginMessage" =>
-        IO(decode[GoodsLoginMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for GoodsLoginMessage")))
-          .flatMap { m =>
-            m.fullPlan.map(_.asJson.toString)
-          }
-      case "GoodsSearchMessage" =>
-        IO(decode[GoodsSearchMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for GoodsSearchMessage")))
+      case "GoodsAddMessage" =>
+        IO(decode[GoodsAddMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for GoodsAddMessage")))
           .flatMap { m =>
             m.fullPlan.map(_.asJson.toString)
           }

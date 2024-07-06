@@ -20,7 +20,8 @@ object SqlParameter {
         case "string" => SqlParameter("String", value)
         case "int" => SqlParameter("Int", value)
         case "boolean" => SqlParameter("Boolean", value)
-        case "datetime" => SqlParameter("DateTime", value) // Add case for DateTime
+        case "datetime" => SqlParameter("DateTime", value)
+        case "float" => SqlParameter("Float", value) // 修改为 Float
         // Add more type cases as needed
         case _ => throw new Exception("Unsupported data type")
       }

@@ -13,13 +13,15 @@ object ServiceCenter {
   val sellerServiceCode    = "A000003"
   val portalServiceCode    = "A000004"
   val regulatorServiceCode = "A000005"
+  val goodsServiceCode     = "A000006"
 
   val fullNameMap: Map[String, String] = Map(
     dbManagerServiceCode ->  "数据库管理（DB_Manager）",
     operatorServiceCode  ->  "运营方（Operator）",
     sellerServiceCode    ->  "用户（Seller）",
     portalServiceCode    ->  "门户（Portal）",
-    regulatorServiceCode ->  "监管方（Regulator）"
+    regulatorServiceCode ->  "监管方（Regulator）",
+    goodsServiceCode     ->  "商品（Goods）"
   )
 
   val address: Map[String, String] = Map(
@@ -27,7 +29,8 @@ object ServiceCenter {
     "Operator"   ->     "127.0.0.1:10002",
     "Seller"     ->     "127.0.0.1:10003",
     "Portal"     ->     "127.0.0.1:10004",
-    "Regulator"  ->     "127.0.0.1:10005"
+    "Regulator"  ->     "127.0.0.1:10005",
+    "Goods"      ->     "127.0.0.1:10006"
   )
 
   def getURI(serviceCode: String): IO[Uri] =

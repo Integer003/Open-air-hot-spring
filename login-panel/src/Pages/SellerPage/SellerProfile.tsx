@@ -49,13 +49,9 @@ import ConfirmDialog from '../tool/ConfirmDialog';
 
 
 
-
-
 type ThemeMode = 'light' | 'dark';
 
 const drawerWidth = 240;
-
-
 
 export function SellerProfile(){
     const history=useHistory()
