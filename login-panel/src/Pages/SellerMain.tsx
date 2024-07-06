@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import logo from '../images/summer.png';
-import cppImage from '../images/c-.png';
-import pythonImage from '../images/python.png';
-import scalaImage from '../images/scala.png';
 import {
     AppBar,
     Typography,
@@ -21,8 +17,8 @@ import {
     ListItemText,
     Card,
     CardContent,
-    CardMedia,
-} from '@mui/material';
+    CardMedia, TableHead, TableRow, TableCell, TableBody, IconButton, Table,
+} from '@mui/material'
 import {
     Home as HomeIcon,
     Person as PersonIcon,
@@ -36,45 +32,36 @@ import { themes } from './theme/theme';
 import AppBarComponent from './theme/AppBarComponent';
 import { useUserStore } from './store';
 import { UnreadIndicator } from './tool/Apps';
+import { ShowTableMessage } from 'Plugins/OperatorAPI/ShowTableMessage'
+import { sendPostRequest } from 'Pages/tool/apiRequest'
+import DeleteIcon from '@mui/icons-material/Delete'
+import { SellerQueryGoodsMessage } from 'Plugins/SellerAPI/SellerQueryGoodsMessage'
 
 type ThemeMode = 'light' | 'dark';
 
 const drawerWidth = 240;
 
-const products = [
-    { id: 1, title: 'C++', image: cppImage, description: 'C++ is a beautiful language' },
-    { id: 2, title: 'Python', image: pythonImage, description: 'Python is a beautiful language' },
-    { id: 3, title: 'Scala', image: scalaImage, description: 'But Scala is the most beautiful language' },
-    // 在此处添加更多商品
-];
+type GoodsData = {
+    GoodsId: string;
+    GoodsName: string;
+    GoodsPrice: string;
+    GoodsDescription: string;
+    GoodsSeller: string;
+};
 
-const ProductList = () => (
-    <Grid container spacing={2}>
-        {products.map((product) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-                <Button>
-                    <Card>
-                        <CardMedia
-                            component="img"
-                            height="140"
-                            image={product.image}
-                            alt={product.title}
-                            sx={{ height: 200, objectFit: 'contain' }} // resize the image
-                        />
-                        <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
-                                {product.title}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                {product.description}
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Button>
-            </Grid>
-        ))}
-    </Grid>
-);
+const parseDataString = (dataString: string): GoodsData[] => {
+    // Parse the JSON string into an array of objects
+    const parsedArray = JSON.parse(dataString);
+
+    // Map the parsed objects to the GoodsData format
+    return parsedArray.map((item: any) => ({
+        GoodsId: item.goodsID,
+        GoodsName: item.goodsName,
+        GoodsPrice: item.price,
+        GoodsDescription: item.description,
+        GoodsSeller: item.sellerName
+    }));
+};
 
 export function SellerMain() {
     const history = useHistory();
@@ -95,6 +82,38 @@ export function SellerMain() {
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
+
+    const [tableData, setTableData] = useState<GoodsData[]>([]);
+    const [responseTableData, setResponseTableData] = useState<any>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    const init = async () => {
+        try {
+            const message = new SellerQueryGoodsMessage(userName);
+            const data = await sendPostRequest(message);
+            setResponseTableData(data); // 假设返回的数据是字符串，如果不是，需要转换
+        } catch (error: any) {
+            setError(error.message);
+            setResponseTableData('error');
+        }
+    };
+
+    useEffect(() => {
+        init();
+    }, []);
+
+    useEffect(() => {
+        // alert(responseTableData);
+        if (typeof responseTableData === 'string') {
+            // alert('is string');
+            const parsedData = parseDataString(responseTableData);
+            setTableData(parsedData);
+            // alert(tableData);
+        }else{
+            // alert('is not');
+        }
+    }, [responseTableData]);
+
 
     return (
         <ThemeProvider theme={themes[themeMode]}>
@@ -152,20 +171,36 @@ export function SellerMain() {
                         </List>
                     </Box>
                 </Drawer>
-                <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                    <Toolbar />
-                    这里是商品浏览区域
-                    <Box sx={{ mt: 2 }}>
-                        <ProductList />
-                    </Box>
-                </Box>
+                在这里陈列商品
+                {/*{ tableData }*/}
+                <Table sx={{ minWidth: 650 }}>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align="center">商品名</TableCell>
+                            <TableCell align="center">商品价格</TableCell>
+                            <TableCell align="center">商品描述</TableCell>
+                            <TableCell align="center">商品卖家</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {tableData.map((row, index) => (
+                            <TableRow key={index}>
+                                <TableCell align="center">{row.GoodsName}</TableCell>
+                                <TableCell align="center">{row.GoodsPrice}</TableCell>
+                                <TableCell align="center">{row.GoodsDescription}</TableCell>
+                                <TableCell align="center">{row.GoodsSeller}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+
                 <Button
                     variant="contained"
                     color="primary"
                     onClick={() => history.push('/SellerAddGoods')}
                     sx={{
                         position: 'absolute',
-                        right: 20,
+                        right: 50,
                         top: 20,
                         zIndex: 1000,
                     }}

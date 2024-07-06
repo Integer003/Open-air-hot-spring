@@ -10,6 +10,7 @@ import { RegulatorMain } from 'Pages/RegulatorMain'
 import { OperatorMain } from 'Pages/OperatorMain'
 import { SellerProfile } from 'Pages/SellerPage/SellerProfile'
 import { SellerAddGoods } from 'Pages/SellerPage/SellerAddGoods'
+import { SellerStorage} from 'Pages/SellerPage/SellerStorage'
 
 const Layout = () => {
     return (
@@ -22,6 +23,7 @@ const Layout = () => {
                     <Route path="/OperatorMain" exact component={OperatorMain} />
                     <Route path="/SellerProfile" exact component={SellerProfile} />
                     <Route path="/SellerAddGoods" exact component={SellerAddGoods} />
+                    <Route path="/SellerStorage" exact component={SellerStorage} />
                 </Switch>
             </HashRouter>
     )
