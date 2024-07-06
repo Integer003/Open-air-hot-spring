@@ -16,18 +16,12 @@ import io.circe.generic.auto.*
 
 case class AddSellerMessagePlanner(operatorName: String, sellerName: String, override val planContext: PlanContext) extends Planner[String]:
   override def plan(using PlanContext): IO[String] = {
-    /** step 1: 故意写入数据库 */
-    // 开始一个事务，如果一步出现问题，就会回滚
-    startTransaction{
+    startTransaction {
       for {
-        _ <- writeDB(s"INSERT INTO ${schemaName}.operator_seller (doctor_name, patient_name) VALUES (?, ?)",
+        _ <- writeDB(s"INSERT INTO ${schemaName}.operator_seller (operator_name, seller_name) VALUES (?, ?)",
           List(SqlParameter("String", operatorName), SqlParameter("String", ""))
         )
-        a <- startTransaction {
-          SellerQueryMessage(operatorName, sellerName).send  //发个消息出去
-//        >>rollback() //考虑可以回滚，这里可以注释掉看看效果 // 回滚到哪里？
-        }
+        a <- SellerQueryMessage(operatorName, sellerName).send
       } yield "OK"
     }
   }
-

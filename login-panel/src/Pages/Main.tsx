@@ -1,5 +1,5 @@
 // 主页面组件，可能是应用加载时首先展示的页面
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios, { isAxiosError } from 'axios'
 import { API } from 'Plugins/CommonUtils/API'
 import { OperatorLoginMessage } from 'Plugins/OperatorAPI/OperatorLoginMessage'
@@ -34,6 +34,7 @@ import {
 } from '@mui/material';
 import { Brightness4, Brightness7, Language } from '@mui/icons-material';
 import { sendPostRequest } from './tool/apiRequest';
+import { useUserStore } from './store';
 
 type ThemeMode = 'light' | 'dark';
 
@@ -47,7 +48,16 @@ export function Main(){
 
     const [responseData, setResponseData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
+    const { storeUserName } = useUserStore();
+    const { storeUserType } = useUserStore();
 
+    const init = async () => {
+        storeUserName('');
+        storeUserType('Seller');
+    }
+    useEffect(() => {
+        init();
+    }, []);
 
     const handleLogin = async () => {
         try {
@@ -70,9 +80,16 @@ export function Main(){
         }
     };
     useEffect(() => {
+
         if (responseData) {
+            if ((responseData as string).startsWith('Valid')){
+                alert(username+"登陆成功");
+                storeUserName(username);
+                storeUserType(userType);
+            }else{
+                alert("登陆失败！请确认用户名&密码！");
+            }
             if(responseData=="Valid Seller") {
-                alert("登陆成功");
                 history.push('/SellerMain');
             }
             else if(responseData=="Valid Regulator") {
@@ -82,9 +99,6 @@ export function Main(){
             else if(responseData=="Valid Operator") {
                 alert("登陆成功");
                 history.push('/OperatorMain');
-            }
-            else{
-                alert("登陆失败！请确认用户名&密码！");
             }
         }
     }, [responseData]); // 监听responseData的变化

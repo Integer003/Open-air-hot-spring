@@ -1,8 +1,8 @@
 // 主页面组件，可能是应用加载时首先展示的页面
-import React, { useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react'
 import axios, { isAxiosError } from 'axios'
 import { API } from 'Plugins/CommonUtils/API'
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom'
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import logo from '../images/summer.png';
 import cppImage from '../images/c-.png'
@@ -46,6 +46,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { themes } from './theme/theme';
 import AppBarComponent from './theme/AppBarComponent';
 import { sendPostRequest } from './tool/apiRequest';
+import { useUserStore } from './store'
 
 
 const UnreadIndicator = ({ count }: { count: number }) => { if (count === 0) return null;
@@ -111,16 +112,24 @@ const ProductList = () => (
 
 export function SellerMain(){
     const history=useHistory()
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [userType, setUserType] = useState('doctor'); // 默认用户类型为医生
     const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
     const [language, setLanguage] = useState('zh'); // 默认语言为中文
 
     const unreadMessagesCount = 5;
 
-
     const [mobileOpen, setMobileOpen] = React.useState(false);
+
+
+    const { userName } = useUserStore();
+
+
+    useEffect(() => {
+        if (userName) {
+            console.log(`欢迎, ?{userName}!`);
+        } else {
+            console.log('用户名未定义');
+        }
+    }, [userName]);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -150,16 +159,20 @@ export function SellerMain(){
                 open={mobileOpen}
                 onClose={handleDrawerToggle}
             >
+
                 <Toolbar />
                 <Box sx={{ display: 'flex', justifyContent: 'flex-start', height: 10, paddingTop: theme => theme.spacing(1) }}>
                     <List>
-                        <ListItemButton onClick={() => { /* 处理点击事件 */ }}>
+                        <ListItem>
+                            {decodeURIComponent(userName)},你好！
+                        </ListItem>
+                        <ListItemButton onClick={() => history.push(`/SellerProfile`)}>
                             <ListItemIcon>
                                 <PersonIcon />
                             </ListItemIcon>
                             <ListItemText primary="个人中心" />
                         </ListItemButton>
-                        <ListItemButton onClick={() => { /* 处理点击事件 */ }}>
+                        <ListItemButton onClick={() => {}}>
                             <ListItemIcon>
                                 <ReceiptIcon />
                             </ListItemIcon>

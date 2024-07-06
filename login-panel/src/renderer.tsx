@@ -8,18 +8,20 @@ import { RegisterPage } from 'Pages/RegisterPage'
 import { SellerMain } from 'Pages/SellerMain'
 import { RegulatorMain } from 'Pages/RegulatorMain'
 import { OperatorMain } from 'Pages/OperatorMain'
+import { SellerProfile } from 'Pages/SellerPage/SellerProfile'
 
 const Layout = () => {
     return (
-        <HashRouter>
-            <Switch>
-                <Route path="/" exact component={Main} />
-                <Route path="/register" exact component={RegisterPage} />
-                <Route path="/SellerMain" exact component={SellerMain} />
-                <Route path="/RegulatorMain" exact component={RegulatorMain} />
-                <Route path="/OperatorMain" exact component={OperatorMain} />
-            </Switch>
-        </HashRouter>
+            <HashRouter>
+                <Switch>
+                    <Route path="/" exact component={Main} />
+                    <Route path="/register" exact component={RegisterPage} />
+                    <Route path="/SellerMain" exact component={SellerMain} />
+                    <Route path="/RegulatorMain" exact component={RegulatorMain} />
+                    <Route path="/OperatorMain" exact component={OperatorMain} />
+                    <Route path="/SellerProfile" exact component={SellerProfile} />
+                </Switch>
+            </HashRouter>
     )
 }
 render(<Layout />, document.getElementById('root'))

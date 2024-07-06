@@ -4,7 +4,7 @@ import axios, { isAxiosError } from 'axios'
 import { API } from 'Plugins/CommonUtils/API'
 import { useHistory, useParams } from 'react-router-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import logo from '../images/summer.png';
+import logo from '../../images/summer.png';
 import {
     AppBar,
     Typography,
@@ -40,12 +40,14 @@ import MessageIcon from '@mui/icons-material/Message';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { themes } from './theme/theme';
-import AppBarComponent from './theme/AppBarComponent';
-import { sendPostRequest } from './tool/apiRequest';
-import { useUserStore } from './store'
+import { themes } from '../theme/theme';
+import AppBarComponent from '../theme/AppBarComponent';
+import { sendPostRequest } from '../tool/apiRequest';
+import { useUserStore } from '../store'
 import { SellerCancelMessage } from 'Plugins/SellerAPI/SellerCancelMessage'
-import ConfirmDialog from './tool/ConfirmDialog';
+import ConfirmDialog from '../tool/ConfirmDialog';
+
+
 
 
 
@@ -55,7 +57,7 @@ const drawerWidth = 240;
 
 
 
-export function OperatorMain(){
+export function SellerProfile(){
     const history=useHistory()
     const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
     const [language, setLanguage] = useState('zh'); // 默认语言为中文
@@ -66,7 +68,14 @@ export function OperatorMain(){
     const [open, setOpen] = useState(false);
     const [result, setResult] = useState<string | null>(null);
 
+    const handleOpen = () => {
+        setOpen(true);
+    };
 
+    const handleClose = (confirmed: boolean) => {
+        setOpen(false);
+        setResult(confirmed ? 'Confirmed' : 'Cancelled');
+    };
 
     useEffect(() => {
         if (userName) {
@@ -76,7 +85,34 @@ export function OperatorMain(){
         }
     }, [userName]);
 
+    const handleCancel = async () => {
+        try {
+            const message = new SellerCancelMessage(userName);
+            const data = await sendPostRequest(message);
+            setResponseData(data);
+        } catch (error) {
+            setError(error.message);
+        }
 
+    }
+
+
+    useEffect(() => {
+        if (result==='Confirmed') {
+            handleCancel();
+        }
+    }, [result]);
+
+    useEffect(() => {
+        if (responseData) {
+            if (responseData=="User successfully deleted"){
+                alert(userName+"注销成功");
+                history.push('/');
+            }else{
+                alert("注销失败！");
+            }
+        }
+    }, [responseData]);
 
 
     return (
@@ -90,14 +126,23 @@ export function OperatorMain(){
             <div>
                 <Box sx={{ mb: 4, textAlign: 'center' }}>
                     <Typography variant="h1" sx={{ fontSize: '2rem' }}>
-                        <h1>运营方主页！</h1>
+                        <h1>个人中心！</h1>
                         <p>欢迎, {userName}!</p>
                     </Typography>
                 </Box>
-
-                <Button onClick={()=>history.push('./')}>
+                <Button onClick={()=>history.push('./SellerMain')}>
                     返回
                 </Button>
+                <Button onClick={handleOpen}>
+                    注销
+                </Button>
+                <ConfirmDialog
+                    open={open}
+                    onConfirm={() => handleClose(true)}
+                    onCancel={() => handleClose(false)}
+                    title="提示"
+                    message="您确定要注销吗？"
+                />
             </div>
 
         </ThemeProvider>

@@ -15,17 +15,22 @@ object Routes:
   private def executePlan(messageType:String, str: String): IO[String]=
     messageType match {
       case "SellerLoginMessage" =>
-        IO(decode[SellerLoginMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for PatientLoginMessage")))
+        IO(decode[SellerLoginMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SellerLoginMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
       case "SellerQueryMessage" =>
-        IO(decode[SellerQueryMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for PatientQueryMessage")))
+        IO(decode[SellerQueryMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SellerQueryMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
       case "SellerRegisterMessage" =>
-        IO(decode[SellerRegisterMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for PatientRegisterMessage")))
+        IO(decode[SellerRegisterMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SellerRegisterMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "SellerCancelMessage" =>
+        IO(decode[SellerCancelMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SellerCancelMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
