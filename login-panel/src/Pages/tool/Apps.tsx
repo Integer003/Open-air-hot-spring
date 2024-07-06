@@ -18,6 +18,7 @@ export const UnreadIndicator = ({ count }: { count: number }) => { if (count ===
     </span>
     );
 };
+
 export const parseDataString = (dataString: string) => {
     const jsonRegex = /{.*?}[^*]/g; // 匹配不以星号结束的JSON对象
     return dataString.split(/}{/).map((str) => {

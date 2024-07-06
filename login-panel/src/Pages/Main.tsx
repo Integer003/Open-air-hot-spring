@@ -83,21 +83,21 @@ export function Main(){
 
         if (responseData) {
             if ((responseData as string).startsWith('Valid')){
-                alert(username+"登陆成功");
+                alert(username+"登录成功");
                 storeUserName(username);
                 storeUserType(userType);
             }else{
-                alert("登陆失败！请确认用户名&密码！");
+                alert("登录失败！请确认用户名&密码！");
             }
             if(responseData=="Valid Seller") {
                 history.push('/SellerMain');
             }
             else if(responseData=="Valid Regulator") {
-                alert("登陆成功");
+                // alert("登录成功");
                 history.push('/RegulatorMain');
             }
             else if(responseData=="Valid Operator") {
-                alert("登陆成功");
+                // alert("登录成功");
                 history.push('/OperatorMain');
             }
         }

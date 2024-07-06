@@ -1,129 +1,130 @@
-// 主页面组件，可能是应用加载时首先展示的页面
-import React, { useState, useEffect, useContext } from 'react'
-import axios, { isAxiosError } from 'axios'
-import { API } from 'Plugins/CommonUtils/API'
-import { useHistory, useParams } from 'react-router-dom';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import logo from '../images/summer.png';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
     AppBar,
     Typography,
     Button,
-    Container,
     CssBaseline,
-    Drawer,
-    Toolbar,
     Box,
     ThemeProvider,
-    createTheme,
-    TextField,
-    Grid,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
+    Table,
+    TableHead,
+    TableBody,
+    TableRow,
+    TableCell,
     IconButton,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    Card,
-    CardContent,
-    CardMedia,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle
 } from '@mui/material';
-import { Table, TableHead, TableBody, TableRow, TableCell } from '@mui/material';
-import { Brightness4, Brightness7, Language } from '@mui/icons-material';
-import HomeIcon from '@mui/icons-material/Home';
-import PersonIcon from '@mui/icons-material/Person';
-import InboxIcon from '@mui/icons-material/Create';
-import MessageIcon from '@mui/icons-material/Message';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import ReceiptIcon from '@mui/icons-material/Receipt';
-import LogoutIcon from '@mui/icons-material/Logout';
 import { themes } from './theme/theme';
 import AppBarComponent from './theme/AppBarComponent';
 import { sendPostRequest } from './tool/apiRequest';
-import { useUserStore } from './store'
+import { useUserStore } from './store';
+import { ShowTableMessage } from 'Plugins/OperatorAPI/ShowTableMessage';
+import { SellerDeleteMessage } from 'Plugins/OperatorAPI/SellerDeleteMessage'
+import DeleteIcon from '@mui/icons-material/Delete';
 import { SellerCancelMessage } from 'Plugins/SellerAPI/SellerCancelMessage'
-import ConfirmDialog from './tool/ConfirmDialog';
-import { SellerLoginMessage } from 'Plugins/SellerAPI/SellerLoginMessage'
-import { RegulatorLoginMessage } from 'Plugins/RegulatorAPI/RegulatorLoginMessage'
-import { OperatorLoginMessage } from 'Plugins/OperatorAPI/OperatorLoginMessage'
-import { ShowTableMessage } from 'Plugins/OperatorAPI/ShowTableMessage'
-import {parseDataString} from './tool/Apps'
-
-
+import { del } from 'idb-keyval'
 
 type ThemeMode = 'light' | 'dark';
 
 const drawerWidth = 240;
 
+type UserData = {
+    userName: string;
+    password: string;
+};
 
+const parseDataString = (dataString: string): UserData[] => {
+    return dataString.trim().split('\n').map(data => {
+        const user = data.match(/"userName":"(.*?)","password":"(.*?)"/);
+        return user ? { userName: user[1], password: user[2] } : { userName: '', password: '' };
+    });
+};
 
-export function OperatorMain(){
-    const history=useHistory()
+export function OperatorMain() {
+    const history = useHistory();
     const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
     const [language, setLanguage] = useState('zh'); // 默认语言为中文
     const [responseTableData, setResponseTableData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const { userName } = useUserStore();
-
+    const [tableData, setTableData] = useState<UserData[]>([]);
     const [open, setOpen] = useState(false);
-    const [result, setResult] = useState<string | null>(null);
-
-
+    const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
 
     useEffect(() => {
         if (userName) {
-            console.log(`欢迎, {userName}!`);
+            console.log(`欢迎, ${userName}!`);
         } else {
             console.log('用户名未定义');
         }
     }, [userName]);
 
-    const initData = async () => {
+
+    const init = async () => {
         try {
             const message = new ShowTableMessage();
             const data = await sendPostRequest(message);
             setResponseTableData(data); // 假设返回的数据是字符串，如果不是，需要转换
-        } catch (error) {
+        } catch (error: any) {
             setError(error.message);
             setResponseTableData('error');
         }
     };
 
-    type UserData = {
-        userName: string;
-        password: string;
+    useEffect(() => {
+        init();
+    }, []);
+
+    useEffect(() => {
+        if (typeof responseTableData === 'string') {
+            const parsedData = parseDataString(responseTableData);
+            setTableData(parsedData);
+        }
+    }, [responseTableData]);
+
+    const handleDelete = (user: UserData) => {
+        setSelectedUser(user);
+        setOpen(true);
     };
 
-    const [tableData, setTableData] = useState<UserData[]>([]);
+    const handleClose = () => {
+        setOpen(false);
+        setSelectedUser(null);
+    };
+
+    const [deleteResponse, setDeleteResponce] = useState<string | null>(null);
 
     useEffect(() => {
-        // 假设 responseTableData 是通过异步操作更新的
-        // 这里添加数据更新逻辑，例如通过API请求
-        // 模拟异步更新数据
-        initData();
-
-        // 模拟定时更新数据
-        const intervalId = setInterval(() => {
-            initData();
-        }, 5000);
-
-        // 组件卸载时清除定时器
-        return () => clearInterval(intervalId);
-    }, []); // 空依赖数组，只在组件挂载时执行
-
-    useEffect(() => {
-        // 解析 responseTableData 字符串
-        if (typeof responseTableData != 'string' )
-            setResponseTableData('error');
-        const parsedData = parseDataString(responseTableData);
-        setTableData(parsedData);
-    }, [responseTableData]); // 当 responseTableData 更新时执行
+        if (deleteResponse) {
+            // alert(deleteResponse);
+            if (typeof deleteResponse==='string' && deleteResponse.startsWith("Seller")){
+                alert(selectedUser?.userName+"注销成功");
+            }else{
+                alert("注销失败！");
+            }
+        }
+    }, [deleteResponse]);
 
 
+    const handleConfirmDelete =async () => {
+        if (selectedUser) {
+            try {
+                const message = new SellerDeleteMessage(selectedUser?.userName);
+                const data = await sendPostRequest(message);
+                setDeleteResponce(data);
+            } catch (error) {
+                setError(error.message);
+            }
+
+            setTableData(tableData.filter(user => user !== selectedUser));
+            handleClose();
+        }
+    };
 
     return (
         <ThemeProvider theme={themes[themeMode]}>
@@ -145,29 +146,69 @@ export function OperatorMain(){
                     <Table sx={{ minWidth: 650 }}>
                         <TableHead>
                             <TableRow>
-                                <TableCell>用户名</TableCell>
-                                <TableCell>密码</TableCell>
+                                <TableCell align="center">用户名</TableCell>
+                                <TableCell align="center">密码</TableCell>
+                                <TableCell align="center">操作</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {tableData.map((row, index) => (
                                 <TableRow key={index}>
-                                    <TableCell component="th" scope="row">
-                                        {row.userName}
+                                    <TableCell align="center">{row.userName}</TableCell>
+                                    <TableCell align="center">{row.password}</TableCell>
+                                    <TableCell align="center">
+                                        <IconButton
+                                            onClick={() => handleDelete(row)}
+                                            sx={{
+                                                backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
+                                                color: themeMode === 'dark' ? '#ff0000' : '#ff0000',
+                                                '&:hover': {
+                                                    backgroundColor: themeMode === 'dark' ? '#333333' : '#f5f5f5',
+                                                }
+                                            }}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
                                     </TableCell>
-                                    <TableCell>{row.password}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 </Box>
-                <Button onClick={()=>history.push('./')}>
+                <Button
+                    variant="contained"
+                    onClick={() => history.push('./')}
+                    sx={{
+                        mt: 2,
+                        backgroundColor: themeMode === 'dark' ? '#333333' : '#1976d2',
+                        color: '#ffffff',
+                        '&:hover': {
+                            backgroundColor: themeMode === 'dark' ? '#555555' : '#1565c0',
+                        }
+                    }}
+                >
                     返回
                 </Button>
+                <Dialog
+                    open={open}
+                    onClose={handleClose}
+                >
+                    <DialogTitle>确认删除</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            你确定要删除用户 {selectedUser?.userName} 吗？
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                            取消
+                        </Button>
+                        <Button onClick={handleConfirmDelete} color="secondary">
+                            删除
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
-
         </ThemeProvider>
     );
 }
-
-
