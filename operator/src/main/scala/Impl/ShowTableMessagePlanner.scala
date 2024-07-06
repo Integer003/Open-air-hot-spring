@@ -14,7 +14,8 @@ import io.circe.generic.auto.*
 case class ShowTableMessagePlanner(override val planContext: PlanContext) extends Planner[String]:
   override def plan(using planContext: PlanContext): IO[String] = {
     // Query the database to get all sellers
-    readDBRows(s"SELECT * FROM ${schemaName}.seller", List.empty).map { rows =>
+    // 由于schemaName只能方便的访问自身数据库，但是这里需要访问其他服务管理的数据库，我只能直接使用其他服务的schema名字了
+    readDBRows(s"SELECT * FROM seller.user_name", List.empty).map { rows =>
       // Convert the list of JSON objects to a formatted string
       rows.map(_.noSpaces).mkString("\n")
     }

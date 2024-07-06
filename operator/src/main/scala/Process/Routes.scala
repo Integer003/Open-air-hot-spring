@@ -34,6 +34,11 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "ClearTableMessage" =>
+        IO(decode[ClearTableMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for ClearTableMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }

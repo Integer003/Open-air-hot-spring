@@ -18,7 +18,7 @@ object ServiceUtils{
       throw new IllegalArgumentException(s"Invalid port for serviceCode: $serviceCode")
     )
 
-
+  // GlobalVariable/ServiceCenter 中的格式非常重要，这里要明确解析
   def serviceName(serviceCode: String): String = {
     val fullName = fullNameMap(serviceCode)
     val start = fullName.indexOf("（")
