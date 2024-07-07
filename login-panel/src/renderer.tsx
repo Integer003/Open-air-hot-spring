@@ -25,6 +25,7 @@ const Layout = () => {
                     <Route path="/SellerProfile" exact component={SellerProfile} />
                     <Route path="/SellerAddGoods" exact component={SellerAddGoods} />
                     <Route path="/SellerStorage" exact component={SellerStorage} />
+                    <Route path="/RegulatorProfile" exact component={RegulatorProfile} />
                 </Switch>
             </HashRouter>
     )

@@ -17,7 +17,16 @@ import {
     ListItemText,
     Card,
     CardContent,
-    CardMedia, TableHead, TableRow, TableCell, TableBody, IconButton, Table,
+    CardMedia,
+    TableHead,
+    TableRow,
+    TableCell,
+    TableBody,
+    IconButton,
+    Table,
+    DialogTitle,
+    DialogContent,
+    DialogContentText, DialogActions, Dialog,
 } from '@mui/material'
 import {
     Home as HomeIcon,
@@ -34,8 +43,9 @@ import { useUserStore } from './store';
 import { UnreadIndicator } from './tool/Apps';
 import { ShowTableMessage } from 'Plugins/OperatorAPI/ShowTableMessage'
 import { sendPostRequest } from 'Pages/tool/apiRequest'
-import DeleteIcon from '@mui/icons-material/Delete'
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { SellerQueryGoodsMessage } from 'Plugins/SellerAPI/SellerQueryGoodsMessage'
+import { GoodsBuyMessage } from 'Plugins/GoodsAPI/GoodsBuyMessage'
 
 type ThemeMode = 'light' | 'dark';
 
@@ -103,16 +113,54 @@ export function SellerMain() {
     }, []);
 
     useEffect(() => {
-        // alert(responseTableData);
         if (typeof responseTableData === 'string') {
-            // alert('is string');
             const parsedData = parseDataString(responseTableData);
             setTableData(parsedData);
-            // alert(tableData);
-        }else{
-            // alert('is not');
         }
     }, [responseTableData]);
+
+
+    const [selectedGoods, setSelectedGoods] = useState<GoodsData | null>(null);
+    const [open, setOpen] = useState(false);
+    const [result, setResult] = useState<string | null>(null);
+
+
+    const handleBuy = (goods: GoodsData) => {
+        setSelectedGoods(goods);
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+        setSelectedGoods(null);
+    };
+
+    const [buyResponse, setBuyResponce] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (buyResponse) {
+            if (typeof buyResponse==='string' && buyResponse.startsWith("Success")){
+                alert(selectedGoods?.GoodsName+"购买成功");
+                setTableData(tableData.filter(goods => goods !== selectedGoods));
+            }else{
+                alert("购买失败！");
+            }
+        }
+    }, [buyResponse]);
+
+
+    const handleConfirmBuy =async () => {
+        if (selectedGoods) {
+            try {
+                const message = new GoodsBuyMessage(userName, selectedGoods?.GoodsId);
+                const data = await sendPostRequest(message);
+                setBuyResponce(data);
+            } catch (error) {
+                setError(error.message);
+            }
+            handleClose();
+        }
+    };
 
 
     return (
@@ -192,20 +240,6 @@ export function SellerMain() {
                         </ListItemIcon>
                         <UnreadIndicator count={unreadMessagesCount} />
                     </Button>)}
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => history.push('/SellerAddGoods')}
-                    sx={{
-                        position: 'absolute',
-                        right: 50,
-                        top: 20,
-                        zIndex: 1000,
-                    }}
-                >
-                    添加商品
-                    <AddIcon sx={{ ml: 1 }} />
-                </Button>
                 在这里陈列商品
                 {/*{ tableData }*/}
                 <Table sx={{ minWidth: 650 }}>
@@ -215,6 +249,7 @@ export function SellerMain() {
                             <TableCell align="center">商品价格</TableCell>
                             <TableCell align="center">商品描述</TableCell>
                             <TableCell align="center">商品卖家</TableCell>
+                            <TableCell align="center">商品购买</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -224,9 +259,42 @@ export function SellerMain() {
                                 <TableCell align="center">{row.GoodsPrice}</TableCell>
                                 <TableCell align="center">{row.GoodsDescription}</TableCell>
                                 <TableCell align="center">{row.GoodsSeller}</TableCell>
+                                <TableCell align="center">
+                                    <IconButton
+                                        onClick={() => handleBuy(row)}
+                                        sx={{
+                                            backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
+                                            color: themeMode === 'dark' ? '#ff0000' : '#ff0000',
+                                            '&:hover': {
+                                                backgroundColor: themeMode === 'dark' ? '#333333' : '#f5f5f5',
+                                            }
+                                        }}
+                                    >
+                                        <AddShoppingCartIcon />
+                                    </IconButton>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
+                    <Dialog
+                        open={open}
+                        onClose={handleClose}
+                    >
+                        <DialogTitle>确认购买</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                你确定要购买商品 {selectedGoods?.GoodsName} 吗？
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleClose} color="primary">
+                                取消
+                            </Button>
+                            <Button onClick={handleConfirmBuy} color="secondary">
+                                确认
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 </Table>
             </div>
         </ThemeProvider>
