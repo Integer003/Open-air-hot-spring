@@ -14,8 +14,8 @@ case class RegulatorLoginMessagePlanner(userName:String, password:String, overri
       s"SELECT user_name FROM ${schemaName}.user_name WHERE user_name = ? AND password = ?",
       List(SqlParameter("String", userName), SqlParameter("String", password))
     ).map{
-      case Nil => "Invalid Seller"
-      case _ => "Valid Seller"
+      case Nil => "Invalid Regulator"
+      case _ => "Valid Regulator"
     }
   }
 

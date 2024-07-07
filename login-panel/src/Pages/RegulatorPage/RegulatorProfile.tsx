@@ -4,7 +4,7 @@ import axios, { isAxiosError } from 'axios'
 import { API } from 'Plugins/CommonUtils/API'
 import { useHistory, useParams } from 'react-router-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import logo from '../../images/summer.png';
+// import logo from '../../images/summer.png';
 import {
     AppBar,
     Typography,
