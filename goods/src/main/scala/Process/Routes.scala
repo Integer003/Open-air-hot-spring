@@ -25,6 +25,21 @@ object Routes:
           .flatMap { m =>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "GoodsQueryCommentsMessage" =>
+        IO(decode[GoodsQueryCommentsMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for GoodsQueryCommentsMessage")))
+          .flatMap { m =>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "GoodsAddCommentsMessage" =>
+        IO(decode[GoodsAddCommentsMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for GoodsAddCommentsMessage")))
+          .flatMap { m =>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "GoodsDeleteCommentsMessage" =>
+        IO(decode[GoodsDeleteCommentsMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for GoodsDeleteCommentsMessage")))
+          .flatMap { m =>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }

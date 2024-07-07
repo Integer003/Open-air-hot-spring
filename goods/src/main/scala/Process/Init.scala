@@ -17,6 +17,7 @@ object Init {
       _ <- API.init(config.maximumClientConnection)
       _ <- initSchema(schemaName)
       _ <- writeDB(s"CREATE TABLE IF NOT EXISTS ${schemaName}.goods_info (goods_id SERIAL PRIMARY KEY, goods_name VARCHAR(255) NOT NULL, price DECIMAL NOT NULL, description VARCHAR(255), condition VARCHAR(50), seller_name VARCHAR(255) NOT NULL, buyer_name VARCHAR(255), verify VARCHAR(255), comment TEXT)", List())
+      _ <- writeDB(s"CREATE TABLE IF NOT EXISTS ${schemaName}.comments (comment_id SERIAL PRIMARY KEY, sender_name VARCHAR(255) NOT NULL, goods_id INT NOT NULL, time VARCHAR(255) NOT NULL, content TEXT NOT NULL)", List())
     } yield ()
   }
 }

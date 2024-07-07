@@ -120,7 +120,6 @@ export function SellerProfile(){
             const message = new SellerQueryMoneyMessage(userName);
             const data = await sendPostRequest(message);
             setResponseData1(data);
-            // alert(responseData1);
         } catch (error) {
             setError(error.message);
             setResponseData1('error');

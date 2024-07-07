@@ -39,13 +39,14 @@ import {
 } from '@mui/icons-material';
 import { themes } from './theme/theme';
 import AppBarComponent from './theme/AppBarComponent';
-import { useUserStore } from './store';
+import { useGoodsStore, useUserStore } from './store'
 import { UnreadIndicator } from './tool/Apps';
 import { ShowTableMessage } from 'Plugins/OperatorAPI/ShowTableMessage'
 import { sendPostRequest } from 'Pages/tool/apiRequest'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { SellerQueryGoodsMessage } from 'Plugins/SellerAPI/SellerQueryGoodsMessage'
 import { GoodsBuyMessage } from 'Plugins/GoodsAPI/GoodsBuyMessage'
+import InfoIcon from '@mui/icons-material/Info';
 
 type ThemeMode = 'light' | 'dark';
 
@@ -120,48 +121,26 @@ export function SellerMain() {
     }, [responseTableData]);
 
 
-    const [selectedGoods, setSelectedGoods] = useState<GoodsData | null>(null);
-    const [open, setOpen] = useState(false);
-    const [result, setResult] = useState<string | null>(null);
+    const { storeGoodsId } = useGoodsStore();
+    const { storeGoodsName } = useGoodsStore();
+    const { storeGoodsPrice } = useGoodsStore();
+    const { storeGoodsDescription } = useGoodsStore();
+    const { storeGoodsSeller } = useGoodsStore();
+
+    const [selectedGoods, setSelectedGoods] = useState<GoodsData>(null);
 
 
-    const handleBuy = (goods: GoodsData) => {
+    const handleGoodsInfo =async (goods: GoodsData) => {
         setSelectedGoods(goods);
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-        setSelectedGoods(null);
-    };
-
-    const [buyResponse, setBuyResponce] = useState<string | null>(null);
-
-    useEffect(() => {
-        if (buyResponse) {
-            if (typeof buyResponse==='string' && buyResponse.startsWith("Success")){
-                alert(selectedGoods?.GoodsName+"购买成功");
-                setTableData(tableData.filter(goods => goods !== selectedGoods));
-            }else{
-                alert("购买失败！");
-            }
-        }
-    }, [buyResponse]);
-
-
-    const handleConfirmBuy =async () => {
         if (selectedGoods) {
-            try {
-                const message = new GoodsBuyMessage(userName, selectedGoods?.GoodsId);
-                const data = await sendPostRequest(message);
-                setBuyResponce(data);
-            } catch (error) {
-                setError(error.message);
-            }
-            handleClose();
+            storeGoodsId(selectedGoods.GoodsId);
+            storeGoodsName(selectedGoods.GoodsName);
+            storeGoodsPrice(selectedGoods.GoodsPrice);
+            storeGoodsDescription(selectedGoods.GoodsDescription);
+            storeGoodsSeller(selectedGoods.GoodsSeller);
+            history.push('/GoodsMain');
         }
     };
-
 
     return (
         <ThemeProvider theme={themes[themeMode]}>
@@ -249,7 +228,7 @@ export function SellerMain() {
                             <TableCell align="center">商品价格</TableCell>
                             <TableCell align="center">商品描述</TableCell>
                             <TableCell align="center">商品卖家</TableCell>
-                            <TableCell align="center">商品购买</TableCell>
+                            <TableCell align="center">查看详情</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -261,40 +240,22 @@ export function SellerMain() {
                                 <TableCell align="center">{row.GoodsSeller}</TableCell>
                                 <TableCell align="center">
                                     <IconButton
-                                        onClick={() => handleBuy(row)}
+                                        onClick={() => handleGoodsInfo(row)}
                                         sx={{
                                             backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
-                                            color: themeMode === 'dark' ? '#ff0000' : '#ff0000',
+                                            color: themeMode === 'dark' ? '#cbe681' : '#d1e499',
                                             '&:hover': {
                                                 backgroundColor: themeMode === 'dark' ? '#333333' : '#f5f5f5',
                                             }
                                         }}
                                     >
-                                        <AddShoppingCartIcon />
+                                        <InfoIcon />
                                     </IconButton>
                                 </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
-                    <Dialog
-                        open={open}
-                        onClose={handleClose}
-                    >
-                        <DialogTitle>确认购买</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>
-                                你确定要购买商品 {selectedGoods?.GoodsName} 吗？
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={handleClose} color="primary">
-                                取消
-                            </Button>
-                            <Button onClick={handleConfirmBuy} color="secondary">
-                                确认
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
+
                 </Table>
             </div>
         </ThemeProvider>
