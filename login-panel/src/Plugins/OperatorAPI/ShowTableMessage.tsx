@@ -2,7 +2,10 @@
 import { OperatorMessage } from 'Plugins/OperatorAPI/OperatorMessage'
 
 export class ShowTableMessage extends OperatorMessage{
-    constructor() {
+    // selectedType: string;
+
+    constructor(/* selectedType: string */) {
         super();
+        // this.selectedType = selectedType;
     }
 }

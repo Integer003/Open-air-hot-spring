@@ -24,10 +24,10 @@ import AppBarComponent from './theme/AppBarComponent';
 import { sendPostRequest } from './tool/apiRequest';
 import { useUserStore } from './store';
 import { ShowTableMessage } from 'Plugins/OperatorAPI/ShowTableMessage';
-import { SellerDeleteMessage } from 'Plugins/OperatorAPI/SellerDeleteMessage'
+import { ShowRegulatorTableMessage } from 'Plugins/OperatorAPI/ShowRegulatorTableMessage'; // 新增接口导入
+import { SellerDeleteMessage } from 'Plugins/OperatorAPI/SellerDeleteMessage';
+import { RegulatorDeleteMessage } from 'Plugins/OperatorAPI/RegulatorDeleteMessage'; // 新增接口导入
 import DeleteIcon from '@mui/icons-material/Delete';
-import { SellerCancelMessage } from 'Plugins/SellerAPI/SellerCancelMessage'
-import { del } from 'idb-keyval'
 
 type ThemeMode = 'light' | 'dark';
 
@@ -55,6 +55,7 @@ export function OperatorMain() {
     const [tableData, setTableData] = useState<UserData[]>([]);
     const [open, setOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+    const [selectedType, setSelectedType] = useState<'Seller' | 'Regulator'>('Seller'); // 新增状态
 
     useEffect(() => {
         if (userName) {
@@ -64,10 +65,11 @@ export function OperatorMain() {
         }
     }, [userName]);
 
-
     const init = async () => {
         try {
-            const message = new ShowTableMessage();
+            const message = selectedType === 'Seller'
+                ? new ShowTableMessage()
+                : new ShowRegulatorTableMessage(); // 根据选中类型调用不同的接口
             const data = await sendPostRequest(message);
             setResponseTableData(data); // 假设返回的数据是字符串，如果不是，需要转换
         } catch (error: any) {
@@ -78,7 +80,7 @@ export function OperatorMain() {
 
     useEffect(() => {
         init();
-    }, []);
+    }, [selectedType]); // 当 selectedType 变化时重新调用接口
 
     useEffect(() => {
         if (typeof responseTableData === 'string') {
@@ -97,34 +99,36 @@ export function OperatorMain() {
         setSelectedUser(null);
     };
 
-    const [deleteResponse, setDeleteResponce] = useState<string | null>(null);
+    const [deleteResponse, setDeleteResponse] = useState<string | null>(null);
 
     useEffect(() => {
         if (deleteResponse) {
-            // alert(deleteResponse);
-            if (typeof deleteResponse==='string' && deleteResponse.startsWith("Seller")){
-                alert(selectedUser?.userName+"注销成功");
+            if (typeof deleteResponse === 'string' && deleteResponse.startsWith(selectedType)) {
+                alert(selectedUser?.userName + " 注销成功");
                 setTableData(tableData.filter(user => user !== selectedUser));
-            }else{
+            } else {
                 alert("注销失败！");
             }
         }
     }, [deleteResponse]);
 
-
-    const handleConfirmDelete =async () => {
+    const handleConfirmDelete = async () => {
         if (selectedUser) {
             try {
-                const message = new SellerDeleteMessage(selectedUser?.userName);
+                const message = selectedType === 'Seller'
+                    ? new SellerDeleteMessage(selectedUser?.userName)
+                    : new RegulatorDeleteMessage(selectedUser?.userName); // 根据选中类型调用不同的删除接口
                 const data = await sendPostRequest(message);
-                setDeleteResponce(data);
+                setDeleteResponse(data);
             } catch (error) {
                 setError(error.message);
             }
-
-            //setTableData(tableData.filter(user => user !== selectedUser));
             handleClose();
         }
+    };
+
+    const handleTypeChange = (type: 'Seller' | 'Regulator') => {
+        setSelectedType(type);
     };
 
     return (
@@ -144,6 +148,21 @@ export function OperatorMain() {
                     <Typography variant="h4" sx={{ mb: 2 }}>
                         用户数据
                     </Typography>
+                    <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
+                        <Button
+                            variant={selectedType === 'Seller' ? 'contained' : 'outlined'}
+                            onClick={() => handleTypeChange('Seller')}
+                            sx={{ mr: 2 }}
+                        >
+                            Seller
+                        </Button>
+                        <Button
+                            variant={selectedType === 'Regulator' ? 'contained' : 'outlined'}
+                            onClick={() => handleTypeChange('Regulator')}
+                        >
+                            Regulator
+                        </Button>
+                    </Box>
                     <Table sx={{ minWidth: 650 }}>
                         <TableHead>
                             <TableRow>

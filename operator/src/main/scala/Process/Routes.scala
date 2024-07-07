@@ -44,6 +44,11 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "ShowRegulatorTableMessage" =>
+        IO(decode[ShowRegulatorTableMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for ShowRegulatorTableMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }
