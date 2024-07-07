@@ -18,9 +18,10 @@ case class SellerRegisterMessagePlanner(userName: String, password: String, over
       if (exists) {
         IO.raiseError(new Exception("already registered"))
       } else {
-        writeDB(s"INSERT INTO ${schemaName}.user_name (user_name, password) VALUES (?, ?)",
+        writeDB(s"INSERT INTO ${schemaName}.user_name (user_name, password, money) VALUES (?, ?, ?)",
           List(SqlParameter("String", userName),
-               SqlParameter("String", password)
+               SqlParameter("String", password),
+               SqlParameter("Int", "0")
           ))
       }
     }

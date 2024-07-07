@@ -17,6 +17,7 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
+    Switch,
     DialogTitle, Drawer, Toolbar, List, ListItem, ListItemButton, ListItemIcon, ListItemText,
 } from '@mui/material'
 import { themes } from './theme/theme';
@@ -34,18 +35,43 @@ import {
     Receipt as ReceiptIcon,
 } from '@mui/icons-material'
 import { UnreadIndicator } from 'Pages/tool/Apps'
+import {RegulatorQueryGoodsMessage} from 'Plugins/RegulatorAPI/RegulatorQueryGoodsMessage'
+import {RegulatorModifyGoodsMessage} from 'Plugins/RegulatorAPI/RegulatorModifyGoodsMessage'
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
 
 type ThemeMode = 'light' | 'dark';
 
 const drawerWidth = 240;
+type GoodsData = {
+    GoodsId: string;
+    GoodsName: string;
+    GoodsPrice: string;
+    GoodsDescription: string;
+    GoodsSeller: string;
+    GoodsVerify: string;
+};
+
+const parseDataString = (dataString: string): GoodsData[] => {
+    // Parse the JSON string into an array of objects
+    const parsedArray = JSON.parse(dataString);
+
+    // Map the parsed objects to the GoodsData format
+    return parsedArray.map((item: any) => ({
+        GoodsId: item.goodsID,
+        GoodsName: item.goodsName,
+        GoodsPrice: item.price,
+        GoodsDescription: item.description,
+        GoodsSeller: item.sellerName,
+        GoodsVerify: item.verify
+    }));
+};
 
 
 export function RegulatorMain() {
     const history = useHistory();
     const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
     const [language, setLanguage] = useState('zh'); // 默认语言为中文
-    const [responseTableData, setResponseTableData] = useState<any>(null);
-    const [error, setError] = useState<string | null>(null);
+
     const { userName } = useUserStore();
 
     const unreadMessagesCount=5;
@@ -61,7 +87,7 @@ export function RegulatorMain() {
 
     const init = async () => {
         try {
-            const message = new ShowTableMessage();
+            const message = new RegulatorQueryGoodsMessage();
             const data = await sendPostRequest(message);
             setResponseTableData(data); // 假设返回的数据是字符串，如果不是，需要转换
         } catch (error: any) {
@@ -74,10 +100,70 @@ export function RegulatorMain() {
         init();
     }, []);
 
+
+    const [tableData, setTableData] = useState<GoodsData[]>([]);
+    const [responseTableData, setResponseTableData] = useState<any>(null);
+    const [error, setError] = useState<string | null>(null);
+
+
+    useEffect(() => {
+        if (typeof responseTableData === 'string') {
+            const parsedData = parseDataString(responseTableData);
+            setTableData(parsedData);
+        }
+    }, [responseTableData]);
+
+
+
+    const [selectedGoods, setSelectedGoods] = useState<GoodsData | null>(null);
+    const [open, setOpen] = useState(false);
+    const [result, setResult] = useState<string | null>(null);
+
+
+    const handleModify = (goods: GoodsData) => {
+        setSelectedGoods(goods);
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+        setSelectedGoods(null);
+    };
+
+    const [modifyResponse, setModifyResponce] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (modifyResponse) {
+            if (typeof modifyResponse==='string' && modifyResponse.startsWith("Success")){
+                alert(selectedGoods?.GoodsName+"管理成功");
+                init();
+            }else{
+                alert("管理失败！");
+            }
+        }
+    }, [modifyResponse]);
+
+
+    const handleConfirmModify =async () => {
+        if (selectedGoods) {
+            try {
+                const message = new RegulatorModifyGoodsMessage(selectedGoods?.GoodsId);
+                const data = await sendPostRequest(message);
+                setModifyResponce(data);
+            } catch (error) {
+                setError(error.message);
+            }
+            handleClose();
+        }
+    };
+
+
+
     const [mobileOpen, setMobileOpen] = useState(false);
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
+
 
 
     return (
@@ -95,6 +181,34 @@ export function RegulatorMain() {
                         <p>欢迎, {userName}!</p>
                     </Typography>
                 </Box>
+                <Table sx={{ minWidth: 650 }}>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align="center">商品名</TableCell>
+                            <TableCell align="center">商品价格</TableCell>
+                            <TableCell align="center">商品描述</TableCell>
+                            <TableCell align="center">商品卖家</TableCell>
+                            <TableCell align="center">审核情况</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {tableData.map((row, index) => (
+                            <TableRow key={index}>
+                                <TableCell align="center">{row.GoodsName}</TableCell>
+                                <TableCell align="center">{row.GoodsPrice}</TableCell>
+                                <TableCell align="center">{row.GoodsDescription}</TableCell>
+                                <TableCell align="center">{row.GoodsSeller}</TableCell>
+                                <TableCell align="center">
+                                    <Switch
+                                        checked={row.GoodsVerify === 'true'}
+                                        onChange={() => handleModify(row)}
+                                        color="primary"
+                                    />
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+            </Table>
                 <Drawer
                     sx={{
                         width: drawerWidth,
@@ -154,6 +268,25 @@ export function RegulatorMain() {
                         </ListItemIcon>
                         <UnreadIndicator count={unreadMessagesCount} />
                     </Button>)}
+                <Dialog
+                    open={open}
+                    onClose={handleClose}
+                >
+                    <DialogTitle>确认管理</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            你确定要修改商品 {selectedGoods?.GoodsName} 审核状态吗？
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                            取消
+                        </Button>
+                        <Button onClick={handleConfirmModify} color="secondary">
+                            确认
+                        </Button>
+                    </DialogActions>
+                </Dialog>
                 <Button onClick={() => history.push('./')}>
                     返回
                 </Button>

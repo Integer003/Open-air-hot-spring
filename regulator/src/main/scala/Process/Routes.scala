@@ -34,6 +34,16 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "RegulatorQueryGoodsMessage" =>
+        IO(decode[RegulatorQueryGoodsMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for RegulatorQueryGoodsMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "RegulatorModifyGoodsMessage" =>
+        IO(decode[RegulatorModifyGoodsMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for RegulatorModifyGoodsMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }
