@@ -56,6 +56,16 @@ object Routes:
           case Left(error) =>
             IO.raiseError(new Exception(s"Invalid JSON for SellerCancelGoodsMessage: ${error.getMessage}"))
         }
+      case "SellerQueryMoneyMessage" =>
+        IO(decode[SellerQueryMoneyMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SellerQueryMoneyMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "SellerRechargeMessage" =>
+        IO(decode[SellerRechargeMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SellerRechargeMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }

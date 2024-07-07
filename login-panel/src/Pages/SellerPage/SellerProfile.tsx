@@ -46,7 +46,8 @@ import { sendPostRequest } from '../tool/apiRequest';
 import { useUserStore } from '../store'
 import { SellerCancelMessage } from 'Plugins/SellerAPI/SellerCancelMessage'
 import ConfirmDialog from '../tool/ConfirmDialog';
-
+import { SellerQueryMoneyMessage } from 'Plugins/SellerAPI/SellerQueryMoneyMessage'
+import { SellerRechargeMessage } from 'Plugins/SellerAPI/SellerRechargeMessage'
 
 
 type ThemeMode = 'light' | 'dark';
@@ -57,7 +58,6 @@ export function SellerProfile(){
     const history=useHistory()
     const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
     const [language, setLanguage] = useState('zh'); // 默认语言为中文
-    const [responseData, setResponseData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const { userName } = useUserStore();
 
@@ -92,12 +92,13 @@ export function SellerProfile(){
 
     }
 
-
     useEffect(() => {
-        if (result==='Confirmed') {
+        if (result === 'Confirmed') {
             handleCancel();
         }
     }, [result]);
+
+    const [responseData, setResponseData] = useState<any>('');
 
     useEffect(() => {
         if (responseData) {
@@ -109,6 +110,56 @@ export function SellerProfile(){
             }
         }
     }, [responseData]);
+
+
+    const [responseData1, setResponseData1] = useState<any>('');
+
+
+    const handleQueryMoney = async () => {
+        try {
+            const message = new SellerQueryMoneyMessage(userName);
+            const data = await sendPostRequest(message);
+            setResponseData1(data);
+            // alert(responseData1);
+        } catch (error) {
+            setError(error.message);
+            setResponseData1('error');
+        }
+    }
+
+
+    const init = async() => {
+        handleQueryMoney();
+    }
+
+    useEffect(() => {
+        init();
+    }, []);
+
+
+    const [rechargeMoney, setRechargeMoney] = useState(0);
+    const [rechargeMoneyResponse, setRechargeMoneyResponse] = useState('');
+
+    const handleRechargeMoney = async (money: number) => {
+        try {
+            const message = new SellerRechargeMessage(userName,money);
+            const data = await sendPostRequest(message);
+            setRechargeMoneyResponse(data);
+        } catch (error) {
+            setError(error.message);
+        }
+    }
+
+    useEffect(() => {
+        if (rechargeMoneyResponse) {
+            if (typeof rechargeMoneyResponse==='string' && rechargeMoneyResponse.startsWith("Success")){
+                alert("充值成功");
+                init();
+            }else{
+                alert("充值失败！");
+            }
+        }
+    }, [rechargeMoneyResponse]);
 
 
     return (
@@ -126,6 +177,29 @@ export function SellerProfile(){
                         <p>欢迎, {userName}!</p>
                     </Typography>
                 </Box>
+                <Box sx={{ mb: 4, textAlign: 'center' }}>
+                    <p>你有{responseData1}元</p>
+                </Box>
+                <TextField
+                    margin="normal"
+                    required
+                    name="price"
+                    label="充值金额"
+                    type="number"
+                    id="price"
+                    value={rechargeMoney}
+                    onChange={(e) => {
+                        const value =
+                            parseInt(e.target.value);
+                        if (!isNaN(value)) {
+                            setRechargeMoney(value);
+                        }
+                    }}
+                />
+                <Button onClick={()=>handleRechargeMoney(rechargeMoney)}>
+                    充值
+                </Button>
+
                 <Button onClick={()=>history.push('./SellerMain')}>
                     返回
                 </Button>

@@ -1,3 +1,3 @@
 package APIs.GoodsAPI
 
-case class GoodsBuyMessage(sellerName: String, goodsID: String) extends GoodsMessage[String]
+case class GoodsBuyMessage(buyerName: String, goodsID: String) extends GoodsMessage[String]
