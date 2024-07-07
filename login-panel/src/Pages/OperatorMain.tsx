@@ -104,6 +104,7 @@ export function OperatorMain() {
             // alert(deleteResponse);
             if (typeof deleteResponse==='string' && deleteResponse.startsWith("Seller")){
                 alert(selectedUser?.userName+"注销成功");
+                setTableData(tableData.filter(user => user !== selectedUser));
             }else{
                 alert("注销失败！");
             }
@@ -121,7 +122,7 @@ export function OperatorMain() {
                 setError(error.message);
             }
 
-            setTableData(tableData.filter(user => user !== selectedUser));
+            //setTableData(tableData.filter(user => user !== selectedUser));
             handleClose();
         }
     };

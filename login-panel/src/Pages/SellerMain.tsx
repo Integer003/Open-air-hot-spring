@@ -150,7 +150,7 @@ export function SellerMain() {
                                 </ListItemIcon>
                                 <ListItemText primary="消费记录" />
                             </ListItemButton>
-                            <ListItemButton onClick={() => { /* 处理点击事件 */ }}>
+                            <ListItemButton onClick={() => history.push('/SellerStorage')}>
                                 <ListItemIcon>
                                     <HomeIcon />
                                 </ListItemIcon>
@@ -171,6 +171,41 @@ export function SellerMain() {
                         </List>
                     </Box>
                 </Drawer>
+
+                {!mobileOpen && (
+                    <Button
+                        onClick={handleDrawerToggle}
+                        sx={{
+                            position: 'absolute',
+                            left: 0,
+                            top: '90%',
+                            transform: 'translateY(-50%)',
+                            zIndex: 1000,
+                            cursor: 'pointer', // 鼠标悬停时显示指针手势
+                            padding: '10px', // 按钮的内边距
+                            color: 'white', // 图标颜色
+                            backgroundColor: 'grey', // 按钮背景颜色，使用对比色
+                        }}
+                    >
+                        <ListItemIcon>
+                            <ArrowForwardIcon />
+                        </ListItemIcon>
+                        <UnreadIndicator count={unreadMessagesCount} />
+                    </Button>)}
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => history.push('/SellerAddGoods')}
+                    sx={{
+                        position: 'absolute',
+                        right: 50,
+                        top: 20,
+                        zIndex: 1000,
+                    }}
+                >
+                    添加商品
+                    <AddIcon sx={{ ml: 1 }} />
+                </Button>
                 在这里陈列商品
                 {/*{ tableData }*/}
                 <Table sx={{ minWidth: 650 }}>
@@ -193,42 +228,6 @@ export function SellerMain() {
                         ))}
                     </TableBody>
                 </Table>
-
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => history.push('/SellerAddGoods')}
-                    sx={{
-                        position: 'absolute',
-                        right: 50,
-                        top: 20,
-                        zIndex: 1000,
-                    }}
-                >
-                    添加商品
-                    <AddIcon sx={{ ml: 1 }} />
-                </Button>
-                {!mobileOpen && (
-                    <Button
-                        onClick={handleDrawerToggle}
-                        sx={{
-                            position: 'absolute',
-                            left: 0,
-                            top: '90%',
-                            transform: 'translateY(-50%)',
-                            zIndex: 1000,
-                            cursor: 'pointer', // 鼠标悬停时显示指针手势
-                            padding: '10px', // 按钮的内边距
-                            color: 'white', // 图标颜色
-                            backgroundColor: 'grey', // 按钮背景颜色，使用对比色
-                        }}
-                    >
-                        <ListItemIcon>
-                            <ArrowForwardIcon />
-                        </ListItemIcon>
-                        <UnreadIndicator count={unreadMessagesCount} />
-                    </Button>
-                )}
             </div>
         </ThemeProvider>
     );

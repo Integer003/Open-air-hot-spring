@@ -39,6 +39,23 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "SellerQueryStorageMessage" =>
+        IO(decode[SellerQueryStorageMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SellerQueryStorageMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+//      case "SellerCancelGoodsMessage" =>
+//        IO(decode[SellerCancelGoodsMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SellerCancelGoodsMessage")))
+//          .flatMap{m=>
+//            m.fullPlan.map(_.asJson.toString)
+//          }
+      case "SellerCancelGoodsMessage" =>
+        IO(decode[SellerCancelGoodsMessagePlanner](str)).flatMap {
+          case Right(m) =>
+            m.fullPlan.map(_.asJson.toString)
+          case Left(error) =>
+            IO.raiseError(new Exception(s"Invalid JSON for SellerCancelGoodsMessage: ${error.getMessage}"))
+        }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }
