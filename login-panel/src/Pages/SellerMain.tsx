@@ -45,8 +45,12 @@ import { ShowTableMessage } from 'Plugins/OperatorAPI/ShowTableMessage'
 import { sendPostRequest } from 'Pages/tool/apiRequest'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { SellerQueryGoodsMessage } from 'Plugins/SellerAPI/SellerQueryGoodsMessage'
-import { GoodsBuyMessage } from 'Plugins/GoodsAPI/GoodsBuyMessage'
+import { GoodsQueryStarMessage } from 'Plugins/GoodsAPI/GoodsQueryStarMessage'
+import { GoodsAddStarMessage } from 'Plugins/GoodsAPI/GoodsAddStarMessage';
+import { GoodsDeleteStarMessage } from 'Plugins/GoodsAPI/GoodsDeleteStarMessage';
+
 import InfoIcon from '@mui/icons-material/Info';
+import StarIcon from '@mui/icons-material/Star';
 
 type ThemeMode = 'light' | 'dark';
 
@@ -58,6 +62,7 @@ type GoodsData = {
     GoodsPrice: string;
     GoodsDescription: string;
     GoodsSeller: string;
+    GoodsStar: string;
 };
 
 const parseDataString = (dataString: string): GoodsData[] => {
@@ -70,7 +75,8 @@ const parseDataString = (dataString: string): GoodsData[] => {
         GoodsName: item.goodsName,
         GoodsPrice: item.price,
         GoodsDescription: item.description,
-        GoodsSeller: item.sellerName
+        GoodsSeller: item.sellerName,
+        GoodsStar: item.star,
     }));
 };
 
@@ -96,6 +102,7 @@ export function SellerMain() {
 
     const [tableData, setTableData] = useState<GoodsData[]>([]);
     const [responseTableData, setResponseTableData] = useState<any>(null);
+    const [isStarred, setIsStarred] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const init = async () => {
@@ -126,9 +133,9 @@ export function SellerMain() {
     const { storeGoodsPrice } = useGoodsStore();
     const { storeGoodsDescription } = useGoodsStore();
     const { storeGoodsSeller } = useGoodsStore();
+    const { storeGoodsStar } = useGoodsStore();
 
     const [selectedGoods, setSelectedGoods] = useState<GoodsData>(null);
-
 
     const handleGoodsInfo =async (goods: GoodsData) => {
         setSelectedGoods(goods);
@@ -138,7 +145,25 @@ export function SellerMain() {
             storeGoodsPrice(selectedGoods.GoodsPrice);
             storeGoodsDescription(selectedGoods.GoodsDescription);
             storeGoodsSeller(selectedGoods.GoodsSeller);
+            storeGoodsStar(selectedGoods.GoodsStar);
             history.push('/GoodsMain');
+        }
+    };
+
+    const handleToggleStar = async (goods: GoodsData) => {
+        try {
+            if (isStarred) {
+                setIsStarred(false);
+                const message = new GoodsDeleteStarMessage(goods.GoodsId, userName);
+                await sendPostRequest(message);
+            } else {
+                setIsStarred(true);
+                const message = new GoodsAddStarMessage(goods.GoodsId, userName);
+                await sendPostRequest(message);
+            }
+            init();
+        } catch (error: any) {
+            setError(error.message);
         }
     };
 
@@ -228,6 +253,8 @@ export function SellerMain() {
                             <TableCell align="center">商品价格</TableCell>
                             <TableCell align="center">商品描述</TableCell>
                             <TableCell align="center">商品卖家</TableCell>
+                            <TableCell align="center">Stars</TableCell>
+                            <TableCell align="center">操作</TableCell> {/* 修改此处 */}
                             <TableCell align="center">查看详情</TableCell>
                         </TableRow>
                     </TableHead>
@@ -238,6 +265,17 @@ export function SellerMain() {
                                 <TableCell align="center">{row.GoodsPrice}</TableCell>
                                 <TableCell align="center">{row.GoodsDescription}</TableCell>
                                 <TableCell align="center">{row.GoodsSeller}</TableCell>
+                                <TableCell align="center">{row.GoodsStar}</TableCell>
+                                <TableCell align="center">
+                                    <IconButton
+                                        onClick={() => handleToggleStar(row)}
+                                        sx={{
+                                            color: isStarred ? 'yellow' : 'grey'
+                                        }}
+                                    >
+                                        <StarIcon />
+                                    </IconButton>
+                                </TableCell>
                                 <TableCell align="center">
                                     <IconButton
                                         onClick={() => handleGoodsInfo(row)}
@@ -255,7 +293,6 @@ export function SellerMain() {
                             </TableRow>
                         ))}
                     </TableBody>
-
                 </Table>
             </div>
         </ThemeProvider>

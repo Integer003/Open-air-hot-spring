@@ -11,8 +11,8 @@ import { OperatorMain } from 'Pages/OperatorMain'
 import { SellerProfile } from 'Pages/SellerPage/SellerProfile'
 import { SellerAddGoods } from 'Pages/SellerPage/SellerAddGoods'
 import { SellerStorage} from 'Pages/SellerPage/SellerStorage'
-import{RegulatorProfile} from 'Pages/RegulatorPage/RegulatorProfile'
-import {GoodsMain} from 'Pages/SellerPage/GoodsMain'
+import { RegulatorProfile } from 'Pages/RegulatorPage/RegulatorProfile'
+import { GoodsMain } from 'Pages/SellerPage/GoodsMain'
 
 const Layout = () => {
     return (

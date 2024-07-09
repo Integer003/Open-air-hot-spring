@@ -40,6 +40,21 @@ object Routes:
           .flatMap { m =>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "GoodsAddStarMessage" =>
+        IO(decode[GoodsAddStarMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for GoodsAddStarMessage")))
+          .flatMap { m =>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "GoodsQueryStarMessage" =>
+        IO(decode[GoodsQueryStarMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for GoodsQueryStarMessage")))
+          .flatMap { m =>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "GoodsDeleteStarMessage" =>
+        IO(decode[GoodsDeleteStarMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for GoodsDeleteStarMessage")))
+          .flatMap { m =>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }

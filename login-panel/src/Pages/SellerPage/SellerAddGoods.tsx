@@ -51,7 +51,7 @@ export function SellerAddGoods() {
     const confirmSubmit = async () => {
         setOpenSubmitDialog(false);
         const numericPrice = parseFloat(price);
-        const message = new GoodsAddMessage(goodsName, numericPrice, description, "false", userName);
+        const message = new GoodsAddMessage(goodsName, numericPrice, description, "false", userName, 0);
         try {
             await sendPostRequest(message);
             history.push('/SellerMain');

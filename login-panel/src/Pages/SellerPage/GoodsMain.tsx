@@ -160,7 +160,7 @@ export function GoodsMain(){
             setBuyResponce(data);
         } catch (error) {
             setError(error.message);
-        }handleClose();
+        } handleClose();
     };
 
 

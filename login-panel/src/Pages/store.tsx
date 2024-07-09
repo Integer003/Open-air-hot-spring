@@ -26,6 +26,8 @@ type GoodsState = {
     storeGoodsDescription: (description: string) => void;
     goodsSeller: string;
     storeGoodsSeller: (seller: string) => void;
+    goodsStar: string;
+    storeGoodsStar: (star: string) => void;
 };
 
 export const useGoodsStore = create<GoodsState>((set) => ({
@@ -39,4 +41,6 @@ export const useGoodsStore = create<GoodsState>((set) => ({
     storeGoodsDescription: (description) => set({ goodsDescription: description }),
     goodsSeller: 'defaultGoodsSeller',
     storeGoodsSeller: (seller) => set({ goodsSeller: seller }),
+    goodsStar: '0',
+    storeGoodsStar: (star: string) => set({ goodsStar: star }),
 }));
