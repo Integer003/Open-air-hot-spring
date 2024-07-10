@@ -13,7 +13,7 @@ import { SellerStorage} from 'Pages/SellerPage/SellerStorage'
 import { RegulatorProfile } from 'Pages/RegulatorPage/RegulatorProfile'
 import { GoodsMain } from 'Pages/SellerPage/GoodsMain'
 
-// import './Pages/theme/global.css';
+import './Pages/theme/global.css';
 
 const Layout = () => {
     return (

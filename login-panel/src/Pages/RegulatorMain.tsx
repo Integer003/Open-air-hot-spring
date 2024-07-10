@@ -174,124 +174,132 @@ export function RegulatorMain() {
                 setThemeMode={setThemeMode}
                 setLanguage={setLanguage}
             />
-            <div>
-                <Box sx={{ mb: 4, textAlign: 'center' }}>
-                    <Typography variant="h1" sx={{ fontSize: '2rem' }}>
-                        <h1>监管方主页！</h1>
-                        <p>欢迎, {userName}!</p>
-                    </Typography>
-                </Box>
-                <Table sx={{ minWidth: 650 }}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align="center">商品名</TableCell>
-                            <TableCell align="center">商品价格</TableCell>
-                            <TableCell align="center">商品描述</TableCell>
-                            <TableCell align="center">商品卖家</TableCell>
-                            <TableCell align="center">审核情况</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {tableData.map((row, index) => (
-                            <TableRow key={index}>
-                                <TableCell align="center">{row.GoodsName}</TableCell>
-                                <TableCell align="center">{row.GoodsPrice}</TableCell>
-                                <TableCell align="center">{row.GoodsDescription}</TableCell>
-                                <TableCell align="center">{row.GoodsSeller}</TableCell>
-                                <TableCell align="center">
-                                    <Switch
-                                        checked={row.GoodsVerify === 'true'}
-                                        onChange={() => handleModify(row)}
-                                        color="primary"
-                                    />
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-            </Table>
-                <Drawer
-                    sx={{
-                        width: drawerWidth,
-                        flexShrink: 0,
-                        '& .MuiDrawer-paper': {
-                            width: drawerWidth,
-                            boxSizing: 'border-box',
-                        },
-                    }}
-                    variant="temporary"
-                    anchor={'left'}
-                    open={mobileOpen}
-                    onClose={handleDrawerToggle}
-                >
-                    <Toolbar />
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-start', height: 10, paddingTop: theme => theme.spacing(1) }}>
-                        <List>
-                            <ListItem>{decodeURIComponent(userName)}, 你好！</ListItem>
-                            <ListItemButton onClick={() => history.push(`/RegulatorProfile`)}>
-                                <ListItemIcon>
-                                    <PersonIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="个人中心" />
-                            </ListItemButton>
-                            <ListItemButton onClick={() => { /* 处理点击事件 */ }}>
-                                <ListItemIcon>
-                                    <MessageIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="消息" />
-                            </ListItemButton>
-                            <ListItemButton onClick={() => history.push('/')}>
-                                <ListItemIcon>
-                                    <LogoutIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="退出" />
-                            </ListItemButton>
-                        </List>
+            <div className="content-with-appbar">
+                <div>
+                    <Box sx={{ mb: 4, textAlign: 'center' }}>
+                        <Typography variant="h1" sx={{ fontSize: '2rem' }}>
+                            <h1>监管方主页！</h1>
+                            <p>欢迎, {userName}!</p>
+                        </Typography>
                     </Box>
-                </Drawer>
-                {!mobileOpen && (
-                    <Button
-                        onClick={handleDrawerToggle}
+                    <Table sx={{ minWidth: 650 }}>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="center">商品名</TableCell>
+                                <TableCell align="center">商品价格</TableCell>
+                                <TableCell align="center">商品描述</TableCell>
+                                <TableCell align="center">商品卖家</TableCell>
+                                <TableCell align="center">审核情况</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {tableData.map((row, index) => (
+                                <TableRow key={index}>
+                                    <TableCell align="center">{row.GoodsName}</TableCell>
+                                    <TableCell align="center">{row.GoodsPrice}</TableCell>
+                                    <TableCell align="center">{row.GoodsDescription}</TableCell>
+                                    <TableCell align="center">{row.GoodsSeller}</TableCell>
+                                    <TableCell align="center">
+                                        <Switch
+                                            checked={row.GoodsVerify === 'true'}
+                                            onChange={() => handleModify(row)}
+                                            color="primary"
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                    <Drawer
                         sx={{
-                            position: 'absolute',
-                            left: 0,
-                            top: '90%',
-                            transform: 'translateY(-50%)',
-                            zIndex: 1000,
-                            cursor: 'pointer', // 鼠标悬停时显示指针手势
-                            padding: '10px', // 按钮的内边距
-                            color: 'white', // 图标颜色
-                            backgroundColor: 'grey', // 按钮背景颜色，使用对比色
+                            width: drawerWidth,
+                            flexShrink: 0,
+                            '& .MuiDrawer-paper': {
+                                width: drawerWidth,
+                                boxSizing: 'border-box',
+                            },
                         }}
+                        variant="temporary"
+                        anchor={'left'}
+                        open={mobileOpen}
+                        onClose={handleDrawerToggle}
                     >
-                        <ListItemIcon>
-                            <ArrowForwardIcon />
-                        </ListItemIcon>
-                        <UnreadIndicator count={unreadMessagesCount} />
-                    </Button>)}
-                <Dialog
-                    open={open}
-                    onClose={handleClose}
-                >
-                    <DialogTitle>确认管理</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            你确定要修改商品 {selectedGoods?.GoodsName} 审核状态吗？
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose} color="primary">
-                            取消
-                        </Button>
-                        <Button onClick={handleConfirmModify} color="secondary">
-                            确认
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-                <Button onClick={() => history.push('./')}>
-                    返回
-                </Button>
+                        <Toolbar />
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-start',
+                            height: 10,
+                            paddingTop: theme => theme.spacing(1)
+                        }}>
+                            <List>
+                                <ListItem>{decodeURIComponent(userName)}, 你好！</ListItem>
+                                <ListItemButton onClick={() => history.push(`/RegulatorProfile`)}>
+                                    <ListItemIcon>
+                                        <PersonIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="个人中心" />
+                                </ListItemButton>
+                                <ListItemButton onClick={() => { /* 处理点击事件 */
+                                }}>
+                                    <ListItemIcon>
+                                        <MessageIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="消息" />
+                                </ListItemButton>
+                                <ListItemButton onClick={() => history.push('/')}>
+                                    <ListItemIcon>
+                                        <LogoutIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="退出" />
+                                </ListItemButton>
+                            </List>
+                        </Box>
+                    </Drawer>
+                    {!mobileOpen && (
+                        <Button
+                            onClick={handleDrawerToggle}
+                            sx={{
+                                position: 'absolute',
+                                left: 0,
+                                top: '90%',
+                                transform: 'translateY(-50%)',
+                                zIndex: 1000,
+                                cursor: 'pointer', // 鼠标悬停时显示指针手势
+                                padding: '10px', // 按钮的内边距
+                                color: 'white', // 图标颜色
+                                backgroundColor: 'grey', // 按钮背景颜色，使用对比色
+                            }}
+                        >
+                            <ListItemIcon>
+                                <ArrowForwardIcon />
+                            </ListItemIcon>
+                            <UnreadIndicator count={unreadMessagesCount} />
+                        </Button>)}
+                    <Dialog
+                        open={open}
+                        onClose={handleClose}
+                    >
+                        <DialogTitle>确认管理</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                你确定要修改商品 {selectedGoods?.GoodsName} 审核状态吗？
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleClose} color="primary">
+                                取消
+                            </Button>
+                            <Button onClick={handleConfirmModify} color="secondary">
+                                确认
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                    <Button onClick={() => history.push('./')}>
+                        返回
+                    </Button>
 
+                </div>
             </div>
         </ThemeProvider>
-    );
+);
 }

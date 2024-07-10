@@ -170,53 +170,54 @@ export function SellerProfile(){
                 setLanguage={setLanguage}
                 historyPath={'./SellerMain'}
             />
-            <div>
-                <Box sx={{ mb: 4, textAlign: 'center' }}>
-                    <Typography variant="h1" sx={{ fontSize: '2rem' }}>
-                        <h1>个人中心！</h1>
-                        <p>欢迎, {userName}!</p>
-                    </Typography>
-                </Box>
-                <Box sx={{ mb: 4, textAlign: 'center' }}>
-                    <p>你有{responseData1}元</p>
-                </Box>
-                <TextField
-                    margin="normal"
-                    required
-                    name="price"
-                    label="充值金额"
-                    type="number"
-                    id="price"
-                    value={rechargeMoney}
-                    onChange={(e) => {
-                        const value =
-                            parseInt(e.target.value);
-                        if (!isNaN(value)) {
-                            setRechargeMoney(value);
-                        }
-                    }}
-                />
-                <Button onClick={()=>handleRechargeMoney(rechargeMoney)}>
-                    充值
-                </Button>
+            <div className="content-with-appbar">
+                <div>
+                    <Box sx={{ mb: 4, textAlign: 'center' }}>
+                        <Typography variant="h1" sx={{ fontSize: '2rem' }}>
+                            <h1>个人中心！</h1>
+                            <p>欢迎, {userName}!</p>
+                        </Typography>
+                    </Box>
+                    <Box sx={{ mb: 4, textAlign: 'center' }}>
+                        <p>你有{responseData1}元</p>
+                    </Box>
+                    <TextField
+                        margin="normal"
+                        required
+                        name="price"
+                        label="充值金额"
+                        type="number"
+                        id="price"
+                        value={rechargeMoney}
+                        onChange={(e) => {
+                            const value =
+                                parseInt(e.target.value);
+                            if (!isNaN(value)) {
+                                setRechargeMoney(value);
+                            }
+                        }}
+                    />
+                    <Button onClick={() => handleRechargeMoney(rechargeMoney)}>
+                        充值
+                    </Button>
 
-                <Button onClick={()=>history.push('./SellerMain')}>
-                    返回
-                </Button>
-                <Button onClick={handleOpen}>
-                    注销
-                </Button>
-                <ConfirmDialog
-                    open={open}
-                    onConfirm={() => handleClose(true)}
-                    onCancel={() => handleClose(false)}
-                    title="提示"
-                    message="您确定要注销吗？"
-                />
+                    <Button onClick={() => history.push('./SellerMain')}>
+                        返回
+                    </Button>
+                    <Button onClick={handleOpen}>
+                        注销
+                    </Button>
+                    <ConfirmDialog
+                        open={open}
+                        onConfirm={() => handleClose(true)}
+                        onCancel={() => handleClose(false)}
+                        title="提示"
+                        message="您确定要注销吗？"
+                    />
+                </div>
             </div>
-
         </ThemeProvider>
-    );
+);
 }
 
 

@@ -149,92 +149,99 @@ export function GoodsMain() {
                 historyPath={'/SellerMain'}
                 // TODO: if a regulator come in? or just another page?
             />
-            <Box sx={{ mb: 4, textAlign: 'center', padding: 3 }}>
-                <Typography variant="h4" sx={{ fontSize: '2rem', mb: 3 }}>
-                    商品详情
-                </Typography>
-                <Grid container spacing={3} justifyContent="center">
-                    <Grid item xs={12} md={6} lg={4}>
-                        <Card sx={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', '&:hover': { boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)' } }}>
-                            <CardMedia component="img" height="200" image={logo} alt="商品图片" />
-                            <CardContent>
-                                <Typography gutterBottom variant="h5" component="div">
-                                    {goodsName}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    {goodsDescription}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    卖家：{goodsSeller}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    商品价格：{goodsPrice}元
-                                </Typography>
-                            </CardContent>
-                        </Card>
+            <div className="content-with-appbar">
+                <Box sx={{ mb: 4, textAlign: 'center', padding: 3 }}>
+                    <Typography variant="h4" sx={{ fontSize: '2rem', mb: 3 }}>
+                        商品详情
+                    </Typography>
+                    <Grid container spacing={3} justifyContent="center">
+                        <Grid item xs={12} md={6} lg={4}>
+                            <Card sx={{
+                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                                '&:hover': { boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)' }
+                            }}>
+                                <CardMedia component="img" height="200" image={logo} alt="商品图片" />
+                                <CardContent>
+                                    <Typography gutterBottom variant="h5" component="div">
+                                        {goodsName}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {goodsDescription}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        卖家：{goodsSeller}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        商品价格：{goodsPrice}元
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
                     </Grid>
-                </Grid>
-                <Typography variant="h4" sx={{ mt: 4, mb: 2 }}>
-                    商品评论
-                </Typography>
-                <List>
-                    {tableData.map((item) => (
-                        <ListItem key={item.CommentsTime}>
-                            <ListItemText primary={item.Content} secondary={`${item.SenderName} ${item.CommentsTime}`} />
-                        </ListItem>
-                    ))}
-                </List>
-                <Box sx={{ display: 'flex', alignItems: 'center', margin: '20px 0' }}>
-                    <TextField
-                        id="myComment"
-                        label="评论"
-                        multiline
-                        rows={4}
-                        variant="outlined"
-                        fullWidth
-                    />
+                    <Typography variant="h4" sx={{ mt: 4, mb: 2 }}>
+                        商品评论
+                    </Typography>
+                    <List>
+                        {tableData.map((item) => (
+                            <ListItem key={item.CommentsTime}>
+                                <ListItemText primary={item.Content}
+                                              secondary={`${item.SenderName} ${item.CommentsTime}`} />
+                            </ListItem>
+                        ))}
+                    </List>
+                    <Box sx={{ display: 'flex', alignItems: 'center', margin: '20px 0' }}>
+                        <TextField
+                            id="myComment"
+                            label="评论"
+                            multiline
+                            rows={4}
+                            variant="outlined"
+                            fullWidth
+                        />
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handleComments((document.getElementById('myComment') as HTMLInputElement).value)}
+                            sx={{ ml: 2 }}
+                        >
+                            发送
+                        </Button>
+                    </Box>
                     <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleComments((document.getElementById('myComment') as HTMLInputElement).value)}
-                        sx={{ ml: 2 }}
+                        onClick={handleBuy}
+                        sx={{
+                            backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
+                            color: themeMode === 'dark' ? '#99dc10' : '#99dc10',
+                            '&:hover': {
+                                backgroundColor: themeMode === 'dark' ? '#333333' : '#f5f5f5',
+                            },
+                            mt: 2,
+                        }}
                     >
-                        发送
+                        <AddShoppingCartIcon /> 购买
+                    </Button>
+                    <Dialog open={open} onClose={handleClose}>
+                        <DialogTitle>确认购买</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                你确定要购买商品 {goodsName} 吗？
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleClose} color="primary">
+                                取消
+                            </Button>
+                            <Button onClick={handleConfirmBuy} color="secondary">
+                                确认
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                    <Button variant="outlined" color="primary" onClick={() => history.push('/SellerMain')}
+                            sx={{ mt: 2 }}>
+                        返回
                     </Button>
                 </Box>
-                <Button
-                    onClick={handleBuy}
-                    sx={{
-                        backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
-                        color: themeMode === 'dark' ? '#99dc10' : '#99dc10',
-                        '&:hover': {
-                            backgroundColor: themeMode === 'dark' ? '#333333' : '#f5f5f5',
-                        },
-                        mt: 2,
-                    }}
-                >
-                    <AddShoppingCartIcon /> 购买
-                </Button>
-                <Dialog open={open} onClose={handleClose}>
-                    <DialogTitle>确认购买</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            你确定要购买商品 {goodsName} 吗？
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose} color="primary">
-                            取消
-                        </Button>
-                        <Button onClick={handleConfirmBuy} color="secondary">
-                            确认
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-                <Button variant="outlined" color="primary" onClick={() => history.push('/SellerMain')} sx={{ mt: 2 }}>
-                    返回
-                </Button>
-            </Box>
+            </div>
         </ThemeProvider>
-    );
+);
 }

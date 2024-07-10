@@ -142,103 +142,105 @@ export function OperatorMain() {
                 setThemeMode={setThemeMode}
                 setLanguage={setLanguage}
             />
-            <Box sx={{ mb: 4, textAlign: 'center', padding: 3 }}>
-                <Typography variant="h1" sx={{ fontSize: '2rem' }}>
-                    <h1>运营方主页！</h1>
-                    <p>欢迎, {userName}!</p>
-                </Typography>
-                <Typography variant="h4" sx={{ mb: 2 }}>
-                    用户数据
-                </Typography>
-                <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
+            <div className="content-with-appbar">
+                <Box sx={{ mb: 4, textAlign: 'center', padding: 3 }}>
+                    <Typography variant="h1" sx={{ fontSize: '2rem' }}>
+                        <h1>运营方主页！</h1>
+                        <p>欢迎, {userName}!</p>
+                    </Typography>
+                    <Typography variant="h4" sx={{ mb: 2 }}>
+                        用户数据
+                    </Typography>
+                    <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
+                        <Button
+                            variant={selectedType === 'Seller' ? 'contained' : 'outlined'}
+                            onClick={() => handleTypeChange('Seller')}
+                            sx={{ mr: 2 }}
+                        >
+                            Seller
+                        </Button>
+                        <Button
+                            variant={selectedType === 'Regulator' ? 'contained' : 'outlined'}
+                            onClick={() => handleTypeChange('Regulator')}
+                        >
+                            Regulator
+                        </Button>
+                    </Box>
+                    <Grid container spacing={3} justifyContent="center">
+                        {tableData.map((row, index) => (
+                            <Grid item xs={12} md={6} lg={4} key={index}>
+                                <Card sx={{
+                                    height: '100%',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
+                                    color: themeMode === 'dark' ? '#cbe681' : '#333333',
+                                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                                    transition: 'transform 0.3s',
+                                    '&:hover': {
+                                        transform: 'scale(1.05)',
+                                        boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
+                                    }
+                                }}>
+                                    <CardContent>
+                                        <Typography gutterBottom variant="h5" component="div">
+                                            用户名: {row.userName}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            密码: {row.password}
+                                        </Typography>
+                                        <IconButton
+                                            onClick={() => handleDelete(row)}
+                                            sx={{
+                                                backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
+                                                color: themeMode === 'dark' ? '#ff0000' : '#ff0000',
+                                                '&:hover': {
+                                                    backgroundColor: themeMode === 'dark' ? '#333333' : '#f5f5f5',
+                                                }
+                                            }}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
                     <Button
-                        variant={selectedType === 'Seller' ? 'contained' : 'outlined'}
-                        onClick={() => handleTypeChange('Seller')}
-                        sx={{ mr: 2 }}
+                        variant="contained"
+                        onClick={() => history.push('./')}
+                        sx={{
+                            mt: 2,
+                            backgroundColor: themeMode === 'dark' ? '#333333' : '#1976d2',
+                            color: '#ffffff',
+                            '&:hover': {
+                                backgroundColor: themeMode === 'dark' ? '#555555' : '#1565c0',
+                            }
+                        }}
                     >
-                        Seller
+                        返回
                     </Button>
-                    <Button
-                        variant={selectedType === 'Regulator' ? 'contained' : 'outlined'}
-                        onClick={() => handleTypeChange('Regulator')}
+                    <Dialog
+                        open={open}
+                        onClose={handleClose}
                     >
-                        Regulator
-                    </Button>
+                        <DialogTitle>确认删除</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                你确定要删除用户 {selectedUser?.userName} 吗？
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleClose} color="primary">
+                                取消
+                            </Button>
+                            <Button onClick={handleConfirmDelete} color="secondary">
+                                删除
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 </Box>
-                <Grid container spacing={3} justifyContent="center">
-                    {tableData.map((row, index) => (
-                        <Grid item xs={12} md={6} lg={4} key={index}>
-                            <Card sx={{
-                                height: '100%',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
-                                color: themeMode === 'dark' ? '#cbe681' : '#333333',
-                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                                transition: 'transform 0.3s',
-                                '&:hover': {
-                                    transform: 'scale(1.05)',
-                                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
-                                }
-                            }}>
-                                <CardContent>
-                                    <Typography gutterBottom variant="h5" component="div">
-                                        用户名: {row.userName}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        密码: {row.password}
-                                    </Typography>
-                                    <IconButton
-                                        onClick={() => handleDelete(row)}
-                                        sx={{
-                                            backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
-                                            color: themeMode === 'dark' ? '#ff0000' : '#ff0000',
-                                            '&:hover': {
-                                                backgroundColor: themeMode === 'dark' ? '#333333' : '#f5f5f5',
-                                            }
-                                        }}
-                                    >
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
-                <Button
-                    variant="contained"
-                    onClick={() => history.push('./')}
-                    sx={{
-                        mt: 2,
-                        backgroundColor: themeMode === 'dark' ? '#333333' : '#1976d2',
-                        color: '#ffffff',
-                        '&:hover': {
-                            backgroundColor: themeMode === 'dark' ? '#555555' : '#1565c0',
-                        }
-                    }}
-                >
-                    返回
-                </Button>
-                <Dialog
-                    open={open}
-                    onClose={handleClose}
-                >
-                    <DialogTitle>确认删除</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            你确定要删除用户 {selectedUser?.userName} 吗？
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose} color="primary">
-                            取消
-                        </Button>
-                        <Button onClick={handleConfirmDelete} color="secondary">
-                            删除
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            </Box>
+            </div>
         </ThemeProvider>
-    );
+);
 }

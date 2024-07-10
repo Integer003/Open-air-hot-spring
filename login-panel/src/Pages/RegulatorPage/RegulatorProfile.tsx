@@ -120,30 +120,31 @@ export function RegulatorProfile(){
                 setLanguage={setLanguage}
                 historyPath={'./RegulatorMain'}
             />
-            <div>
-                <Box sx={{ mb: 4, textAlign: 'center' }}>
-                    <Typography variant="h1" sx={{ fontSize: '2rem' }}>
-                        <h1>个人中心！</h1>
-                        <p>欢迎, {userName}!</p>
-                    </Typography>
-                </Box>
-                <Button onClick={()=>history.push('./RegulatorMain')}>
-                    返回
-                </Button>
-                <Button onClick={handleOpen}>
-                    注销
-                </Button>
-                <ConfirmDialog
-                    open={open}
-                    onConfirm={() => handleClose(true)}
-                    onCancel={() => handleClose(false)}
-                    title="提示"
-                    message="您确定要注销吗？"
-                />
+            <div className="content-with-appbar">
+                <div>
+                    <Box sx={{ mb: 4, textAlign: 'center' }}>
+                        <Typography variant="h1" sx={{ fontSize: '2rem' }}>
+                            <h1>个人中心！</h1>
+                            <p>欢迎, {userName}!</p>
+                        </Typography>
+                    </Box>
+                    <Button onClick={() => history.push('./RegulatorMain')}>
+                        返回
+                    </Button>
+                    <Button onClick={handleOpen}>
+                        注销
+                    </Button>
+                    <ConfirmDialog
+                        open={open}
+                        onConfirm={() => handleClose(true)}
+                        onCancel={() => handleClose(false)}
+                        title="提示"
+                        message="您确定要注销吗？"
+                    />
+                </div>
             </div>
-
         </ThemeProvider>
-    );
+);
 }
 
 

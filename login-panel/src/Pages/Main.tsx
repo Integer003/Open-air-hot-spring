@@ -111,63 +111,65 @@ export function Main(){
                 setThemeMode={setThemeMode}
                 setLanguage={setLanguage}
             />
-            <Container maxWidth="sm" sx={{ mt: 4 }}>
-                <Box sx={{ mb: 4, textAlign: 'center' }}>
-                    <Typography variant="h1" sx={{ fontSize: '2rem' }}>
-                        {language === 'zh' ? '登录' : 'Login'}
-                    </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <FormControl sx={{ width: '100%' }}>
-                        <TextField
-                            label={language === 'zh' ? '用户名' : 'Username'}
-                            variant="outlined"
-                            fullWidth
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            sx={{ mb: 2 }}
-                        />
-                        <TextField
-                            label={language === 'zh' ? '密码' : 'Password'}
-                            variant="outlined"
-                            type="password"
-                            fullWidth
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            sx={{ mb: 2 }}
-                        />
-                        <FormControl fullWidth sx={{ mb: 2 }}>
-                            <InputLabel>{language === 'zh' ? '用户类型' : 'User type'}</InputLabel>
-                            <Select
-                                value={userType}
-                                onChange={(e) => setUserType(e.target.value as string)}
-                            >
-                                <MenuItem value="Seller">{language === 'zh' ? '用户' : 'Seller'}</MenuItem>
-                                <MenuItem value="Regulator">{language === 'zh' ? '监管方' : 'Regulator'}</MenuItem>
-                                <MenuItem value="Operator">{language === 'zh' ? '运营方' : 'Operator'}</MenuItem>
-                            </Select>
-                        </FormControl>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleLogin}
-                            sx={{ mt: 1, mb: 2 }}
-                        >
+            <div className="content-with-appbar">
+                <Container maxWidth="sm" sx={{ mt: 4 }}>
+                    <Box sx={{ mb: 4, textAlign: 'center' }}>
+                        <Typography variant="h1" sx={{ fontSize: '2rem' }}>
                             {language === 'zh' ? '登录' : 'Login'}
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            color="primary"
-                            onClick={() => history.push('/register')} // 假设注册页面的路由是'/register'
-                            sx={{ mb: 2 }}
-                        >
-                            {language === 'zh' ? '还没有账号？去注册' : 'Don\'t have an account? Register'}
-                        </Button>
-                    </FormControl>
-                </Box>
-            </Container>
+                        </Typography>
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <FormControl sx={{ width: '100%' }}>
+                            <TextField
+                                label={language === 'zh' ? '用户名' : 'Username'}
+                                variant="outlined"
+                                fullWidth
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                sx={{ mb: 2 }}
+                            />
+                            <TextField
+                                label={language === 'zh' ? '密码' : 'Password'}
+                                variant="outlined"
+                                type="password"
+                                fullWidth
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                sx={{ mb: 2 }}
+                            />
+                            <FormControl fullWidth sx={{ mb: 2 }}>
+                                <InputLabel>{language === 'zh' ? '用户类型' : 'User type'}</InputLabel>
+                                <Select
+                                    value={userType}
+                                    onChange={(e) => setUserType(e.target.value as string)}
+                                >
+                                    <MenuItem value="Seller">{language === 'zh' ? '用户' : 'Seller'}</MenuItem>
+                                    <MenuItem value="Regulator">{language === 'zh' ? '监管方' : 'Regulator'}</MenuItem>
+                                    <MenuItem value="Operator">{language === 'zh' ? '运营方' : 'Operator'}</MenuItem>
+                                </Select>
+                            </FormControl>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleLogin}
+                                sx={{ mt: 1, mb: 2 }}
+                            >
+                                {language === 'zh' ? '登录' : 'Login'}
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                color="primary"
+                                onClick={() => history.push('/register')} // 假设注册页面的路由是'/register'
+                                sx={{ mb: 2 }}
+                            >
+                                {language === 'zh' ? '还没有账号？去注册' : 'Don\'t have an account? Register'}
+                            </Button>
+                        </FormControl>
+                    </Box>
+                </Container>
+            </div>
         </ThemeProvider>
-    );
+);
 }
 
 

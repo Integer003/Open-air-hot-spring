@@ -30,8 +30,10 @@ import {
     ArrowForward as ArrowForwardIcon,
     AddShoppingCart as AddShoppingCartIcon,
     Info as InfoIcon,
-    Star as StarIcon,
-} from '@mui/icons-material';
+    Star as StarIcon, Brightness4, Brightness7,
+    Details as DetailsIcon,
+    Apps as AppsIcon,
+} from '@mui/icons-material'
 import { themes } from './theme/theme';
 import AppBarComponent from './theme/AppBarComponent';
 import { useGoodsStore, useUserStore } from './store';
@@ -176,147 +178,150 @@ export function SellerMain() {
         <ThemeProvider theme={themes[themeMode]}>
             <CssBaseline />
             <AppBarComponent themeMode={themeMode} setThemeMode={setThemeMode} setLanguage={setLanguage} />
-            <div>
-                <Drawer
-                    sx={{
-                        width: drawerWidth,
-                        flexShrink: 0,
-                        '& .MuiDrawer-paper': {
-                            width: drawerWidth,
-                            boxSizing: 'border-box',
-                            background: themeMode === 'dark' ? 'linear-gradient(to bottom, #333333, #111111)' : 'linear-gradient(to bottom, #ffffff, #f5f5f5)',
-                            color: themeMode === 'dark' ? '#cbe681' : '#333333',
-                        },
-                    }}
-                    variant="temporary"
-                    anchor={'left'}
-                    open={mobileOpen}
-                    onClose={handleDrawerToggle}
-                >
-                    <Toolbar />
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-start', height: 10, paddingTop: theme => theme.spacing(1) }}>
-                        <List>
-                            <ListItem>{decodeURIComponent(userName)}, 你好！</ListItem>
-                            <ListItemButton onClick={() => history.push(`/SellerProfile`)}>
-                                <ListItemIcon>
-                                    <PersonIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="个人中心" />
-                            </ListItemButton>
-                            <ListItemButton onClick={() => {}}>
-                                <ListItemIcon>
-                                    <ReceiptIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="消费记录" />
-                            </ListItemButton>
-                            <ListItemButton onClick={() => history.push('/SellerStorage')}>
-                                <ListItemIcon>
-                                    <HomeIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="货仓" />
-                            </ListItemButton>
-                            <ListItemButton onClick={() => { /* 处理点击事件 */ }}>
-                                <ListItemIcon>
-                                    <MessageIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="消息" />
-                            </ListItemButton>
-                            <ListItemButton onClick={() => history.push('/')}>
-                                <ListItemIcon>
-                                    <LogoutIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="退出" />
-                            </ListItemButton>
-                        </List>
-                    </Box>
-                </Drawer>
-
-                {!mobileOpen && (
-                    <Button
-                        onClick={handleDrawerToggle}
+            <div className="content-with-appbar">
+                <div>
+                    <Drawer
                         sx={{
-                            position: 'absolute',
-                            left: 0,
-                            top: '90%',
-                            transform: 'translateY(-50%)',
-                            zIndex: 1000,
-                            cursor: 'pointer',
-                            padding: '10px',
-                            color: 'white',
-                            backgroundColor: 'grey',
-                            '&:hover': {
-                                backgroundColor: '#555555',
-                            }
+                            width: drawerWidth,
+                            flexShrink: 0,
+                            '& .MuiDrawer-paper': {
+                                width: drawerWidth,
+                                boxSizing: 'border-box',
+                                background: themeMode === 'dark' ? 'linear-gradient(to bottom, #333333, #111111)' : 'linear-gradient(to bottom, #ffffff, #f5f5f5)',
+                                color: themeMode === 'dark' ? '#cbe681' : '#333333',
+                            },
                         }}
+                        variant="temporary"
+                        anchor={'left'}
+                        open={mobileOpen}
+                        onClose={handleDrawerToggle}
                     >
-                        <ListItemIcon>
-                            <ArrowForwardIcon />
-                        </ListItemIcon>
-                        <UnreadIndicator count={unreadMessagesCount} />
-                    </Button>
-                )}
+                        <Toolbar />
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-start',
+                            height: 10,
+                            paddingTop: theme => theme.spacing(1)
+                        }}>
+                            <List>
+                                <ListItem>{decodeURIComponent(userName)}, 你好！</ListItem>
+                                <ListItemButton onClick={() => history.push(`/SellerProfile`)}>
+                                    <ListItemIcon>
+                                        <PersonIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="个人中心" />
+                                </ListItemButton>
+                                <ListItemButton onClick={() => {
+                                }}>
+                                    <ListItemIcon>
+                                        <ReceiptIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="消费记录" />
+                                </ListItemButton>
+                                <ListItemButton onClick={() => history.push('/SellerStorage')}>
+                                    <ListItemIcon>
+                                        <HomeIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="货仓" />
+                                </ListItemButton>
+                                <ListItemButton onClick={() => { /* 处理点击事件 */
+                                }}>
+                                    <ListItemIcon>
+                                        <MessageIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="消息" />
+                                </ListItemButton>
+                                <ListItemButton onClick={() => history.push('/')}>
+                                    <ListItemIcon>
+                                        <LogoutIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="退出" />
+                                </ListItemButton>
+                            </List>
+                        </Box>
+                    </Drawer>
 
-                <Grid container spacing={3} sx={{ padding: 3 }}>
-                    {tableData.map((row, index) => (
-                        <Grid item xs={12} md={6} lg={4} key={index}>
-                            <Card
-                                sx={{
-                                    height: '100%',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
-                                    color: themeMode === 'dark' ? '#cbe681' : '#333333',
-                                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                                    transition: 'transform 0.3s',
-                                    '&:hover': {
-                                        transform: 'scale(1.05)',
-                                        boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
-                                    },
+                    {!mobileOpen && (
+                            <IconButton color="inherit"
+                                    onClick={handleDrawerToggle}
+                                    sx={{
+                                    position: 'fixed',
+                                    left: 0,
+                                    top: '3%',
+                                    zIndex: 2000,
+                                    backgroundColor: themeMode === 'dark' ? '#333333' : '#ffffff',
+
                                 }}
                             >
-                                <CardContent sx={{ flexGrow: 1 }}>
-                                    <Typography gutterBottom variant="h5" component="div">
-                                        {row.GoodsName}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        {row.GoodsDescription}
-                                    </Typography>
-                                    <Typography variant="h6" color="text.primary">
-                                        ¥{row.GoodsPrice}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        卖家: {row.GoodsSeller}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Stars: {row.GoodsStar}
-                                    </Typography>
-                                </CardContent>
-                                <CardActions>
-                                    <IconButton
-                                        onClick={() => handleToggleStar(row)}
-                                        sx={{
-                                            color: tableStarData.includes(row.GoodsId) ? 'yellow' : 'grey',
-                                        }}
-                                    >
-                                        <StarIcon />
-                                    </IconButton>
-                                    <IconButton
-                                        onClick={() => handleGoodsInfo(row)}
-                                        sx={{
-                                            color: themeMode === 'dark' ? '#cbe681' : '#333333',
-                                            '&:hover': {
-                                                color: themeMode === 'dark' ? '#d1e499' : '#666666',
-                                            },
-                                        }}
-                                    >
-                                        <InfoIcon />
-                                    </IconButton>
-                                </CardActions>
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
+                                <AppsIcon/>
+
+                                {/* <UnreadIndicator count={unreadMessagesCount} />*/}
+                        </IconButton>
+
+                    )}
+
+                    <Grid container spacing={3} sx={{ padding: 3 }}>
+                        {tableData.map((row, index) => (
+                            <Grid item xs={12} md={6} lg={4} key={index}>
+                                <Card
+                                    sx={{
+                                        height: '100%',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
+                                        color: themeMode === 'dark' ? '#cbe681' : '#333333',
+                                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                                        transition: 'transform 0.3s',
+                                        '&:hover': {
+                                            transform: 'scale(1.05)',
+                                            boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
+                                        },
+                                    }}
+                                >
+                                    <CardContent sx={{ flexGrow: 1 }}>
+                                        <Typography gutterBottom variant="h5" component="div">
+                                            {row.GoodsName}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {row.GoodsDescription}
+                                        </Typography>
+                                        <Typography variant="h6" color="text.primary">
+                                            ¥{row.GoodsPrice}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            卖家: {row.GoodsSeller}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            Stars: {row.GoodsStar}
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <IconButton
+                                            onClick={() => handleToggleStar(row)}
+                                            sx={{
+                                                color: tableStarData.includes(row.GoodsId) ? 'yellow' : 'grey',
+                                            }}
+                                        >
+                                            <StarIcon />
+                                        </IconButton>
+                                        <IconButton
+                                            onClick={() => handleGoodsInfo(row)}
+                                            sx={{
+                                                color: themeMode === 'dark' ? '#cbe681' : '#333333',
+                                                '&:hover': {
+                                                    color: themeMode === 'dark' ? '#d1e499' : '#666666',
+                                                },
+                                            }}
+                                        >
+                                            <InfoIcon />
+                                        </IconButton>
+                                    </CardActions>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </div>
             </div>
         </ThemeProvider>
-    );
+);
 }
