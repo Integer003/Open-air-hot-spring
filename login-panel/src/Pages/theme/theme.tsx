@@ -11,6 +11,27 @@ const lightTheme = createTheme({
             main: '#dc004e',
         },
     },
+    typography: {
+        h4: {
+            marginBottom: '20px',
+        },
+    },
+    components: {
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    marginBottom: '20px',
+                },
+            },
+        },
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    margin: '10px 0',
+                },
+            },
+        },
+    },
 });
 
 const darkTheme = createTheme({
@@ -21,6 +42,27 @@ const darkTheme = createTheme({
         },
         secondary: {
             main: '#f48fb1',
+        },
+    },
+    typography: {
+        h4: {
+            marginBottom: '20px',
+        },
+    },
+    components: {
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    marginBottom: '20px',
+                },
+            },
+        },
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    margin: '10px 0',
+                },
+            },
         },
     },
 });

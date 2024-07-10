@@ -18,39 +18,29 @@ import {
     Card,
     CardContent,
     CardMedia,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableBody,
     IconButton,
-    Table,
-    DialogTitle,
-    DialogContent,
-    DialogContentText, DialogActions, Dialog,
-} from '@mui/material'
+    CardActions,
+} from '@mui/material';
 import {
     Home as HomeIcon,
     Person as PersonIcon,
     Message as MessageIcon,
     Receipt as ReceiptIcon,
     Logout as LogoutIcon,
-    Add as AddIcon,
     ArrowForward as ArrowForwardIcon,
+    AddShoppingCart as AddShoppingCartIcon,
+    Info as InfoIcon,
+    Star as StarIcon,
 } from '@mui/icons-material';
 import { themes } from './theme/theme';
 import AppBarComponent from './theme/AppBarComponent';
-import { useGoodsStore, useUserStore } from './store'
+import { useGoodsStore, useUserStore } from './store';
 import { UnreadIndicator } from './tool/Apps';
-import { ShowTableMessage } from 'Plugins/OperatorAPI/ShowTableMessage'
-import { sendPostRequest } from 'Pages/tool/apiRequest'
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import { SellerQueryGoodsMessage } from 'Plugins/SellerAPI/SellerQueryGoodsMessage'
-import { GoodsQueryStarMessage } from 'Plugins/GoodsAPI/GoodsQueryStarMessage'
+import { sendPostRequest } from './tool/apiRequest';
+import { SellerQueryGoodsMessage } from 'Plugins/SellerAPI/SellerQueryGoodsMessage';
 import { GoodsAddStarMessage } from 'Plugins/GoodsAPI/GoodsAddStarMessage';
 import { GoodsDeleteStarMessage } from 'Plugins/GoodsAPI/GoodsDeleteStarMessage';
-
-import InfoIcon from '@mui/icons-material/Info';
-import StarIcon from '@mui/icons-material/Star';
+import { SellerQueryGoodsIsStarredMessage } from 'Plugins/SellerAPI/SellerQueryGoodsIsStarredMessage';
 
 type ThemeMode = 'light' | 'dark';
 
@@ -66,10 +56,7 @@ type GoodsData = {
 };
 
 const parseDataString = (dataString: string): GoodsData[] => {
-    // Parse the JSON string into an array of objects
     const parsedArray = JSON.parse(dataString);
-
-    // Map the parsed objects to the GoodsData format
     return parsedArray.map((item: any) => ({
         GoodsId: item.goodsID,
         GoodsName: item.goodsName,
@@ -83,7 +70,7 @@ const parseDataString = (dataString: string): GoodsData[] => {
 export function SellerMain() {
     const history = useHistory();
     const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
-    const [language, setLanguage] = useState('zh'); // 默认语言为中文
+    const [language, setLanguage] = useState('zh');
     const unreadMessagesCount = 5;
     const [mobileOpen, setMobileOpen] = useState(false);
     const { userName } = useUserStore();
@@ -102,14 +89,18 @@ export function SellerMain() {
 
     const [tableData, setTableData] = useState<GoodsData[]>([]);
     const [responseTableData, setResponseTableData] = useState<any>(null);
-    const [isStarred, setIsStarred] = useState(false);
+    const [tableStarData, setTableStarData] = useState<string[]>([]);
+    const [responseTableStarData, setResponseTableStarData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
 
     const init = async () => {
         try {
             const message = new SellerQueryGoodsMessage(userName);
             const data = await sendPostRequest(message);
-            setResponseTableData(data); // 假设返回的数据是字符串，如果不是，需要转换
+            setResponseTableData(data);
+            const messageStar = new SellerQueryGoodsIsStarredMessage(userName);
+            const dataStar = await sendPostRequest(messageStar);
+            setResponseTableStarData(dataStar);
         } catch (error: any) {
             setError(error.message);
             setResponseTableData('error');
@@ -123,21 +114,35 @@ export function SellerMain() {
     useEffect(() => {
         if (typeof responseTableData === 'string') {
             const parsedData = parseDataString(responseTableData);
+            parsedData.sort((a, b) => parseInt(a.GoodsId) - parseInt(b.GoodsId));
             setTableData(parsedData);
         }
     }, [responseTableData]);
 
+    function extractGoodsIDs(dataString: string): string[] {
+        const parts = dataString.split('"goodsID"');
+        const goodsIDs: string[] = [];
+        for (let i = 1; i < parts.length; i++) {
+            const start = parts[i].indexOf('"') + 1;
+            const end = parts[i].indexOf('"', start);
+            const goodsID = parts[i].substring(start, end);
+            goodsIDs.push(goodsID);
+        }
+        return goodsIDs;
+    }
 
-    const { storeGoodsId } = useGoodsStore();
-    const { storeGoodsName } = useGoodsStore();
-    const { storeGoodsPrice } = useGoodsStore();
-    const { storeGoodsDescription } = useGoodsStore();
-    const { storeGoodsSeller } = useGoodsStore();
-    const { storeGoodsStar } = useGoodsStore();
+    useEffect(() => {
+        if (typeof responseTableStarData === 'string') {
+            const parsedData = extractGoodsIDs(responseTableStarData);
+            setTableStarData(parsedData);
+        }
+    }, [responseTableStarData]);
 
-    const [selectedGoods, setSelectedGoods] = useState<GoodsData>(null);
+    const { storeGoodsId, storeGoodsName, storeGoodsPrice, storeGoodsDescription, storeGoodsSeller, storeGoodsStar } = useGoodsStore();
 
-    const handleGoodsInfo =async (goods: GoodsData) => {
+    const [selectedGoods, setSelectedGoods] = useState<GoodsData | null>(null);
+
+    const handleGoodsInfo = async (goods: GoodsData) => {
         setSelectedGoods(goods);
         if (selectedGoods) {
             storeGoodsId(selectedGoods.GoodsId);
@@ -152,14 +157,14 @@ export function SellerMain() {
 
     const handleToggleStar = async (goods: GoodsData) => {
         try {
-            if (isStarred) {
-                setIsStarred(false);
+            if (tableStarData.includes(goods.GoodsId)) {
                 const message = new GoodsDeleteStarMessage(goods.GoodsId, userName);
                 await sendPostRequest(message);
+                init();
             } else {
-                setIsStarred(true);
                 const message = new GoodsAddStarMessage(goods.GoodsId, userName);
                 await sendPostRequest(message);
+                init();
             }
             init();
         } catch (error: any) {
@@ -179,6 +184,8 @@ export function SellerMain() {
                         '& .MuiDrawer-paper': {
                             width: drawerWidth,
                             boxSizing: 'border-box',
+                            background: themeMode === 'dark' ? 'linear-gradient(to bottom, #333333, #111111)' : 'linear-gradient(to bottom, #ffffff, #f5f5f5)',
+                            color: themeMode === 'dark' ? '#cbe681' : '#333333',
                         },
                     }}
                     variant="temporary"
@@ -233,67 +240,82 @@ export function SellerMain() {
                             top: '90%',
                             transform: 'translateY(-50%)',
                             zIndex: 1000,
-                            cursor: 'pointer', // 鼠标悬停时显示指针手势
-                            padding: '10px', // 按钮的内边距
-                            color: 'white', // 图标颜色
-                            backgroundColor: 'grey', // 按钮背景颜色，使用对比色
+                            cursor: 'pointer',
+                            padding: '10px',
+                            color: 'white',
+                            backgroundColor: 'grey',
+                            '&:hover': {
+                                backgroundColor: '#555555',
+                            }
                         }}
                     >
                         <ListItemIcon>
                             <ArrowForwardIcon />
                         </ListItemIcon>
                         <UnreadIndicator count={unreadMessagesCount} />
-                    </Button>)}
-                在这里陈列商品
-                {/*{ tableData }*/}
-                <Table sx={{ minWidth: 650 }}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align="center">商品名</TableCell>
-                            <TableCell align="center">商品价格</TableCell>
-                            <TableCell align="center">商品描述</TableCell>
-                            <TableCell align="center">商品卖家</TableCell>
-                            <TableCell align="center">Stars</TableCell>
-                            <TableCell align="center">操作</TableCell> {/* 修改此处 */}
-                            <TableCell align="center">查看详情</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {tableData.map((row, index) => (
-                            <TableRow key={index}>
-                                <TableCell align="center">{row.GoodsName}</TableCell>
-                                <TableCell align="center">{row.GoodsPrice}</TableCell>
-                                <TableCell align="center">{row.GoodsDescription}</TableCell>
-                                <TableCell align="center">{row.GoodsSeller}</TableCell>
-                                <TableCell align="center">{row.GoodsStar}</TableCell>
-                                <TableCell align="center">
+                    </Button>
+                )}
+
+                <Grid container spacing={3} sx={{ padding: 3 }}>
+                    {tableData.map((row, index) => (
+                        <Grid item xs={12} md={6} lg={4} key={index}>
+                            <Card
+                                sx={{
+                                    height: '100%',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
+                                    color: themeMode === 'dark' ? '#cbe681' : '#333333',
+                                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                                    transition: 'transform 0.3s',
+                                    '&:hover': {
+                                        transform: 'scale(1.05)',
+                                        boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
+                                    },
+                                }}
+                            >
+                                <CardContent sx={{ flexGrow: 1 }}>
+                                    <Typography gutterBottom variant="h5" component="div">
+                                        {row.GoodsName}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {row.GoodsDescription}
+                                    </Typography>
+                                    <Typography variant="h6" color="text.primary">
+                                        ¥{row.GoodsPrice}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        卖家: {row.GoodsSeller}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        Stars: {row.GoodsStar}
+                                    </Typography>
+                                </CardContent>
+                                <CardActions>
                                     <IconButton
                                         onClick={() => handleToggleStar(row)}
                                         sx={{
-                                            color: isStarred ? 'yellow' : 'grey'
+                                            color: tableStarData.includes(row.GoodsId) ? 'yellow' : 'grey',
                                         }}
                                     >
                                         <StarIcon />
                                     </IconButton>
-                                </TableCell>
-                                <TableCell align="center">
                                     <IconButton
                                         onClick={() => handleGoodsInfo(row)}
                                         sx={{
-                                            backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
-                                            color: themeMode === 'dark' ? '#cbe681' : '#d1e499',
+                                            color: themeMode === 'dark' ? '#cbe681' : '#333333',
                                             '&:hover': {
-                                                backgroundColor: themeMode === 'dark' ? '#333333' : '#f5f5f5',
-                                            }
+                                                color: themeMode === 'dark' ? '#d1e499' : '#666666',
+                                            },
                                         }}
                                     >
                                         <InfoIcon />
                                     </IconButton>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                                </CardActions>
+                            </Card>
+                        </Grid>
+                    ))}
+                </Grid>
             </div>
         </ThemeProvider>
     );

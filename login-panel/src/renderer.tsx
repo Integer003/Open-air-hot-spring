@@ -3,7 +3,6 @@ import React from 'react'
 import { render } from 'react-dom'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import { Main } from 'Pages/Main'
-import { AnotherPage } from 'Pages/AnotherPage'
 import { RegisterPage } from 'Pages/RegisterPage'
 import { SellerMain } from 'Pages/SellerMain'
 import { RegulatorMain } from 'Pages/RegulatorMain'
@@ -13,6 +12,8 @@ import { SellerAddGoods } from 'Pages/SellerPage/SellerAddGoods'
 import { SellerStorage} from 'Pages/SellerPage/SellerStorage'
 import { RegulatorProfile } from 'Pages/RegulatorPage/RegulatorProfile'
 import { GoodsMain } from 'Pages/SellerPage/GoodsMain'
+
+// import './Pages/theme/global.css';
 
 const Layout = () => {
     return (

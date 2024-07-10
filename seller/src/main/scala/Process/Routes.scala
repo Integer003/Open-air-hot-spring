@@ -66,6 +66,11 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "SellerQueryGoodsIsStarredMessage" =>
+        IO(decode[SellerQueryGoodsIsStarredMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SellerQueryGoodsIsStarredMessage")))
+          .flatMap { m =>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }
