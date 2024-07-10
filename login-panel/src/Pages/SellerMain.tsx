@@ -36,13 +36,14 @@ import {
 } from '@mui/icons-material'
 import { themes } from './theme/theme';
 import AppBarComponent from './theme/AppBarComponent';
-import { useGoodsStore, useUserStore } from './store';
+import { useGoodsStore, useThemeStore, useUserStore } from './store'
 import { UnreadIndicator } from './tool/Apps';
 import { sendPostRequest } from './tool/apiRequest';
 import { SellerQueryGoodsMessage } from 'Plugins/SellerAPI/SellerQueryGoodsMessage';
 import { GoodsAddStarMessage } from 'Plugins/GoodsAPI/GoodsAddStarMessage';
 import { GoodsDeleteStarMessage } from 'Plugins/GoodsAPI/GoodsDeleteStarMessage';
 import { SellerQueryGoodsIsStarredMessage } from 'Plugins/SellerAPI/SellerQueryGoodsIsStarredMessage';
+import BackgroundImage from 'Pages/theme/BackgroungImage'
 
 type ThemeMode = 'light' | 'dark';
 
@@ -71,8 +72,7 @@ const parseDataString = (dataString: string): GoodsData[] => {
 
 export function SellerMain() {
     const history = useHistory();
-    const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
-    const [language, setLanguage] = useState('zh');
+    const { themeMode, storeThemeMode, languageType, storeLanguageType } = useThemeStore();
     const unreadMessagesCount = 5;
     const [mobileOpen, setMobileOpen] = useState(false);
     const { userName } = useUserStore();
@@ -174,10 +174,12 @@ export function SellerMain() {
         }
     };
 
+
     return (
+        <BackgroundImage themeMode={themeMode}>
         <ThemeProvider theme={themes[themeMode]}>
             <CssBaseline />
-            <AppBarComponent themeMode={themeMode} setThemeMode={setThemeMode} setLanguage={setLanguage} />
+            <AppBarComponent  />
             <div className="content-with-appbar">
                 <div>
                     <Drawer
@@ -323,5 +325,6 @@ export function SellerMain() {
                 </div>
             </div>
         </ThemeProvider>
+        </BackgroundImage>
 );
 }

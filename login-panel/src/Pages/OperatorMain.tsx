@@ -25,12 +25,13 @@ import {
 import { themes } from './theme/theme';
 import AppBarComponent from './theme/AppBarComponent';
 import { sendPostRequest } from './tool/apiRequest';
-import { useUserStore } from './store';
+import { useThemeStore, useUserStore } from './store'
 import { ShowTableMessage } from 'Plugins/OperatorAPI/ShowTableMessage';
 import { ShowRegulatorTableMessage } from 'Plugins/OperatorAPI/ShowRegulatorTableMessage';
 import { SellerDeleteMessage } from 'Plugins/OperatorAPI/SellerDeleteMessage';
 import { RegulatorDeleteMessage } from 'Plugins/OperatorAPI/RegulatorDeleteMessage';
 import DeleteIcon from '@mui/icons-material/Delete';
+import BackgroundImage from 'Pages/theme/BackgroungImage'
 
 type ThemeMode = 'light' | 'dark';
 
@@ -50,8 +51,7 @@ const parseDataString = (dataString: string): UserData[] => {
 
 export function OperatorMain() {
     const history = useHistory();
-    const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
-    const [language, setLanguage] = useState('zh');
+    const { themeMode, storeThemeMode, languageType, storeLanguageType } = useThemeStore();
     const [responseTableData, setResponseTableData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const { userName } = useUserStore();
@@ -135,13 +135,10 @@ export function OperatorMain() {
     };
 
     return (
+        <BackgroundImage themeMode={themeMode}>
         <ThemeProvider theme={themes[themeMode]}>
             <CssBaseline />
-            <AppBarComponent
-                themeMode={themeMode}
-                setThemeMode={setThemeMode}
-                setLanguage={setLanguage}
-            />
+            <AppBarComponent />
             <div className="content-with-appbar">
                 <Box sx={{ mb: 4, textAlign: 'center', padding: 3 }}>
                     <Typography variant="h1" sx={{ fontSize: '2rem' }}>
@@ -242,5 +239,6 @@ export function OperatorMain() {
                 </Box>
             </div>
         </ThemeProvider>
+        </BackgroundImage>
 );
 }

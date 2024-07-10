@@ -36,6 +36,8 @@ import {
     IconButton,
 } from '@mui/material';
 import { Brightness4, Brightness7, Language } from '@mui/icons-material';
+import BackgroundImage from 'Pages/theme/BackgroungImage'
+import { useThemeStore } from 'Pages/store'
 
 type ThemeMode = 'light' | 'dark';
 
@@ -45,8 +47,7 @@ export function RegisterPage() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [userType, setUserType] = useState('Seller'); // 默认用户类型
-    const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
-    const [language, setLanguage] = useState('zh'); // 默认语言为中文
+    const { themeMode, storeThemeMode, languageType, storeLanguageType } = useThemeStore();
 
 
     const isFormValid = () => {
@@ -96,24 +97,21 @@ export function RegisterPage() {
 
 
     return (
+        <BackgroundImage themeMode={themeMode}>
         <ThemeProvider theme={themes[themeMode]}>
             <CssBaseline />
-            <AppBarComponent
-                themeMode={themeMode}
-                setThemeMode={setThemeMode}
-                setLanguage={setLanguage}
-            />
+            <AppBarComponent />
             <div className="content-with-appbar">
                 <Container maxWidth="sm" sx={{ mt: 4 }}>
                     <Box sx={{ mb: 4, textAlign: 'center' }}>
                         <Typography variant="h1" sx={{ fontSize: '2rem' }}>
-                            {language === 'zh' ? '注册' : 'Register'}
+                            {languageType === 'zh' ? '注册' : 'Register'}
                         </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <FormControl sx={{ width: '100%' }}>
                             <TextField
-                                label={language === 'zh' ? '用户名' : 'Username'}
+                                label={languageType === 'zh' ? '用户名' : 'Username'}
                                 variant="outlined"
                                 fullWidth
                                 value={username}
@@ -121,7 +119,7 @@ export function RegisterPage() {
                                 sx={{ mb: 2 }}
                             />
                             <TextField
-                                label={language === 'zh' ? '密码' : 'Password'}
+                                label={languageType === 'zh' ? '密码' : 'Password'}
                                 variant="outlined"
                                 type="password"
                                 fullWidth
@@ -130,7 +128,7 @@ export function RegisterPage() {
                                 sx={{ mb: 2 }}
                             />
                             <TextField
-                                label={language === 'zh' ? '确认密码' : 'Confirm Password'}
+                                label={languageType === 'zh' ? '确认密码' : 'Confirm Password'}
                                 variant="outlined"
                                 type="password"
                                 fullWidth
@@ -139,14 +137,14 @@ export function RegisterPage() {
                                 sx={{ mb: 2 }}
                             />
                             <FormControl fullWidth sx={{ mb: 2 }}>
-                                <InputLabel>{language === 'zh' ? '用户类型' : 'User type'}</InputLabel>
+                                <InputLabel>{languageType === 'zh' ? '用户类型' : 'User type'}</InputLabel>
                                 <Select
                                     value={userType}
                                     onChange={(e) => setUserType(e.target.value as string)}
                                 >
-                                    <MenuItem value="Seller">{language === 'zh' ? '用户' : 'Seller'}</MenuItem>
-                                    <MenuItem value="Regulator">{language === 'zh' ? '监管方' : 'Regulator'}</MenuItem>
-                                    <MenuItem value="Operator">{language === 'zh' ? '运营方' : 'Operator'}</MenuItem>
+                                    <MenuItem value="Seller">{languageType === 'zh' ? '用户' : 'Seller'}</MenuItem>
+                                    <MenuItem value="Regulator">{languageType === 'zh' ? '监管方' : 'Regulator'}</MenuItem>
+                                    <MenuItem value="Operator">{languageType === 'zh' ? '运营方' : 'Operator'}</MenuItem>
                                 </Select>
                             </FormControl>
                             <Button
@@ -156,7 +154,7 @@ export function RegisterPage() {
                                 disabled={!isFormValid()}
                                 sx={{ mt: 1, mb: 2 }}
                             >
-                                {language === 'zh' ? '注册' : 'Register'}
+                                {languageType === 'zh' ? '注册' : 'Register'}
                             </Button>
                             <Button
                                 variant="outlined"
@@ -164,12 +162,13 @@ export function RegisterPage() {
                                 onClick={() => history.goBack()}
                                 sx={{ mb: 2 }}
                             >
-                                {language === 'zh' ? '返回登录' : 'Back to Login'}
+                                {languageType === 'zh' ? '返回登录' : 'Back to Login'}
                             </Button>
                         </FormControl>
                     </Box>
                 </Container>
             </div>
         </ThemeProvider>
+        </BackgroundImage>
 );
 }

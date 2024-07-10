@@ -1,26 +1,25 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Theme, ThemeProvider, Box } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton, Box } from '@mui/material';
 import { Brightness4, Brightness7, Language, ArrowBack } from '@mui/icons-material';
 import { themes } from './theme';
 import logo from '../../images/summer.png';
 import { useHistory } from 'react-router-dom';
+import { useThemeStore } from '../store'; // 确保路径正确
 
 interface AppBarComponentProps {
-    themeMode: 'light' | 'dark';
-    setThemeMode: React.Dispatch<React.SetStateAction<'light' | 'dark'>>;
-    setLanguage: React.Dispatch<React.SetStateAction<string>>;
-    historyPath?: string; // 添加可选的 historyPath 属性
+    historyPath?: string; // 可选的 historyPath 属性
 }
 
-const AppBarComponent: React.FC<AppBarComponentProps> = ({ themeMode, setThemeMode, setLanguage, historyPath }) => {
+const AppBarComponent: React.FC<AppBarComponentProps> = ({ historyPath }) => {
     const history = useHistory();
+    const { themeMode, storeThemeMode, languageType, storeLanguageType } = useThemeStore();
 
     const toggleTheme = () => {
-        setThemeMode(prevMode => prevMode === 'light' ? 'dark' : 'light');
+        storeThemeMode(themeMode === 'light' ? 'dark' : 'light');
     };
 
     const toggleLanguage = () => {
-        setLanguage(prevLanguage => prevLanguage === 'zh' ? 'en' : 'zh');
+        storeLanguageType(languageType === 'zh' ? 'en' : 'zh');
     };
 
     const handleBack = () => {

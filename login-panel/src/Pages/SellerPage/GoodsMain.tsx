@@ -25,11 +25,12 @@ import { AddShoppingCart as AddShoppingCartIcon } from '@mui/icons-material';
 import { themes } from '../theme/theme';
 import AppBarComponent from '../theme/AppBarComponent';
 import { sendPostRequest } from '../tool/apiRequest';
-import { useGoodsStore, useUserStore } from '../store';
+import { useGoodsStore, useThemeStore, useUserStore } from '../store'
 import { GoodsQueryCommentsMessage } from 'Plugins/GoodsAPI/GoodsQueryCommentsMessage'
 import { GoodsAddCommentsMessage } from 'Plugins/GoodsAPI/GoodsAddCommentsMessage'
 import { GoodsBuyMessage } from 'Plugins/GoodsAPI/GoodsBuyMessage'
 import logo from '../../images/summer.png';
+import BackgroundImage from 'Pages/theme/BackgroungImage'
 
 type ThemeMode = 'light' | 'dark';
 
@@ -54,8 +55,7 @@ const parseDataString = (dataString: string): CommentsData[] => {
 
 export function GoodsMain() {
     const history = useHistory();
-    const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
-    const [language, setLanguage] = useState('zh');
+    const { themeMode, storeThemeMode, languageType, storeLanguageType } = useThemeStore();
     const { userName } = useUserStore();
     const { goodsId, goodsName, goodsPrice, goodsDescription, goodsSeller } = useGoodsStore();
     const [tableData, setTableData] = useState<CommentsData[]>([]);
@@ -140,12 +140,10 @@ export function GoodsMain() {
     }, [commentsResponse]);
 
     return (
+        <BackgroundImage themeMode={themeMode}>
         <ThemeProvider theme={themes[themeMode]}>
             <CssBaseline />
             <AppBarComponent
-                themeMode={themeMode}
-                setThemeMode={setThemeMode}
-                setLanguage={setLanguage}
                 historyPath={'/SellerMain'}
                 // TODO: if a regulator come in? or just another page?
             />
@@ -243,5 +241,6 @@ export function GoodsMain() {
                 </Box>
             </div>
         </ThemeProvider>
+        </BackgroundImage>
 );
 }

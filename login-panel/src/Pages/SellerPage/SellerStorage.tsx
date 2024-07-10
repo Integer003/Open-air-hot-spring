@@ -53,12 +53,13 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { themes } from '../theme/theme';
 import AppBarComponent from '../theme/AppBarComponent';
 import { sendPostRequest } from '../tool/apiRequest';
-import { useUserStore } from '../store'
+import { useThemeStore, useUserStore } from '../store'
 import { SellerCancelMessage } from 'Plugins/SellerAPI/SellerCancelMessage'
 import ConfirmDialog from '../tool/ConfirmDialog';
 import { SellerQueryStorageMessage } from 'Plugins/SellerAPI/SellerQueryStorageMessage'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { SellerCancelGoodsMessage } from 'Plugins/SellerAPI/SellerCancelGoodsMessage'
+import BackgroundImage from 'Pages/theme/BackgroungImage'
 
 
 
@@ -95,8 +96,7 @@ const parseDataString = (dataString: string): GoodsData[] => {
 
 export function SellerStorage() {
     const history = useHistory()
-    const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
-    const [language, setLanguage] = useState('zh'); // 默认语言为中文
+    const { themeMode, storeThemeMode, languageType, storeLanguageType } = useThemeStore();
     const [responseData, setResponseData] = useState<any>(null);
     const { userName } = useUserStore();
 
@@ -172,14 +172,10 @@ export function SellerStorage() {
 
 
     return (
+        <BackgroundImage themeMode={themeMode}>
         <ThemeProvider theme={themes[themeMode]}>
             <CssBaseline />
-            <AppBarComponent
-                themeMode={themeMode}
-                setThemeMode={setThemeMode}
-                setLanguage={setLanguage}
-                historyPath={'/SellerMain'}
-            />
+            <AppBarComponent historyPath={'/SellerMain'} />
             <div className="content-with-appbar">
                 <Box sx={{ mb: 4, textAlign: 'center' }}>
                     <Typography variant="h1" sx={{ fontSize: '2rem' }}>
@@ -264,7 +260,7 @@ export function SellerStorage() {
                 </Button>
             </div>
         </ThemeProvider>
-
+        </BackgroundImage>
 );
 }
 

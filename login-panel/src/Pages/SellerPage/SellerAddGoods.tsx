@@ -19,15 +19,16 @@ import {
 import { themes } from '../theme/theme';
 import AppBarComponent from '../theme/AppBarComponent';
 import { sendPostRequest } from '../tool/apiRequest';
-import { useUserStore } from '../store'
+import { useThemeStore, useUserStore } from '../store'
 import { GoodsAddMessage } from 'Plugins/GoodsAPI/GoodsAddMessage'
 import ConfirmDialog from '../tool/ConfirmDialog';
+import BackgroundImage from 'Pages/theme/BackgroungImage'
 
 type ThemeMode = 'light' | 'dark';
 
 export function SellerAddGoods() {
     const history = useHistory();
-    const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
+    const { themeMode, storeThemeMode, languageType, storeLanguageType } = useThemeStore();
     const [goodsName, setGoodsName] = useState('');
     const [price, setPrice] = useState('');
     const [description, setDescription] = useState('');
@@ -61,10 +62,10 @@ export function SellerAddGoods() {
     };
 
     return (
+        <BackgroundImage themeMode={themeMode}>
         <ThemeProvider theme={themes[themeMode]}>
             <CssBaseline />
-            <AppBarComponent themeMode={themeMode} setThemeMode={setThemeMode} setLanguage={() => {
-            }} historyPath={'/SellerStorage'} />
+            <AppBarComponent historyPath={'/SellerStorage'} />
             <div className="content-with-appbar">
                 <Container component="main" maxWidth="xs">
                     <CssBaseline />
@@ -155,5 +156,6 @@ export function SellerAddGoods() {
                 </Container>
             </div>
         </ThemeProvider>
+        </BackgroundImage>
 );
 }

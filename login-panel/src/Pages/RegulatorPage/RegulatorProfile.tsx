@@ -43,9 +43,10 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { themes } from '../theme/theme';
 import AppBarComponent from '../theme/AppBarComponent';
 import { sendPostRequest } from '../tool/apiRequest';
-import { useUserStore } from '../store'
+import { useThemeStore, useUserStore } from '../store'
 import { RegulatorCancelMessage } from 'Plugins/RegulatorAPI/RegulatorCancelMessage'
 import ConfirmDialog from '../tool/ConfirmDialog';
+import BackgroundImage from 'Pages/theme/BackgroungImage'
 
 
 
@@ -55,8 +56,7 @@ const drawerWidth = 240;
 
 export function RegulatorProfile(){
     const history=useHistory()
-    const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
-    const [language, setLanguage] = useState('zh'); // 默认语言为中文
+    const { themeMode, storeThemeMode, languageType, storeLanguageType } = useThemeStore();
     const [responseData, setResponseData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const { userName } = useUserStore();
@@ -112,14 +112,10 @@ export function RegulatorProfile(){
 
 
     return (
+        <BackgroundImage themeMode={themeMode}>
         <ThemeProvider theme={themes[themeMode]}>
             <CssBaseline />
-            <AppBarComponent
-                themeMode={themeMode}
-                setThemeMode={setThemeMode}
-                setLanguage={setLanguage}
-                historyPath={'./RegulatorMain'}
-            />
+            <AppBarComponent historyPath={'./RegulatorMain'} />
             <div className="content-with-appbar">
                 <div>
                     <Box sx={{ mb: 4, textAlign: 'center' }}>
@@ -144,6 +140,7 @@ export function RegulatorProfile(){
                 </div>
             </div>
         </ThemeProvider>
+        </BackgroundImage>
 );
 }
 

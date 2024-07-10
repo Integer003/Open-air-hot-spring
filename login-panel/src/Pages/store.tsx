@@ -1,6 +1,33 @@
 // store.ts
 import create from 'zustand';
 
+type ThemeMode = 'light' | 'dark';
+type LanguageType = 'zh' | 'en';
+
+type ThemeState = {
+    themeMode: ThemeMode;
+    storeThemeMode: (mode: ThemeMode) => void;
+    languageType: LanguageType;
+    storeLanguageType: (type: LanguageType) => void;
+};
+
+export const useThemeStore = create<ThemeState>((set) => ({
+    themeMode: 'dark' as ThemeMode,
+    storeThemeMode: (mode) => {
+        // 确保设置的主题模式是有效的
+        if (mode === 'light' || mode === 'dark') {
+            set({ themeMode: mode });
+        }
+    },
+    languageType: 'zh' as LanguageType,
+    storeLanguageType: (type) => {
+        // 确保设置的主题模式是有效的
+        if (type === 'zh' || type === 'en') {
+            set({ languageType: type });
+        }
+    },
+}));
+
 type UserState = {
     userName: string;
     storeUserName: (name: string) => void;

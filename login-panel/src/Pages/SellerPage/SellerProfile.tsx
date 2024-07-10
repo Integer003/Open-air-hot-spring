@@ -26,18 +26,18 @@ import {
 import { themes } from '../theme/theme';
 import AppBarComponent from '../theme/AppBarComponent';
 import { sendPostRequest } from '../tool/apiRequest';
-import { useUserStore } from '../store';
+import { useThemeStore, useUserStore } from '../store'
 import { SellerCancelMessage } from 'Plugins/SellerAPI/SellerCancelMessage';
 import ConfirmDialog from '../tool/ConfirmDialog';
 import { SellerQueryMoneyMessage } from 'Plugins/SellerAPI/SellerQueryMoneyMessage';
 import { SellerRechargeMessage } from 'Plugins/SellerAPI/SellerRechargeMessage';
+import BackgroundImage from 'Pages/theme/BackgroungImage'
 
 type ThemeMode = 'light' | 'dark';
 
 export function SellerProfile() {
     const history = useHistory();
-    const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
-    const [language, setLanguage] = useState('zh');
+    const { themeMode, storeThemeMode, languageType, storeLanguageType } = useThemeStore();
     const [error, setError] = useState<string | null>(null);
     const { userName } = useUserStore();
     const [open, setOpen] = useState(false);
@@ -135,14 +135,10 @@ export function SellerProfile() {
     }, [rechargeMoneyResponse]);
 
     return (
+        <BackgroundImage themeMode={themeMode}>
         <ThemeProvider theme={themes[themeMode]}>
             <CssBaseline />
-            <AppBarComponent
-                themeMode={themeMode}
-                setThemeMode={setThemeMode}
-                setLanguage={setLanguage}
-                historyPath={'/SellerMain'}
-            />
+            <AppBarComponent historyPath={'/SellerMain'} />
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                 <Box sx={{ textAlign: 'center', mb: 4 }}>
                     <Typography variant="h2" component="h1" gutterBottom>
@@ -235,5 +231,6 @@ export function SellerProfile() {
                 />
             </Container>
         </ThemeProvider>
+        </BackgroundImage>
     );
 }

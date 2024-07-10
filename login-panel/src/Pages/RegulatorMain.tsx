@@ -23,7 +23,7 @@ import {
 import { themes } from './theme/theme';
 import AppBarComponent from './theme/AppBarComponent';
 import { sendPostRequest } from './tool/apiRequest';
-import { useUserStore } from './store';
+import { useThemeStore, useUserStore } from './store'
 import { ShowTableMessage } from 'Plugins/OperatorAPI/ShowTableMessage';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { del } from 'idb-keyval'
@@ -38,6 +38,7 @@ import { UnreadIndicator } from 'Pages/tool/Apps'
 import {RegulatorQueryGoodsMessage} from 'Plugins/RegulatorAPI/RegulatorQueryGoodsMessage'
 import {RegulatorModifyGoodsMessage} from 'Plugins/RegulatorAPI/RegulatorModifyGoodsMessage'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
+import BackgroundImage from 'Pages/theme/BackgroungImage'
 
 type ThemeMode = 'light' | 'dark';
 
@@ -69,9 +70,7 @@ const parseDataString = (dataString: string): GoodsData[] => {
 
 export function RegulatorMain() {
     const history = useHistory();
-    const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
-    const [language, setLanguage] = useState('zh'); // 默认语言为中文
-
+    const { themeMode, storeThemeMode, languageType, storeLanguageType } = useThemeStore();
     const { userName } = useUserStore();
 
     const unreadMessagesCount=5;
@@ -167,13 +166,10 @@ export function RegulatorMain() {
 
 
     return (
+        <BackgroundImage themeMode={themeMode}>
         <ThemeProvider theme={themes[themeMode]}>
             <CssBaseline />
-            <AppBarComponent
-                themeMode={themeMode}
-                setThemeMode={setThemeMode}
-                setLanguage={setLanguage}
-            />
+            <AppBarComponent />
             <div className="content-with-appbar">
                 <div>
                     <Box sx={{ mb: 4, textAlign: 'center' }}>
@@ -301,5 +297,6 @@ export function RegulatorMain() {
                 </div>
             </div>
         </ThemeProvider>
+        </BackgroundImage>
 );
 }
