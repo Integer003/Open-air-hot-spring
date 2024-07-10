@@ -31,6 +31,16 @@ const lightTheme = createTheme({
                 },
             },
         },
+        // MuiCssBaseline: {
+        //     styleOverrides: {
+        //         body: {
+        //             backgroundImage: 'url(/Users/integer/Desktop/THU_1c/1Type_safe_practices_for_frontend_and_backend_development/Open-air-hot-spring/login-panel/src/images/CoolSky.jpg)',
+        //             backgroundSize: 'cover',
+        //             backgroundRepeat: 'no-repeat',
+        //             backgroundPosition: 'center center',
+        //         },
+        //     },
+        // },
     },
 });
 
@@ -64,6 +74,16 @@ const darkTheme = createTheme({
                 },
             },
         },
+        // MuiCssBaseline: {
+        //     styleOverrides: {
+        //         body: {
+        //             backgroundImage: '/Users/integer/Desktop/THU_1c/1Type_safe_practices_for_frontend_and_backend_development/Open-air-hot-spring/login-panel/src/images/WitchingHour.jpg',
+        //             backgroundSize: 'cover',
+        //             backgroundRepeat: 'no-repeat',
+        //             backgroundPosition: 'center center',
+        //         },
+        //     },
+        // },
     },
 });
 

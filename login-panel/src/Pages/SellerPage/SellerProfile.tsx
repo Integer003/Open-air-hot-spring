@@ -1,66 +1,45 @@
-// 主页面组件，可能是应用加载时首先展示的页面
-import React, { useState, useEffect, useContext } from 'react'
-import axios, { isAxiosError } from 'axios'
-import { API } from 'Plugins/CommonUtils/API'
-import { useHistory, useParams } from 'react-router-dom';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import logo from '../../images/summer.png';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
     AppBar,
     Typography,
     Button,
-    Container,
     CssBaseline,
-    Drawer,
-    Toolbar,
     Box,
     ThemeProvider,
-    createTheme,
     TextField,
     Grid,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    IconButton,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
     Card,
     CardContent,
-    CardMedia,
+    CardActions,
+    IconButton,
+    Container,
 } from '@mui/material';
-import { Brightness4, Brightness7, Language } from '@mui/icons-material';
-import HomeIcon from '@mui/icons-material/Home';
-import PersonIcon from '@mui/icons-material/Person';
-import InboxIcon from '@mui/icons-material/Create';
-import MessageIcon from '@mui/icons-material/Message';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import ReceiptIcon from '@mui/icons-material/Receipt';
-import LogoutIcon from '@mui/icons-material/Logout';
+import {
+    Brightness4,
+    Brightness7,
+    Language,
+    Person as PersonIcon,
+    Logout as LogoutIcon,
+    ArrowForward as ArrowForwardIcon,
+} from '@mui/icons-material';
 import { themes } from '../theme/theme';
 import AppBarComponent from '../theme/AppBarComponent';
 import { sendPostRequest } from '../tool/apiRequest';
-import { useUserStore } from '../store'
-import { SellerCancelMessage } from 'Plugins/SellerAPI/SellerCancelMessage'
+import { useUserStore } from '../store';
+import { SellerCancelMessage } from 'Plugins/SellerAPI/SellerCancelMessage';
 import ConfirmDialog from '../tool/ConfirmDialog';
-import { SellerQueryMoneyMessage } from 'Plugins/SellerAPI/SellerQueryMoneyMessage'
-import { SellerRechargeMessage } from 'Plugins/SellerAPI/SellerRechargeMessage'
-
+import { SellerQueryMoneyMessage } from 'Plugins/SellerAPI/SellerQueryMoneyMessage';
+import { SellerRechargeMessage } from 'Plugins/SellerAPI/SellerRechargeMessage';
 
 type ThemeMode = 'light' | 'dark';
 
-const drawerWidth = 240;
-
-export function SellerProfile(){
-    const history=useHistory()
+export function SellerProfile() {
+    const history = useHistory();
     const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
-    const [language, setLanguage] = useState('zh'); // 默认语言为中文
+    const [language, setLanguage] = useState('zh');
     const [error, setError] = useState<string | null>(null);
     const { userName } = useUserStore();
-
     const [open, setOpen] = useState(false);
     const [result, setResult] = useState<string | null>(null);
 
@@ -75,7 +54,7 @@ export function SellerProfile(){
 
     useEffect(() => {
         if (userName) {
-            console.log(`欢迎, {userName}!`);
+            console.log(`欢迎, ${userName}!`);
         } else {
             console.log('用户名未定义');
         }
@@ -86,11 +65,10 @@ export function SellerProfile(){
             const message = new SellerCancelMessage(userName);
             const data = await sendPostRequest(message);
             setResponseData(data);
-        } catch (error) {
+        } catch (error: any) {
             setError(error.message);
         }
-
-    }
+    };
 
     useEffect(() => {
         if (result === 'Confirmed') {
@@ -102,18 +80,16 @@ export function SellerProfile(){
 
     useEffect(() => {
         if (responseData) {
-            if (responseData=="User successfully deleted"){
-                alert(userName+"注销成功");
+            if (responseData === "User successfully deleted") {
+                alert(userName + "注销成功");
                 history.push('/');
-            }else{
+            } else {
                 alert("注销失败！");
             }
         }
     }, [responseData]);
 
-
     const [responseData1, setResponseData1] = useState<any>('');
-
 
     const handleQueryMoney = async () => {
         try {
@@ -124,42 +100,39 @@ export function SellerProfile(){
             setError(error.message);
             setResponseData1('error');
         }
-    }
+    };
 
-
-    const init = async() => {
+    const init = async () => {
         handleQueryMoney();
-    }
+    };
 
     useEffect(() => {
         init();
     }, []);
-
 
     const [rechargeMoney, setRechargeMoney] = useState(0);
     const [rechargeMoneyResponse, setRechargeMoneyResponse] = useState('');
 
     const handleRechargeMoney = async (money: number) => {
         try {
-            const message = new SellerRechargeMessage(userName,money);
+            const message = new SellerRechargeMessage(userName, money);
             const data = await sendPostRequest(message);
             setRechargeMoneyResponse(data);
-        } catch (error) {
+        } catch (error: any) {
             setError(error.message);
         }
-    }
+    };
 
     useEffect(() => {
         if (rechargeMoneyResponse) {
-            if (typeof rechargeMoneyResponse==='string' && rechargeMoneyResponse.startsWith("Success")){
+            if (typeof rechargeMoneyResponse === 'string' && rechargeMoneyResponse.startsWith("Success")) {
                 alert("充值成功");
                 init();
-            }else{
+            } else {
                 alert("充值失败！");
             }
         }
     }, [rechargeMoneyResponse]);
-
 
     return (
         <ThemeProvider theme={themes[themeMode]}>
@@ -168,56 +141,99 @@ export function SellerProfile(){
                 themeMode={themeMode}
                 setThemeMode={setThemeMode}
                 setLanguage={setLanguage}
-                historyPath={'./SellerMain'}
+                historyPath={'/SellerMain'}
             />
-            <div className="content-with-appbar">
-                <div>
-                    <Box sx={{ mb: 4, textAlign: 'center' }}>
-                        <Typography variant="h1" sx={{ fontSize: '2rem' }}>
-                            <h1>个人中心！</h1>
-                            <p>欢迎, {userName}!</p>
-                        </Typography>
-                    </Box>
-                    <Box sx={{ mb: 4, textAlign: 'center' }}>
-                        <p>你有{responseData1}元</p>
-                    </Box>
-                    <TextField
-                        margin="normal"
-                        required
-                        name="price"
-                        label="充值金额"
-                        type="number"
-                        id="price"
-                        value={rechargeMoney}
-                        onChange={(e) => {
-                            const value =
-                                parseInt(e.target.value);
-                            if (!isNaN(value)) {
-                                setRechargeMoney(value);
-                            }
-                        }}
-                    />
-                    <Button onClick={() => handleRechargeMoney(rechargeMoney)}>
-                        充值
-                    </Button>
-
-                    <Button onClick={() => history.push('./SellerMain')}>
-                        返回
-                    </Button>
-                    <Button onClick={handleOpen}>
-                        注销
-                    </Button>
-                    <ConfirmDialog
-                        open={open}
-                        onConfirm={() => handleClose(true)}
-                        onCancel={() => handleClose(false)}
-                        title="提示"
-                        message="您确定要注销吗？"
-                    />
-                </div>
-            </div>
+            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+                <Box sx={{ textAlign: 'center', mb: 4 }}>
+                    <Typography variant="h2" component="h1" gutterBottom>
+                        个人中心
+                    </Typography>
+                    <Typography variant="h5" gutterBottom>
+                        欢迎, {userName}!
+                    </Typography>
+                </Box>
+                <Grid container spacing={3} justifyContent="center">
+                    <Grid item xs={12} md={8}>
+                        <Card sx={{ backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff', color: themeMode === 'dark' ? '#cbe681' : '#333333' }}>
+                            <CardContent>
+                                <Typography variant="h6" gutterBottom>
+                                    当前余额: {responseData1} 元
+                                </Typography>
+                                <TextField
+                                    fullWidth
+                                    margin="normal"
+                                    required
+                                    name="price"
+                                    label="充值金额"
+                                    type="number"
+                                    id="price"
+                                    value={rechargeMoney}
+                                    onChange={(e) => {
+                                        const value = parseInt(e.target.value);
+                                        if (!isNaN(value)) {
+                                            setRechargeMoney(value);
+                                        }
+                                    }}
+                                    InputLabelProps={{
+                                        style: { color: themeMode === 'dark' ? '#cbe681' : '#333333' },
+                                    }}
+                                    InputProps={{
+                                        style: { color: themeMode === 'dark' ? '#cbe681' : '#333333' },
+                                    }}
+                                />
+                            </CardContent>
+                            <CardActions sx={{ justifyContent: 'center' }}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => handleRechargeMoney(rechargeMoney)}
+                                    sx={{
+                                        backgroundColor: '#1976d2',
+                                        '&:hover': { backgroundColor: '#1565c0' },
+                                    }}
+                                >
+                                    充值
+                                </Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={12} md={8}>
+                        <Card sx={{ backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff', color: themeMode === 'dark' ? '#cbe681' : '#333333' }}>
+                            <CardActions sx={{ justifyContent: 'center' }}>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={() => history.push('/SellerMain')}
+                                    sx={{
+                                        backgroundColor: '#d32f2f',
+                                        '&:hover': { backgroundColor: '#c62828' },
+                                    }}
+                                >
+                                    返回
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    color="error"
+                                    onClick={handleOpen}
+                                    sx={{
+                                        backgroundColor: '#f44336',
+                                        '&:hover': { backgroundColor: '#e53935' },
+                                    }}
+                                >
+                                    注销
+                                </Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+                </Grid>
+                <ConfirmDialog
+                    open={open}
+                    onConfirm={() => handleClose(true)}
+                    onCancel={() => handleClose(false)}
+                    title="提示"
+                    message="您确定要注销吗？"
+                />
+            </Container>
         </ThemeProvider>
-);
+    );
 }
-
-

@@ -39,7 +39,7 @@ const AppBarComponent: React.FC<AppBarComponentProps> = ({ themeMode, setThemeMo
                 )}
                 <Box display="flex" justifyContent="center" alignItems="center" sx={{ flexGrow: 1 }}>
                     <Typography variant="h6">
-                        某二手交易网站
+                        OpenAirHS二手交易网站
                     </Typography>
                     <img src={logo} alt="logo" style={{ width: '40px', height: '40px', marginLeft: '10px' }} />
                 </Box>

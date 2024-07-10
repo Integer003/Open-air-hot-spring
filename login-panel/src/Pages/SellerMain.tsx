@@ -246,8 +246,8 @@ export function SellerMain() {
                                     onClick={handleDrawerToggle}
                                     sx={{
                                     position: 'fixed',
-                                    left: 0,
-                                    top: '3%',
+                                    left: 20,
+                                    top: '1.5%',
                                     zIndex: 2000,
                                     backgroundColor: themeMode === 'dark' ? '#333333' : '#ffffff',
 
