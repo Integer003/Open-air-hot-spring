@@ -146,6 +146,8 @@ export function GoodsMain() {
                 themeMode={themeMode}
                 setThemeMode={setThemeMode}
                 setLanguage={setLanguage}
+                historyPath={'/SellerMain'}
+                // TODO: if a regulator come in? or just another page?
             />
             <Box sx={{ mb: 4, textAlign: 'center', padding: 3 }}>
                 <Typography variant="h4" sx={{ fontSize: '2rem', mb: 3 }}>

@@ -118,6 +118,7 @@ export function RegulatorProfile(){
                 themeMode={themeMode}
                 setThemeMode={setThemeMode}
                 setLanguage={setLanguage}
+                historyPath={'./RegulatorMain'}
             />
             <div>
                 <Box sx={{ mb: 4, textAlign: 'center' }}>

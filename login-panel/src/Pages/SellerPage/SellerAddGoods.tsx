@@ -63,7 +63,7 @@ export function SellerAddGoods() {
     return (
         <ThemeProvider theme={themes[themeMode]}>
             <CssBaseline />
-            <AppBarComponent themeMode={themeMode} setThemeMode={setThemeMode} setLanguage={() => {}} />
+            <AppBarComponent themeMode={themeMode} setThemeMode={setThemeMode} setLanguage={() => {}} historyPath={'/SellerStorage'} />
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box

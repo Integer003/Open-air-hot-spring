@@ -168,6 +168,7 @@ export function SellerProfile(){
                 themeMode={themeMode}
                 setThemeMode={setThemeMode}
                 setLanguage={setLanguage}
+                historyPath={'./SellerMain'}
             />
             <div>
                 <Box sx={{ mb: 4, textAlign: 'center' }}>

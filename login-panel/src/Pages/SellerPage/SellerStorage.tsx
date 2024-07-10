@@ -178,6 +178,7 @@ export function SellerStorage() {
                 themeMode={themeMode}
                 setThemeMode={setThemeMode}
                 setLanguage={setLanguage}
+                historyPath={'/SellerMain'}
             />
             <Box sx={{ mb: 4, textAlign: 'center' }}>
                 <Typography variant="h1" sx={{ fontSize: '2rem' }}>
