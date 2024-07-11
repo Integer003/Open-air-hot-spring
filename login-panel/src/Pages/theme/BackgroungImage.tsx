@@ -1,4 +1,3 @@
-// BackgroundImage.tsx
 import React from 'react';
 import Box from '@mui/material/Box';
 import light from '../../images/CoolSky.jpg';
@@ -14,18 +13,25 @@ const BackgroundImage: React.FC<BackgroundImageProps> = ({ themeMode, children }
     const backgroundImage = themeMode === 'light' ? light : dark;
 
     return (
-        <Box position="fixed"
+        <Box
             sx={{
                 backgroundImage: `url(${backgroundImage})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 width: '100%',
-                height: '100vh', // 或者你想要的高度
-                backgroundRepeat: 'no-repeat', // 确保背景图片不重复
-                //zIndex: -1, /* 确保伪元素在内容之下 */
+                height: '100vh',
+                backgroundRepeat: 'no-repeat',
+                backgroundAttachment: 'fixed', // 背景图片固定
+                overflowY: 'auto', // 确保内容可以上下滚动
             }}
         >
-            {children}
+            <Box
+                sx={{
+                    minHeight: '100vh', // 确保内容区域至少和视口一样高
+                }}
+            >
+                {children}
+            </Box>
         </Box>
     );
 };

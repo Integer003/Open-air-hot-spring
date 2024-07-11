@@ -1,6 +1,6 @@
-import { GoodsMessage } from 'Plugins/GoodsAPI/GoodsMessage'
+import { SellerMessage } from 'Plugins/SellerAPI/SellerMessage'
 
-export class GoodsAddStarMessage extends GoodsMessage {
+export class SellerAddGoodsCartMessage extends SellerMessage {
     goodsID: string;
     userName: string;
     constructor(goodsID: string, userName: string) {

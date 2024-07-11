@@ -75,7 +75,7 @@ export function RegulatorProfile(){
 
     useEffect(() => {
         if (userName) {
-            console.log(`欢迎, {userName}!`);
+            console.log(`欢迎, ${userName}!`);
         } else {
             console.log('用户名未定义');
         }

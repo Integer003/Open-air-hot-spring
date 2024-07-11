@@ -1,6 +1,6 @@
 import { SellerMessage } from 'Plugins/SellerAPI/SellerMessage'
 
-export class SellerQueryGoodsIsStarredMessage extends SellerMessage {
+export class SellerQueryGoodsIsCartMessage extends SellerMessage {
     userName: string;
     constructor(userName:string) {
         super();

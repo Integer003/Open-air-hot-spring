@@ -21,7 +21,8 @@ import {
     ListItem,
     ListItemText,
 } from '@mui/material';
-import { AddShoppingCart as AddShoppingCartIcon } from '@mui/icons-material';
+import { AddShoppingCart as AddShoppingCartIcon, RemoveShoppingCart } from '@mui/icons-material'
+import { ShoppingBag as ShoppingBagIcon } from '@mui/icons-material';
 import { themes } from '../theme/theme';
 import AppBarComponent from '../theme/AppBarComponent';
 import { sendPostRequest } from '../tool/apiRequest';
@@ -31,6 +32,13 @@ import { GoodsAddCommentsMessage } from 'Plugins/GoodsAPI/GoodsAddCommentsMessag
 import { GoodsBuyMessage } from 'Plugins/GoodsAPI/GoodsBuyMessage'
 import logo from '../../images/summer.png';
 import BackgroundImage from 'Pages/theme/BackgroungImage'
+import { GoodsDeleteStarMessage } from 'Plugins/GoodsAPI/GoodsDeleteStarMessage'
+import { GoodsAddStarMessage } from 'Plugins/GoodsAPI/GoodsAddStarMessage'
+import { SellerDeleteGoodsCartMessage } from 'Plugins/SellerAPI/SellerDeleteGoodsCartMessage'
+import { SellerAddGoodsCartMessage } from 'Plugins/SellerAPI/SellerAddGoodsCartMessage'
+import { SellerQueryGoodsMessage } from 'Plugins/SellerAPI/SellerQueryGoodsMessage'
+import { SellerQueryGoodsIsStarredMessage } from 'Plugins/SellerAPI/SellerQueryGoodsIsStarredMessage'
+import { SellerQueryGoodsIsCartMessage } from 'Plugins/SellerAPI/SellerQueryGoodsIsCartMessage'
 
 type ThemeMode = 'light' | 'dark';
 
@@ -42,7 +50,7 @@ type CommentsData = {
     Content: string;
 };
 
-const parseDataString = (dataString: string): CommentsData[] => {
+const parseDataStringComments = (dataString: string): CommentsData[] => {
     const parsedArray = JSON.parse(dataString);
     return parsedArray.map((item: any) => ({
         CommentId: item.commentId,
@@ -53,11 +61,32 @@ const parseDataString = (dataString: string): CommentsData[] => {
     }));
 };
 
+type GoodsData = {
+    GoodsId: string;
+    GoodsName: string;
+    GoodsPrice: string;
+    GoodsDescription: string;
+    GoodsSeller: string;
+    GoodsStar: string;
+};
+
+const parseDataStringGoods = (dataString: string): GoodsData[] => {
+    const parsedArray = JSON.parse(dataString);
+    return parsedArray.map((item: any) => ({
+        GoodsId: item.goodsID,
+        GoodsName: item.goodsName,
+        GoodsPrice: item.price,
+        GoodsDescription: item.description,
+        GoodsSeller: item.sellerName,
+        GoodsStar: item.star,
+    }));
+};
+
 export function GoodsMain() {
     const history = useHistory();
     const { themeMode, storeThemeMode, languageType, storeLanguageType } = useThemeStore();
     const { userName } = useUserStore();
-    const { goodsId, goodsName, goodsPrice, goodsDescription, goodsSeller } = useGoodsStore();
+    const { goodsId, goodsName, goodsPrice, goodsDescription, goodsSeller, goodsStar } = useGoodsStore();
     const [tableData, setTableData] = useState<CommentsData[]>([]);
     const [responseTableData, setResponseTableData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
@@ -65,11 +94,29 @@ export function GoodsMain() {
     const [buyResponse, setBuyResponse] = useState<string | null>(null);
     const [commentsResponse, setCommentsResponse] = useState<string | null>(null);
 
+
+    const [tableGoodsData, setTableGoodsData] = useState<GoodsData[]>([]);
+    const [responseTableGoodsData, setResponseTableGoodsData] = useState<any>(null);
+    const [tableStarData, setTableStarData] = useState<string[]>([]);
+    const [responseTableStarData, setResponseTableStarData] = useState<any>(null);
+    const [tableCartData, setTableCartData] = useState<string[]>([]);
+    const [responseTableCartData, setResponseTableCartData] = useState<any>(null);
+
     const init = async () => {
         try {
             const message = new GoodsQueryCommentsMessage(goodsId);
             const data = await sendPostRequest(message);
             setResponseTableData(data);
+            const messageGoods = new SellerQueryGoodsMessage(userName);
+            const dataGoods = await sendPostRequest(message);
+            setResponseTableGoodsData(dataGoods);
+            const messageStar = new SellerQueryGoodsIsStarredMessage(userName);
+            const dataStar = await sendPostRequest(messageStar);
+            setResponseTableStarData(dataStar);
+            const messageCart = new SellerQueryGoodsIsCartMessage(userName);
+            const dataCart = await sendPostRequest(messageCart);
+            setResponseTableCartData(dataCart);
+
         } catch (error: any) {
             setError(error.message);
             setResponseTableData('error');
@@ -82,7 +129,7 @@ export function GoodsMain() {
 
     useEffect(() => {
         if (typeof responseTableData === 'string') {
-            const parsedData = parseDataString(responseTableData);
+            const parsedData = parseDataStringComments(responseTableData);
             setTableData(parsedData);
         }
     }, [responseTableData]);
@@ -116,6 +163,80 @@ export function GoodsMain() {
         }
         handleClose();
     };
+
+
+    useEffect(() => {
+        if (typeof responseTableData === 'string') {
+            const parsedData = parseDataStringGoods(responseTableData);
+            parsedData.sort((a, b) => parseInt(a.GoodsId) - parseInt(b.GoodsId));
+            setTableGoodsData(parsedData);
+        }
+    }, [responseTableGoodsData]);
+
+    // shit of star
+
+    function extractGoodsIDs(dataString: string): string[] {
+        const parts = dataString.split('"goodsID"');
+        const goodsIDs: string[] = [];
+        for (let i = 1; i < parts.length; i++) {
+            const start = parts[i].indexOf('"') + 1;
+            const end = parts[i].indexOf('"', start);
+            const goodsID = parts[i].substring(start, end);
+            goodsIDs.push(goodsID);
+        }
+        return goodsIDs;
+    }
+
+    useEffect(() => {
+        if (typeof responseTableStarData === 'string') {
+            const parsedData = extractGoodsIDs(responseTableStarData);
+            setTableStarData(parsedData);
+        }
+    }, [responseTableStarData]);
+
+    const { storeGoodsStar } = useGoodsStore();
+
+    const handleToggleStar = async () => {
+        try {
+            const message = tableStarData.includes(goodsId) ? new GoodsDeleteStarMessage(goodsId, userName) : new GoodsAddStarMessage(goodsId, userName);
+            await sendPostRequest(message);
+            init();
+            storeGoodsStar(goodsStar);
+        } catch (error: any) {
+            setError(error.message);
+        }
+    };
+
+
+
+    // shit of cart
+
+    useEffect(() => {
+        if (typeof responseTableCartData === 'string') {
+            const parsedData = extractGoodsIDs(responseTableCartData);
+            setTableCartData(parsedData);
+        }
+    }, [responseTableCartData]);
+
+
+    const handleToggleCart = async () => {
+        try {
+            const message = tableCartData.includes(goodsId) ? new SellerDeleteGoodsCartMessage(goodsId, userName) : new SellerAddGoodsCartMessage(goodsId, userName);
+            await sendPostRequest(message);
+            init();
+        } catch (error: any) {
+            setError(error.message);
+        }
+    };
+
+    useEffect(() => {
+        if (typeof responseTableCartData === 'string') {
+            const parsedData = extractGoodsIDs(responseTableCartData);
+            setTableCartData(parsedData);
+        }
+    }, [responseTableCartData]);
+
+
 
     const handleComments = async (myComments: string) => {
         try {
@@ -172,6 +293,9 @@ export function GoodsMain() {
                                     <Typography variant="body2" color="text.secondary">
                                         商品价格：{goodsPrice}元
                                     </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        商品收藏数：{goodsStar}
+                                    </Typography>
                                 </CardContent>
                             </Card>
                         </Grid>
@@ -216,7 +340,21 @@ export function GoodsMain() {
                             mt: 2,
                         }}
                     >
-                        <AddShoppingCartIcon /> 购买
+                        <ShoppingBagIcon /> 购买
+                    </Button>
+                    <Button
+                        onClick={handleToggleCart}
+                        sx={{
+                            backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
+                            color: themeMode === 'dark' ? '#99dc10' : '#99dc10',
+                            '&:hover': {
+                                backgroundColor: themeMode === 'dark' ? '#333333' : '#f5f5f5',
+                            },
+                            mt: 2,
+
+                        }}
+                    >
+                        {tableCartData.includes(goodsId) ? <RemoveShoppingCart/>:<AddShoppingCartIcon />}
                     </Button>
                     <Dialog open={open} onClose={handleClose}>
                         <DialogTitle>确认购买</DialogTitle>

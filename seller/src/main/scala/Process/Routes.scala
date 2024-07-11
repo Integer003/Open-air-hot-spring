@@ -71,6 +71,21 @@ object Routes:
           .flatMap { m =>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "SellerQueryGoodsIsCartMessage" =>
+        IO(decode[SellerQueryGoodsIsCartMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SellerQueryGoodsIsCartMessage")))
+          .flatMap { m =>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "SellerDeleteGoodsCartMessage" =>
+        IO(decode[SellerDeleteGoodsCartMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SellerDeleteGoodsCartMessage")))
+          .flatMap { m =>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "SellerAddGoodsCartMessage" =>
+        IO(decode[SellerAddGoodsCartMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SellerAddGoodsCartMessage")))
+          .flatMap { m =>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }

@@ -29,6 +29,8 @@ import {
     Logout as LogoutIcon,
     ArrowForward as ArrowForwardIcon,
     AddShoppingCart as AddShoppingCartIcon,
+    ShoppingCart as ShoppingCartIcon,
+    Store as StoreIcon,
     Info as InfoIcon,
     Star as StarIcon, Brightness4, Brightness7,
     Details as DetailsIcon,
@@ -146,7 +148,7 @@ export function SellerMain() {
 
     const handleGoodsInfo = async (goods: GoodsData) => {
         setSelectedGoods(goods);
-        if (selectedGoods) {
+        if(selectedGoods) {
             storeGoodsId(selectedGoods.GoodsId);
             storeGoodsName(selectedGoods.GoodsName);
             storeGoodsPrice(selectedGoods.GoodsPrice);
@@ -161,12 +163,8 @@ export function SellerMain() {
         try {
             if (tableStarData.includes(goods.GoodsId)) {
                 const message = new GoodsDeleteStarMessage(goods.GoodsId, userName);
-                await sendPostRequest(message);
-                init();
             } else {
                 const message = new GoodsAddStarMessage(goods.GoodsId, userName);
-                await sendPostRequest(message);
-                init();
             }
             init();
         } catch (error: any) {
@@ -220,9 +218,15 @@ export function SellerMain() {
                                     </ListItemIcon>
                                     <ListItemText primary="消费记录" />
                                 </ListItemButton>
+                                <ListItemButton onClick={() => history.push('/SellerCart')}>
+                                    <ListItemIcon>
+                                        <ShoppingCartIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="购物车" />
+                                </ListItemButton>
                                 <ListItemButton onClick={() => history.push('/SellerStorage')}>
                                     <ListItemIcon>
-                                        <HomeIcon />
+                                        <StoreIcon />
                                     </ListItemIcon>
                                     <ListItemText primary="货仓" />
                                 </ListItemButton>

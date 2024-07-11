@@ -3,6 +3,8 @@ import { app, BrowserWindow, ipcMain, Rectangle, session, WebPreferences } from 
 import * as path from 'path'
 import process from 'process'
 
+
+
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string
 
 if (require('electron-squirrel-startup')) {

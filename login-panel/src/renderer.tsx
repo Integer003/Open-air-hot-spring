@@ -12,6 +12,7 @@ import { SellerAddGoods } from 'Pages/SellerPage/SellerAddGoods'
 import { SellerStorage} from 'Pages/SellerPage/SellerStorage'
 import { RegulatorProfile } from 'Pages/RegulatorPage/RegulatorProfile'
 import { GoodsMain } from 'Pages/SellerPage/GoodsMain'
+import {SellerCart} from 'Pages/SellerPage/SellerCart'
 
 import './Pages/theme/global.css';
 
@@ -29,6 +30,7 @@ const Layout = () => {
                     <Route path="/SellerStorage" exact component={SellerStorage} />
                     <Route path="/RegulatorProfile" exact component={RegulatorProfile} />
                     <Route path="/GoodsMain" exact component={GoodsMain} />
+                    <Route path="/SellerCart" exact component={SellerCart} />
                 </Switch>
             </HashRouter>
     )
