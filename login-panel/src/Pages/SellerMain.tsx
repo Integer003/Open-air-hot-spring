@@ -177,7 +177,7 @@ export function SellerMain() {
             } else {
                 const message = new GoodsAddStarMessage(goods.GoodsId, userName);
                 await sendPostRequest(message);
-                alert('准备调用sendNews');
+                //alert('准备调用sendNews');
                 SendNews(goods.GoodsSeller, 'seller', 'star', `您的商品${goods.GoodsName}被${userName}收藏了`,);
                 //SendNews(userName, 'star', `您收藏了${goods.GoodsName}商品`,'seller');
             }

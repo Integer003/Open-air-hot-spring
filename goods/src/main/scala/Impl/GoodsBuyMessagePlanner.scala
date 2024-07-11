@@ -10,6 +10,25 @@ import Common.ServiceUtils.schemaName
 case class GoodsBuyMessagePlanner(buyerName: String, goodsID: String, override val planContext: PlanContext) extends Planner[String]:
   override def plan(using planContext: PlanContext): IO[String] = {
     for {
+      // 获取 goods_info 表中的 seller_name 和 price
+      goodsInfo <- readDBRows(
+        s"SELECT seller_name, price FROM ${schemaName}.goods_info WHERE goods_id = ?",
+        List(SqlParameter("Int", goodsID))
+      ).map(_.headOption)
+
+      // 确保数据存在
+      sellerName <- IO.fromOption(goodsInfo.flatMap(_.hcursor.get[String]("sellerName").toOption))(new Exception("Seller not found"))
+      price <- IO.fromOption(goodsInfo.flatMap(_.hcursor.get[Int]("price").toOption))(new Exception("Price not found"))
+
+      // 获取 buyer 的当前余额
+      buyerMoney <- readDBInt(
+        s"SELECT money FROM seller.user_name WHERE user_name = ?",
+        List(SqlParameter("String", buyerName))
+      )
+
+      // 确保 buyer 余额足够
+      _ <- if (buyerMoney >= price) IO.unit else IO.raiseError(new Exception("余额不足"))
+
       // 更新 goods_info 表
       _ <- writeDB(
         s"UPDATE ${schemaName}.goods_info SET condition = 'true', buyer_name = ? WHERE goods_id = ?",
@@ -18,19 +37,6 @@ case class GoodsBuyMessagePlanner(buyerName: String, goodsID: String, override v
           SqlParameter("Int", goodsID)
         )
       )
-
-      // 获取 goods_info 表中的 seller_name 和 price
-      goodsInfo <- readDBRows(
-        s"SELECT seller_name, price FROM ${schemaName}.goods_info WHERE goods_id = ?",
-        List(SqlParameter("Int", goodsID))
-      ).map(_.headOption)
-
-      // 确保数据存在
-//      _ = println(s"*************goodsInfo: $goodsInfo") // 调试信息
-// Strange! 直接读取数据库，应该是seller_name, 结果竟然是sellerName为名称！
-
-      sellerName <- IO.fromOption(goodsInfo.flatMap(_.hcursor.get[String]("sellerName").toOption))(new Exception("Seller not found"))
-      price <- IO.fromOption(goodsInfo.flatMap(_.hcursor.get[Int]("price").toOption))(new Exception("Price not found"))
 
       // 更新 seller 表中的 money
       _ <- writeDB(

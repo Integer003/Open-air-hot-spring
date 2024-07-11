@@ -97,10 +97,12 @@ object Routes:
             m.fullPlan.map(_.asJson.toString)
           }
       case "ReadNewsMessage" =>
-        IO(decode[ReadNewsMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for ReadNewsMessage")))
-          .flatMap { m =>
+        IO(decode[ReadNewsMessagePlanner](str)).flatMap {
+          case Right(m) =>
             m.fullPlan.map(_.asJson.toString)
-          }
+          case Left(error) =>
+            IO.raiseError(new Exception(s"Invalid JSON for ReadNewsMessage: ${error.getMessage}"))
+        }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }

@@ -1,71 +1,28 @@
-// 主页面组件，可能是应用加载时首先展示的页面
-import React, { useState, useEffect, useContext } from 'react'
-import axios, { isAxiosError } from 'axios'
-import { API } from 'Plugins/CommonUtils/API'
-import { useHistory, useParams } from 'react-router-dom';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-// import logo from '../../images/summer.png';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 import {
     AppBar,
     Typography,
-    Button,
-    Container,
     CssBaseline,
-    Drawer,
-    Toolbar,
     Box,
+    Button,
     ThemeProvider,
-    createTheme,
-    TextField,
-    Grid,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    IconButton,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
     Table,
-    Card,
-    CardContent,
-    CardMedia,
     TableHead,
     TableRow,
     TableCell,
     TableBody,
-    DialogTitle,
-    DialogContent,
-    DialogContentText,
-    DialogActions,
-    Dialog,
-} from '@mui/material'
-import { Add as AddIcon, Brightness4, Brightness7, Language } from '@mui/icons-material'
-import HomeIcon from '@mui/icons-material/Home';
-import PersonIcon from '@mui/icons-material/Person';
-import InboxIcon from '@mui/icons-material/Create';
-import MessageIcon from '@mui/icons-material/Message';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import ReceiptIcon from '@mui/icons-material/Receipt';
-import LogoutIcon from '@mui/icons-material/Logout';
+    ListItemButton,
+    ListItemText
+} from '@mui/material';
 import { themes } from '../theme/theme';
 import AppBarComponent from '../theme/AppBarComponent';
 import { sendPostRequest } from '../tool/apiRequest';
-import { useThemeStore, useUserStore } from '../store'
-import { SellerCancelMessage } from 'Plugins/SellerAPI/SellerCancelMessage'
-import ConfirmDialog from '../tool/ConfirmDialog';
-import { SellerQueryStorageMessage } from 'Plugins/SellerAPI/SellerQueryStorageMessage'
-import DeleteIcon from '@mui/icons-material/Delete'
-import { SellerCancelGoodsMessage } from 'Plugins/SellerAPI/SellerCancelGoodsMessage'
-import BackgroundImage from 'Pages/theme/BackgroungImage'
-import { ReadNewsMessage } from 'Plugins/SellerAPI/ReadNewsMessage'
-import { QueryNewsMessage } from 'Plugins/SellerAPI/QueryNewsMessage'
-
-
-
-type ThemeMode = 'light' | 'dark';
+import { useThemeStore, useUserStore } from '../store';
+import BackgroundImage from 'Pages/theme/BackgroungImage';
+import { ReadNewsMessage } from 'Plugins/SellerAPI/ReadNewsMessage';
+import { QueryNewsMessage } from 'Plugins/SellerAPI/QueryNewsMessage';
 
 const drawerWidth = 240;
 
@@ -80,12 +37,9 @@ type NewsData = {
 };
 
 const parseDataString = (dataString: string): NewsData[] => {
-    // Parse the JSON string into an array of objects
     const parsedArray = JSON.parse(dataString);
-
-    // Map the parsed objects to the GoodsData format
     return parsedArray.map((item: any) => ({
-        NewsId: item.newsId,
+        NewsId: item.newsID,
         Receiver: item.receiver,
         ReceiverType: item.receiverType,
         NewsType: item.newsType,
@@ -95,22 +49,16 @@ const parseDataString = (dataString: string): NewsData[] => {
     }));
 };
 
-
 export function SellerNews() {
-    const history = useHistory()
-    const { themeMode, storeThemeMode, languageType, storeLanguageType } = useThemeStore();
-    const [responseData, setResponseData] = useState<any>(null);
+    const history = useHistory();
+    const { themeMode } = useThemeStore();
     const { userName } = useUserStore();
 
-    const [open, setOpen] = useState(false);
-    const [result, setResult] = useState<string | null>(null);
-
-    const [tableData, setTableData] = useState<NewsData[]>([]);
     const [responseTableData, setResponseTableData] = useState<any>(null);
-    const [error, setError] = useState<string | null>(null);
-
+    const [tableData, setTableData] = useState<NewsData[]>([]);
     const [selectedNews, setSelectedNews] = useState<NewsData | null>(null);
-
+    const [readResponse, setReadResponse] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const init = async () => {
         try {
@@ -130,40 +78,36 @@ export function SellerNews() {
     useEffect(() => {
         if (typeof responseTableData === 'string') {
             const parsedData = parseDataString(responseTableData);
-            setTableData(parsedData);
+            // 按时间排序
+            const sortedData = parsedData.sort((a, b) => new Date(b.NewsTime).getTime() - new Date(a.NewsTime).getTime());
+            setTableData(sortedData);
         }
     }, [responseTableData]);
 
-
-
-    const [readResponse, setReadResponce] = useState<string | null>(null);
-
     useEffect(() => {
         if (readResponse) {
-            // alert(deleteResponse);
-            if (typeof readResponse==='string' && readResponse.startsWith("Success")){
+            if (typeof readResponse === 'string' && readResponse.startsWith("Success")) {
                 console.log("已读成功！");
-            }else{
+            } else {
                 console.log("已读失败！");
             }
         }
     }, [readResponse]);
 
-
-    const handleRead =async (news: NewsData) => {
+    const handleRead = async (news: NewsData) => {
         setSelectedNews(news);
-        if (selectedNews) {
+        if (news) {
             try {
-                const message = new ReadNewsMessage(selectedNews?.NewsId);
+                //alert(news.NewsId);
+                const message = new ReadNewsMessage(news.NewsId);
                 const data = await sendPostRequest(message);
-                setReadResponce(data);
+                setReadResponse(data);
             } catch (error) {
                 setError(error.message);
             }
-            init()
+            init();
         }
     };
-
 
     return (
         <BackgroundImage themeMode={themeMode}>
@@ -184,34 +128,21 @@ export function SellerNews() {
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>消息类型</TableCell>
-                                <TableCell>消息时间</TableCell>
-                                <TableCell>消息内容</TableCell>
+                                <TableCell align="center">消息类型</TableCell>
+                                <TableCell align="center">消息时间</TableCell>
+                                <TableCell align="center">消息内容</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {tableData.map((news) => (
-                                <ListItemButton key={news.NewsTime} onClick={() => handleRead(news)}
-                                                sx={{ pl: 0, width: '100%' ,
-                                                    backgroundColor: news.condition ? 'transparent' : '#FFF2C2', // 未读消息的背景色为黄色
-                                                    color: news.condition ? 'black' : 'black',}}
+                                <TableRow key={news.NewsId}
+                                          sx={{ backgroundColor: news.condition=='true' ? 'transparent' : '#8581dd', color: news.condition ? 'black' : 'black' }}
+                                          onClick={() => handleRead(news)}
                                 >
-                                    <ListItemText
-                                        primaryTypographyProps={{
-                                        variant: 'body1',
-                                        component: 'div'
-                                        }}
-                                        secondaryTypographyProps={{
-                                            color: news.condition ? 'text.secondary' : 'inherit' // 继承未读消息的文本颜色
-                                        }}
-                                    >
-                                        <Typography variant="body1" component="div">
-                                            <div>{news.NewsType}</div>
-                                            <div>{news.NewsTime}</div>
-                                            <div>{news.content}</div>
-                                        </Typography>
-                                    </ListItemText>
-                                </ListItemButton>
+                                    <TableCell align="center">{news.NewsType}</TableCell>
+                                    <TableCell align="center">{news.NewsTime}</TableCell>
+                                    <TableCell align="center">{news.content}</TableCell>
+                                </TableRow>
                             ))}
                         </TableBody>
                     </Table>
@@ -220,5 +151,3 @@ export function SellerNews() {
         </BackgroundImage>
     );
 }
-
-

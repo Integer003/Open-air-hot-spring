@@ -43,9 +43,8 @@ case class QueryNewsMessagePlanner(receiver: String, receiverType: String, overr
         println(rows)
         rows
       }.flatMap { rows =>
-        // Decode rows to GoodsInfo and then convert to JSON string
-        IO.fromEither(rows.traverse(row => row.as[GoodsInfo])).map { goodsInfoList =>
-          goodsInfoList.asJson.spaces2
+        IO.fromEither(rows.traverse(row => row.as[NewsInfo])).map { newsInfoList =>
+          newsInfoList.asJson.spaces2
         }
       }
     }
