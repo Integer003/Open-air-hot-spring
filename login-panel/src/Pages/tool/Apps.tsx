@@ -1,7 +1,6 @@
 import React from 'react'
 
 export const UnreadIndicator = ({ count }: { count: number }) => { if (count === 0) return null;
-
     return (
         <span style={{
             backgroundColor: 'red',

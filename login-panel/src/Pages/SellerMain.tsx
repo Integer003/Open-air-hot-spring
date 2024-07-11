@@ -46,6 +46,8 @@ import { GoodsAddStarMessage } from 'Plugins/GoodsAPI/GoodsAddStarMessage';
 import { GoodsDeleteStarMessage } from 'Plugins/GoodsAPI/GoodsDeleteStarMessage';
 import { SellerQueryGoodsIsStarredMessage } from 'Plugins/SellerAPI/SellerQueryGoodsIsStarredMessage';
 import BackgroundImage from 'Pages/theme/BackgroungImage'
+import {SendNews} from 'Pages/tool/SendNews'
+import { QueryNewsMessage } from 'Plugins/SellerAPI/QueryNewsMessage'
 
 type ThemeMode = 'light' | 'dark';
 
@@ -71,11 +73,36 @@ const parseDataString = (dataString: string): GoodsData[] => {
         GoodsStar: item.star,
     }));
 };
+type NewsData = {
+    NewsId: string;
+    Receiver: string;
+    ReceiverType: string;
+    NewsType: string;
+    NewsTime: string;
+    content: string;
+    condition: string;
+};
+
+const parseDataNewsString = (dataString: string): NewsData[] => {
+    // Parse the JSON string into an array of objects
+    const parsedArray = JSON.parse(dataString);
+
+    // Map the parsed objects to the GoodsData format
+    return parsedArray.map((item: any) => ({
+        NewsId: item.newsId,
+        Receiver: item.receiver,
+        ReceiverType: item.receiverType,
+        NewsType: item.newsType,
+        NewsTime: item.newsTime,
+        content: item.content,
+        condition: item.condition,
+    }));
+};
+
 
 export function SellerMain() {
     const history = useHistory();
     const { themeMode, storeThemeMode, languageType, storeLanguageType } = useThemeStore();
-    const unreadMessagesCount = 5;
     const [mobileOpen, setMobileOpen] = useState(false);
     const { userName } = useUserStore();
 
@@ -97,23 +124,6 @@ export function SellerMain() {
     const [responseTableStarData, setResponseTableStarData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
 
-    const init = async () => {
-        try {
-            const message = new SellerQueryGoodsMessage(userName);
-            const data = await sendPostRequest(message);
-            setResponseTableData(data);
-            const messageStar = new SellerQueryGoodsIsStarredMessage(userName);
-            const dataStar = await sendPostRequest(messageStar);
-            setResponseTableStarData(dataStar);
-        } catch (error: any) {
-            setError(error.message);
-            setResponseTableData('error');
-        }
-    };
-
-    useEffect(() => {
-        init();
-    }, []);
 
     useEffect(() => {
         if (typeof responseTableData === 'string') {
@@ -163,15 +173,69 @@ export function SellerMain() {
         try {
             if (tableStarData.includes(goods.GoodsId)) {
                 const message = new GoodsDeleteStarMessage(goods.GoodsId, userName);
+                await sendPostRequest(message);
             } else {
                 const message = new GoodsAddStarMessage(goods.GoodsId, userName);
+                await sendPostRequest(message);
+                alert('准备调用sendNews');
+                SendNews(goods.GoodsSeller, 'seller', 'star', `您的商品${goods.GoodsName}被${userName}收藏了`,);
+                //SendNews(userName, 'star', `您收藏了${goods.GoodsName}商品`,'seller');
             }
+            //
             init();
         } catch (error: any) {
             setError(error.message);
         }
     };
 
+
+
+
+
+    // shit of news
+    const [tableNewsData, setTableNewsData] = useState<NewsData[]>([]);
+    const [responseTableNewsData, setResponseTableNewsData] = useState<any>(null);
+
+    const [unreadCount, setUnreadCount]=useState<number>(0);
+
+
+    useEffect(() => {
+        init();
+    }, []);
+
+    useEffect(() => {
+        if (typeof responseTableNewsData === 'string') {
+            const parsedNewsData = parseDataNewsString(responseTableNewsData);
+            setTableNewsData(parsedNewsData);
+            const res = parsedNewsData.filter(item => item.condition === "0").length;
+            setUnreadCount(res);
+        }
+    }, [responseTableNewsData]);
+
+
+    // finally init
+
+
+
+    const init = async () => {
+        try {
+            const message = new SellerQueryGoodsMessage(userName);
+            const data = await sendPostRequest(message);
+            setResponseTableData(data);
+            const messageStar = new SellerQueryGoodsIsStarredMessage(userName);
+            const dataStar = await sendPostRequest(messageStar);
+            setResponseTableStarData(dataStar);
+            const messageNews=new QueryNewsMessage(userName, 'seller');
+            const dataNews=await sendPostRequest(messageNews);
+        } catch (error: any) {
+            setError(error.message);
+            setResponseTableData('error');
+        }
+    };
+
+    useEffect(() => {
+        init();
+    }, []);
 
     return (
         <BackgroundImage themeMode={themeMode}>
@@ -230,12 +294,12 @@ export function SellerMain() {
                                     </ListItemIcon>
                                     <ListItemText primary="货仓" />
                                 </ListItemButton>
-                                <ListItemButton onClick={() => { /* 处理点击事件 */
-                                }}>
+                                <ListItemButton onClick={() => history.push('/SellerNews')}>
                                     <ListItemIcon>
                                         <MessageIcon />
                                     </ListItemIcon>
                                     <ListItemText primary="消息" />
+                                    <UnreadIndicator count={unreadCount} />
                                 </ListItemButton>
                                 <ListItemButton onClick={() => history.push('/')}>
                                     <ListItemIcon>
@@ -261,7 +325,7 @@ export function SellerMain() {
                             >
                                 <AppsIcon/>
 
-                                {/* <UnreadIndicator count={unreadMessagesCount} />*/}
+                                 <UnreadIndicator count={unreadCount} />
                         </IconButton>
 
                     )}

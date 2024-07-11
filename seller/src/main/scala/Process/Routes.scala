@@ -81,8 +81,23 @@ object Routes:
           .flatMap { m =>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "AddNewsMessage" =>
+        IO(decode[AddNewsMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SellerAddNewsMessage")))
+          .flatMap { m =>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case "SellerAddGoodsCartMessage" =>
-        IO(decode[SellerAddGoodsCartMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SellerAddGoodsCartMessage")))
+        IO(decode[SellerAddGoodsCartMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for AddGoodsCartMessage")))
+          .flatMap { m =>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "QueryNewsMessage" =>
+        IO(decode[QueryNewsMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for QueryNewsMessage")))
+          .flatMap { m =>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "ReadNewsMessage" =>
+        IO(decode[ReadNewsMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for ReadNewsMessage")))
           .flatMap { m =>
             m.fullPlan.map(_.asJson.toString)
           }

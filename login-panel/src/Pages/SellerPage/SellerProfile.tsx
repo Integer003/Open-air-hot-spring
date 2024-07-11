@@ -32,6 +32,7 @@ import ConfirmDialog from '../tool/ConfirmDialog';
 import { SellerQueryMoneyMessage } from 'Plugins/SellerAPI/SellerQueryMoneyMessage';
 import { SellerRechargeMessage } from 'Plugins/SellerAPI/SellerRechargeMessage';
 import BackgroundImage from 'Pages/theme/BackgroungImage'
+import { SendNews } from 'Pages/tool/SendNews'
 
 type ThemeMode = 'light' | 'dark';
 
@@ -104,6 +105,7 @@ export function SellerProfile() {
 
     const init = async () => {
         handleQueryMoney();
+        SendNews(userName,'seller','any','登录成功！');
     };
 
     useEffect(() => {
