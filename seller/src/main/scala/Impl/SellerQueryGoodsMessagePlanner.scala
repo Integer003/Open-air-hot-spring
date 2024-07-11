@@ -30,7 +30,7 @@ object GoodsInfo {
 case class SellerQueryGoodsMessagePlanner(userName: String, override val planContext: PlanContext) extends Planner[String]:
   override def plan(using planContext: PlanContext): IO[String] = {
     // Query goods_info for entries with condition 'false' and seller_name not equal to the provided userName
-    val query = s"SELECT goods_id, goods_name, price, description, seller_name, star FROM goods.goods_info WHERE condition = 'false' AND seller_name != ?"
+    val query = s"SELECT goods_id, goods_name, price, description, seller_name, star FROM goods.goods_info WHERE condition = 'false' AND seller_name != ? AND verify = 'true'"
 
     readDBRows(query, List(SqlParameter("String", userName))).flatMap { rows =>
       // Decode rows to GoodsInfo and then convert to JSON string
