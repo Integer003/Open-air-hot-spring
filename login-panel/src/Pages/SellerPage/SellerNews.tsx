@@ -23,6 +23,9 @@ import { useThemeStore, useUserStore } from '../store';
 import BackgroundImage from 'Pages/theme/BackgroungImage';
 import { ReadNewsMessage } from 'Plugins/SellerAPI/ReadNewsMessage';
 import { QueryNewsMessage } from 'Plugins/SellerAPI/QueryNewsMessage';
+import { Drafts, Email } from '@mui/icons-material';
+import EmailIcon from '@mui/icons-material/Email';
+import DraftsIcon from '@mui/icons-material/Drafts';
 
 const drawerWidth = 240;
 
@@ -131,6 +134,7 @@ export function SellerNews() {
                                 <TableCell align="center">消息类型</TableCell>
                                 <TableCell align="center">消息时间</TableCell>
                                 <TableCell align="center">消息内容</TableCell>
+                                <TableCell align='center'>标记已读</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -142,10 +146,16 @@ export function SellerNews() {
                                     <TableCell align="center">{news.NewsType}</TableCell>
                                     <TableCell align="center">{news.NewsTime}</TableCell>
                                     <TableCell align="center">{news.content}</TableCell>
+                                    <TableCell align="center">
+                                        <Button onClick={() => handleRead(news)}>
+                                            {news.condition=='true' ?<DraftsIcon/>:<EmailIcon/>}
+                                        </Button>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
+
                 </div>
             </ThemeProvider>
         </BackgroundImage>

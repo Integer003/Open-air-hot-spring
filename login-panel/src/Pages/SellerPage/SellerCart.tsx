@@ -51,6 +51,7 @@ import BackgroundImage from 'Pages/theme/BackgroungImage'
 import { SellerQueryGoodsIsCartMessage } from 'Plugins/SellerAPI/SellerQueryGoodsIsCartMessage'
 import { SellerDeleteGoodsCartMessage } from 'Plugins/SellerAPI/SellerDeleteGoodsCartMessage'
 import { GoodsBuyMessage } from 'Plugins/GoodsAPI/GoodsBuyMessage'
+import { SendNews } from 'Pages/tool/SendNews'
 
 type ThemeMode = 'light' | 'dark';
 
@@ -195,7 +196,9 @@ export function SellerCart() {
         if (buyResponse) {
             if (typeof buyResponse === 'string' && buyResponse.startsWith('Success')) {
                 alert(selectedGoods.GoodsName + '购买成功');
-                history.push('./sellerMain');
+                SendNews(selectedGoods.GoodsSeller, 'seller', 'buy', '您的商品' + selectedGoods.GoodsName + '已被购买');
+                SendNews(userName, 'seller', 'buy', '您已购买商品' + selectedGoods.GoodsName);
+                init();
             } else {
                 alert('购买失败！');
             }

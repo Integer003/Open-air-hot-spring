@@ -207,7 +207,7 @@ export function SellerMain() {
         if (typeof responseTableNewsData === 'string') {
             const parsedNewsData = parseDataNewsString(responseTableNewsData);
             setTableNewsData(parsedNewsData);
-            const res = parsedNewsData.filter(item => item.condition === "0").length;
+            const res = parsedNewsData.filter(item => item.condition != "true").length;
             setUnreadCount(res);
         }
     }, [responseTableNewsData]);
@@ -227,6 +227,7 @@ export function SellerMain() {
             setResponseTableStarData(dataStar);
             const messageNews=new QueryNewsMessage(userName, 'seller');
             const dataNews=await sendPostRequest(messageNews);
+            setResponseTableNewsData(dataNews);
         } catch (error: any) {
             setError(error.message);
             setResponseTableData('error');

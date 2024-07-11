@@ -21,7 +21,7 @@ import {
     ListItem,
     ListItemText,
 } from '@mui/material';
-import { AddShoppingCart as AddShoppingCartIcon, RemoveShoppingCart } from '@mui/icons-material'
+import { AddShoppingCart as AddShoppingCartIcon, RemoveShoppingCart, Star as StarIcon } from '@mui/icons-material'
 import { ShoppingBag as ShoppingBagIcon } from '@mui/icons-material';
 import { themes } from '../theme/theme';
 import AppBarComponent from '../theme/AppBarComponent';
@@ -39,6 +39,7 @@ import { SellerAddGoodsCartMessage } from 'Plugins/SellerAPI/SellerAddGoodsCartM
 import { SellerQueryGoodsMessage } from 'Plugins/SellerAPI/SellerQueryGoodsMessage'
 import { SellerQueryGoodsIsStarredMessage } from 'Plugins/SellerAPI/SellerQueryGoodsIsStarredMessage'
 import { SellerQueryGoodsIsCartMessage } from 'Plugins/SellerAPI/SellerQueryGoodsIsCartMessage'
+import { SendNews } from 'Pages/tool/SendNews'
 
 type ThemeMode = 'light' | 'dark';
 
@@ -253,6 +254,7 @@ export function GoodsMain() {
         if (commentsResponse) {
             if (typeof commentsResponse === 'string' && commentsResponse.startsWith('Success')) {
                 alert('评论成功');
+                SendNews(goodsSeller, 'seller', 'comment', '商品' + goodsName + '收到了'+userName+'的评论');
                 init();
             } else {
                 alert('评论失败');
@@ -329,15 +331,12 @@ export function GoodsMain() {
                             发送
                         </Button>
                     </Box>
+                    {userName !== goodsSeller && (
+                        <div>
                     <Button
                         onClick={handleBuy}
                         sx={{
-                            backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
                             color: themeMode === 'dark' ? '#99dc10' : '#99dc10',
-                            '&:hover': {
-                                backgroundColor: themeMode === 'dark' ? '#333333' : '#f5f5f5',
-                            },
-                            mt: 2,
                         }}
                     >
                         <ShoppingBagIcon /> 购买
@@ -345,17 +344,23 @@ export function GoodsMain() {
                     <Button
                         onClick={handleToggleCart}
                         sx={{
-                            backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
-                            color: themeMode === 'dark' ? '#99dc10' : '#99dc10',
-                            '&:hover': {
-                                backgroundColor: themeMode === 'dark' ? '#333333' : '#f5f5f5',
-                            },
-                            mt: 2,
-
+                            color: tableCartData.includes(goodsId) ? 'red' : 'yellow',
                         }}
                     >
                         {tableCartData.includes(goodsId) ? <RemoveShoppingCart/>:<AddShoppingCartIcon />}
+                        {tableCartData.includes(goodsId) ? '移出购物车' : '加入购物车'}
                     </Button>
+                            <Button
+                                onClick={handleToggleStar}
+                                sx={{
+                                    color: tableStarData.includes(goodsId) ? 'yellow' : 'grey',
+                                }}
+                            >
+                                <StarIcon />
+                                {tableStarData.includes(goodsId) ? '取消收藏' : '收藏'}
+                            </Button>
+                        </div>
+                )}
                     <Dialog open={open} onClose={handleClose}>
                         <DialogTitle>确认购买</DialogTitle>
                         <DialogContent>

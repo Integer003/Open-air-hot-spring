@@ -44,6 +44,7 @@ import {
 } from '@mui/material'
 import { Add as AddIcon, Brightness4, Brightness7, Language } from '@mui/icons-material'
 import HomeIcon from '@mui/icons-material/Home';
+import InfoIcon from '@mui/icons-material/Info';
 import PersonIcon from '@mui/icons-material/Person';
 import InboxIcon from '@mui/icons-material/Create';
 import MessageIcon from '@mui/icons-material/Message';
@@ -53,7 +54,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { themes } from '../theme/theme';
 import AppBarComponent from '../theme/AppBarComponent';
 import { sendPostRequest } from '../tool/apiRequest';
-import { useThemeStore, useUserStore } from '../store'
+import { useGoodsStore, useThemeStore, useUserStore } from '../store'
 import { SellerCancelMessage } from 'Plugins/SellerAPI/SellerCancelMessage'
 import ConfirmDialog from '../tool/ConfirmDialog';
 import { SellerQueryStorageMessage } from 'Plugins/SellerAPI/SellerQueryStorageMessage'
@@ -75,6 +76,8 @@ type GoodsData = {
     GoodsCondition: string;
     GoodsSeller: string;
     GoodsBuyer: string;
+    GoodsStar?: string;
+    GoodsVerify?: string;
 };
 
 const parseDataString = (dataString: string): GoodsData[] => {
@@ -89,7 +92,9 @@ const parseDataString = (dataString: string): GoodsData[] => {
         GoodsDescription: item.description,
         GoodsCondition: item.condition,
         GoodsSeller: item.sellerName,
-        GoodsBuyer: item.buyerName
+        GoodsBuyer: item.buyerName,
+        GoodsStar: item.star,
+        GoodsVerify: item.verify,
     }));
 };
 
@@ -171,6 +176,23 @@ export function SellerStorage() {
     };
 
 
+
+    const { storeGoodsId, storeGoodsName, storeGoodsPrice, storeGoodsDescription, storeGoodsSeller, storeGoodsStar } = useGoodsStore();
+
+    const handleGoodsInfo = async (goods: GoodsData) => {
+        setSelectedGoods(goods);
+        if(selectedGoods) {
+            storeGoodsId(selectedGoods.GoodsId);
+            storeGoodsName(selectedGoods.GoodsName);
+            storeGoodsPrice(selectedGoods.GoodsPrice);
+            storeGoodsDescription(selectedGoods.GoodsDescription);
+            storeGoodsSeller(selectedGoods.GoodsSeller);
+            storeGoodsStar(selectedGoods.GoodsStar);
+            history.push('/GoodsMain');
+        }
+    };
+
+
     return (
         <BackgroundImage themeMode={themeMode}>
         <ThemeProvider theme={themes[themeMode]}>
@@ -188,8 +210,10 @@ export function SellerStorage() {
                             <TableCell align="center">商品名</TableCell>
                             <TableCell align="center">商品价格</TableCell>
                             <TableCell align="center">商品描述</TableCell>
-                            <TableCell align="center">商品状态</TableCell>
+                            <TableCell align="center">售出状态</TableCell>
+                            <TableCell align="center">审核状态</TableCell>
                             <TableCell align="center">商品买家</TableCell>
+                            <TableCell align='center'>查看详情</TableCell>
                             <TableCell align="center">删除</TableCell>
                         </TableRow>
                     </TableHead>
@@ -199,8 +223,23 @@ export function SellerStorage() {
                                 <TableCell align="center">{row.GoodsName}</TableCell>
                                 <TableCell align="center">{row.GoodsPrice}</TableCell>
                                 <TableCell align="center">{row.GoodsDescription}</TableCell>
-                                <TableCell align="center">{row.GoodsCondition}</TableCell>
+                                <TableCell align="center">{row.GoodsCondition=='true'?'已售出':'未售出'}</TableCell>
+                                <TableCell align="center">{row.GoodsVerify=='true'?'已过审':'未过审'}</TableCell>
                                 <TableCell align="center">{row.GoodsBuyer}</TableCell>
+                                <TableCell align="center">
+                                    <IconButton
+                                        onClick={() => handleGoodsInfo(row)}
+                                        sx={{
+                                            backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
+                                            color: themeMode === 'dark' ? '#0000ff' : '#0000ff',
+                                            '&:hover': {
+                                                backgroundColor: themeMode === 'dark' ? '#333333' : '#f5f5f5',
+                                            }
+                                        }}
+                                    >
+                                        <InfoIcon />
+                                    </IconButton>
+                                </TableCell>
                                 <TableCell align="center">
                                     <IconButton
                                         onClick={() => handleDelete(row)}

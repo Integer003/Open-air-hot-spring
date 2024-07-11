@@ -23,6 +23,7 @@ import { useThemeStore, useUserStore } from '../store'
 import { GoodsAddMessage } from 'Plugins/GoodsAPI/GoodsAddMessage'
 import ConfirmDialog from '../tool/ConfirmDialog';
 import BackgroundImage from 'Pages/theme/BackgroungImage'
+import { SendNews } from 'Pages/tool/SendNews'
 
 type ThemeMode = 'light' | 'dark';
 

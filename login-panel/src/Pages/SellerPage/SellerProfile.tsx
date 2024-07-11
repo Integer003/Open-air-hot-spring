@@ -105,7 +105,7 @@ export function SellerProfile() {
 
     const init = async () => {
         handleQueryMoney();
-        SendNews(userName,'seller','any','登录成功！');
+        //SendNews(userName,'seller','any','登录成功！');
     };
 
     useEffect(() => {

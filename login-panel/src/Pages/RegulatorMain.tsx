@@ -39,6 +39,7 @@ import {RegulatorQueryGoodsMessage} from 'Plugins/RegulatorAPI/RegulatorQueryGoo
 import {RegulatorModifyGoodsMessage} from 'Plugins/RegulatorAPI/RegulatorModifyGoodsMessage'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
 import BackgroundImage from 'Pages/theme/BackgroungImage'
+import { SendNews } from 'Pages/tool/SendNews'
 
 type ThemeMode = 'light' | 'dark';
 
@@ -135,6 +136,7 @@ export function RegulatorMain() {
         if (modifyResponse) {
             if (typeof modifyResponse==='string' && modifyResponse.startsWith("Success")){
                 alert(selectedGoods?.GoodsName+"管理成功");
+                SendNews(selectedGoods?.GoodsSeller, "seller", "verify", "您的商品"+selectedGoods?.GoodsName+"已经通过审核");
                 init();
             }else{
                 alert("管理失败！");
