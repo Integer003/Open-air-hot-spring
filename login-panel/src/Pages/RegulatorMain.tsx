@@ -18,28 +18,35 @@ import {
     DialogContent,
     DialogContentText,
     Switch,
-    DialogTitle, Drawer, Toolbar, List, ListItem, ListItemButton, ListItemIcon, ListItemText,
-} from '@mui/material'
+    DialogTitle,
+    Drawer,
+    Toolbar,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Pagination
+} from '@mui/material';
 import { themes } from './theme/theme';
 import AppBarComponent from './theme/AppBarComponent';
 import { sendPostRequest } from './tool/apiRequest';
-import { useThemeStore, useUserStore } from './store'
+import { useThemeStore, useUserStore } from './store';
 import { ShowTableMessage } from 'Plugins/OperatorAPI/ShowTableMessage';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { del } from 'idb-keyval'
+import { del } from 'idb-keyval';
 import {
-    Add as AddIcon, ArrowForward as ArrowForwardIcon,
+    Add as AddIcon, Apps as AppsIcon, ArrowForward as ArrowForwardIcon,
     Home as HomeIcon, Logout as LogoutIcon,
     Message as MessageIcon,
     Person as PersonIcon,
     Receipt as ReceiptIcon,
-} from '@mui/icons-material'
-import { UnreadIndicator } from 'Pages/tool/Apps'
-import {RegulatorQueryGoodsMessage} from 'Plugins/RegulatorAPI/RegulatorQueryGoodsMessage'
-import {RegulatorModifyGoodsMessage} from 'Plugins/RegulatorAPI/RegulatorModifyGoodsMessage'
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
-import BackgroundImage from 'Pages/theme/BackgroungImage'
-import { SendNews } from 'Pages/tool/SendNews'
+} from '@mui/icons-material';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import BackgroundImage from 'Pages/theme/BackgroungImage';
+import { SendNews } from 'Pages/tool/SendNews';
+import { RegulatorQueryGoodsMessage } from 'Plugins/RegulatorAPI/RegulatorQueryGoodsMessage';
+import { RegulatorModifyGoodsMessage } from 'Plugins/RegulatorAPI/RegulatorModifyGoodsMessage';
 
 type ThemeMode = 'light' | 'dark';
 
@@ -68,13 +75,10 @@ const parseDataString = (dataString: string): GoodsData[] => {
     }));
 };
 
-
 export function RegulatorMain() {
     const history = useHistory();
-    const { themeMode, storeThemeMode, languageType, storeLanguageType } = useThemeStore();
+    const { themeMode } = useThemeStore();
     const { userName } = useUserStore();
-
-    const unreadMessagesCount=5;
 
     useEffect(() => {
         if (userName) {
@@ -83,7 +87,6 @@ export function RegulatorMain() {
             console.log('用户名未定义');
         }
     }, [userName]);
-
 
     const init = async () => {
         try {
@@ -100,25 +103,23 @@ export function RegulatorMain() {
         init();
     }, []);
 
-
     const [tableData, setTableData] = useState<GoodsData[]>([]);
     const [responseTableData, setResponseTableData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
-
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const itemsPerPage = 7;
 
     useEffect(() => {
         if (typeof responseTableData === 'string') {
             const parsedData = parseDataString(responseTableData);
-            setTableData(parsedData);
+            const sortedData = parsedData.sort((a, b) => a.GoodsId.localeCompare(b.GoodsId));
+            setTableData(sortedData);
         }
     }, [responseTableData]);
-
-
 
     const [selectedGoods, setSelectedGoods] = useState<GoodsData | null>(null);
     const [open, setOpen] = useState(false);
     const [result, setResult] = useState<string | null>(null);
-
 
     const handleModify = (goods: GoodsData) => {
         setSelectedGoods(goods);
@@ -134,18 +135,17 @@ export function RegulatorMain() {
 
     useEffect(() => {
         if (modifyResponse) {
-            if (typeof modifyResponse==='string' && modifyResponse.startsWith("Success")){
-                alert(selectedGoods?.GoodsName+"管理成功");
-                SendNews(selectedGoods?.GoodsSeller, "seller", "verify", "您的商品"+selectedGoods?.GoodsName+"已经通过审核");
+            if (typeof modifyResponse === 'string' && modifyResponse.startsWith("Success")) {
+                alert(selectedGoods?.GoodsName + "管理成功");
+                SendNews(selectedGoods?.GoodsSeller, "seller", "verify", "您的商品" + selectedGoods?.GoodsName + "已经通过审核");
                 init();
-            }else{
+            } else {
                 alert("管理失败！");
             }
         }
     }, [modifyResponse]);
 
-
-    const handleConfirmModify =async () => {
+    const handleConfirmModify = async () => {
         if (selectedGoods) {
             try {
                 const message = new RegulatorModifyGoodsMessage(selectedGoods?.GoodsId);
@@ -158,22 +158,23 @@ export function RegulatorMain() {
         }
     };
 
-
-
     const [mobileOpen, setMobileOpen] = useState(false);
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
 
+    const handleChangePage = (event: React.ChangeEvent<unknown>, page: number) => {
+        setCurrentPage(page);
+    };
 
+    const paginatedData = tableData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     return (
         <BackgroundImage themeMode={themeMode}>
-        <ThemeProvider theme={themes[themeMode]}>
-            <CssBaseline />
-            <AppBarComponent />
-            <div className="content-with-appbar">
-                <div>
+            <ThemeProvider theme={themes[themeMode]}>
+                <CssBaseline />
+                <AppBarComponent />
+                <div className="content-with-appbar">
                     <Box sx={{ mb: 4, textAlign: 'center' }}>
                         <Typography variant="h1" sx={{ fontSize: '2rem' }}>
                             <h1>监管方主页！</h1>
@@ -191,7 +192,7 @@ export function RegulatorMain() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {tableData.map((row, index) => (
+                            {paginatedData.map((row, index) => (
                                 <TableRow key={index}>
                                     <TableCell align="center">{row.GoodsName}</TableCell>
                                     <TableCell align="center">{row.GoodsPrice}</TableCell>
@@ -208,6 +209,14 @@ export function RegulatorMain() {
                             ))}
                         </TableBody>
                     </Table>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+                        <Pagination
+                            count={Math.ceil(tableData.length / itemsPerPage)}
+                            page={currentPage}
+                            onChange={handleChangePage}
+                            color="primary"
+                        />
+                    </Box>
                     <Drawer
                         sx={{
                             width: drawerWidth,
@@ -237,13 +246,6 @@ export function RegulatorMain() {
                                     </ListItemIcon>
                                     <ListItemText primary="个人中心" />
                                 </ListItemButton>
-                                <ListItemButton onClick={() => { /* 处理点击事件 */
-                                }}>
-                                    <ListItemIcon>
-                                        <MessageIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary="消息" />
-                                </ListItemButton>
                                 <ListItemButton onClick={() => history.push('/')}>
                                     <ListItemIcon>
                                         <LogoutIcon />
@@ -254,25 +256,19 @@ export function RegulatorMain() {
                         </Box>
                     </Drawer>
                     {!mobileOpen && (
-                        <Button
-                            onClick={handleDrawerToggle}
-                            sx={{
-                                position: 'absolute',
-                                left: 0,
-                                top: '90%',
-                                transform: 'translateY(-50%)',
-                                zIndex: 1000,
-                                cursor: 'pointer', // 鼠标悬停时显示指针手势
-                                padding: '10px', // 按钮的内边距
-                                color: 'white', // 图标颜色
-                                backgroundColor: 'grey', // 按钮背景颜色，使用对比色
-                            }}
+                        <IconButton color="inherit"
+                                    onClick={handleDrawerToggle}
+                                    sx={{
+                                        position: 'fixed',
+                                        left: 20,
+                                        top: '1.5%',
+                                        zIndex: 2000,
+                                    }}
                         >
-                            <ListItemIcon>
-                                <ArrowForwardIcon />
-                            </ListItemIcon>
-                            <UnreadIndicator count={unreadMessagesCount} />
-                        </Button>)}
+                            <AppsIcon />
+                        </IconButton>
+
+                    )}
                     <Dialog
                         open={open}
                         onClose={handleClose}
@@ -292,13 +288,8 @@ export function RegulatorMain() {
                             </Button>
                         </DialogActions>
                     </Dialog>
-                    <Button onClick={() => history.push('./')}>
-                        返回
-                    </Button>
-
                 </div>
-            </div>
-        </ThemeProvider>
+            </ThemeProvider>
         </BackgroundImage>
-);
+    );
 }
