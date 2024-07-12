@@ -30,7 +30,6 @@ import { useGoodsStore, useThemeStore, useUserStore } from '../store'
 import { GoodsQueryCommentsMessage } from 'Plugins/GoodsAPI/GoodsQueryCommentsMessage'
 import { GoodsAddCommentsMessage } from 'Plugins/GoodsAPI/GoodsAddCommentsMessage'
 import { GoodsBuyMessage } from 'Plugins/GoodsAPI/GoodsBuyMessage'
-import logo from '../../images/summer.png';
 import BackgroundImage from 'Pages/theme/BackgroungImage'
 import { GoodsDeleteStarMessage } from 'Plugins/GoodsAPI/GoodsDeleteStarMessage'
 import { GoodsAddStarMessage } from 'Plugins/GoodsAPI/GoodsAddStarMessage'
@@ -69,6 +68,7 @@ type GoodsData = {
     GoodsDescription: string;
     GoodsSeller: string;
     GoodsStar: string;
+    ImageUrl: string;
 };
 
 const parseDataStringGoods = (dataString: string): GoodsData[] => {
@@ -80,12 +80,13 @@ const parseDataStringGoods = (dataString: string): GoodsData[] => {
         GoodsDescription: item.description,
         GoodsSeller: item.sellerName,
         GoodsStar: item.star,
+        ImageUrl: item.imageUrl,
     }));
 };
 
 export function GoodsMain() {
     const history = useHistory();
-    const { themeMode, storeThemeMode, languageType, storeLanguageType } = useThemeStore();
+    const { themeMode } = useThemeStore();
     const { userName } = useUserStore();
     const { goodsId, goodsName, goodsPrice, goodsDescription, goodsSeller, goodsStar } = useGoodsStore();
     const [tableData, setTableData] = useState<CommentsData[]>([]);
@@ -94,7 +95,6 @@ export function GoodsMain() {
     const [open, setOpen] = useState(false);
     const [buyResponse, setBuyResponse] = useState<string | null>(null);
     const [commentsResponse, setCommentsResponse] = useState<string | null>(null);
-
 
     const [tableGoodsData, setTableGoodsData] = useState<GoodsData[]>([]);
     const [responseTableGoodsData, setResponseTableGoodsData] = useState<any>(null);
@@ -109,7 +109,7 @@ export function GoodsMain() {
             const data = await sendPostRequest(message);
             setResponseTableData(data);
             const messageGoods = new SellerQueryGoodsMessage(userName);
-            const dataGoods = await sendPostRequest(message);
+            const dataGoods = await sendPostRequest(messageGoods);
             setResponseTableGoodsData(dataGoods);
             const messageStar = new SellerQueryGoodsIsStarredMessage(userName);
             const dataStar = await sendPostRequest(messageStar);
@@ -117,7 +117,6 @@ export function GoodsMain() {
             const messageCart = new SellerQueryGoodsIsCartMessage(userName);
             const dataCart = await sendPostRequest(messageCart);
             setResponseTableCartData(dataCart);
-
         } catch (error: any) {
             setError(error.message);
             setResponseTableData('error');
@@ -165,16 +164,13 @@ export function GoodsMain() {
         handleClose();
     };
 
-
     useEffect(() => {
-        if (typeof responseTableData === 'string') {
-            const parsedData = parseDataStringGoods(responseTableData);
+        if (typeof responseTableGoodsData === 'string') {
+            const parsedData = parseDataStringGoods(responseTableGoodsData);
             parsedData.sort((a, b) => parseInt(a.GoodsId) - parseInt(b.GoodsId));
             setTableGoodsData(parsedData);
         }
     }, [responseTableGoodsData]);
-
-    // shit of star
 
     function extractGoodsIDs(dataString: string): string[] {
         const parts = dataString.split('"goodsID"');
@@ -208,17 +204,12 @@ export function GoodsMain() {
         }
     };
 
-
-
-    // shit of cart
-
     useEffect(() => {
         if (typeof responseTableCartData === 'string') {
             const parsedData = extractGoodsIDs(responseTableCartData);
             setTableCartData(parsedData);
         }
     }, [responseTableCartData]);
-
 
     const handleToggleCart = async () => {
         try {
@@ -229,15 +220,6 @@ export function GoodsMain() {
             setError(error.message);
         }
     };
-
-    useEffect(() => {
-        if (typeof responseTableCartData === 'string') {
-            const parsedData = extractGoodsIDs(responseTableCartData);
-            setTableCartData(parsedData);
-        }
-    }, [responseTableCartData]);
-
-
 
     const handleComments = async (myComments: string) => {
         try {
@@ -263,127 +245,66 @@ export function GoodsMain() {
     }, [commentsResponse]);
 
     return (
-        <BackgroundImage themeMode={themeMode}>
         <ThemeProvider theme={themes[themeMode]}>
-            <CssBaseline />
-            <AppBarComponent
-                historyPath={'/SellerMain'}
-                // TODO: if a regulator come in? or just another page?
-            />
-            <div className="content-with-appbar">
-                <Box sx={{ mb: 4, textAlign: 'center', padding: 3 }}>
-                    <Typography variant="h4" sx={{ fontSize: '2rem', mb: 3 }}>
-                        商品详情
-                    </Typography>
-                    <Grid container spacing={3} justifyContent="center">
-                        <Grid item xs={12} md={6} lg={4}>
-                            <Card sx={{
-                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                                '&:hover': { boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)' }
-                            }}>
-                                <CardMedia component="img" height="200" image={logo} alt="商品图片" />
-                                <CardContent>
-                                    <Typography gutterBottom variant="h5" component="div">
-                                        {goodsName}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        {goodsDescription}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        卖家：{goodsSeller}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        商品价格：{goodsPrice}元
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        商品收藏数：{goodsStar}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    </Grid>
-                    <Typography variant="h4" sx={{ mt: 4, mb: 2 }}>
-                        商品评论
-                    </Typography>
-                    <List>
-                        {tableData.map((item) => (
-                            <ListItem key={item.CommentsTime}>
-                                <ListItemText primary={item.Content}
-                                              secondary={`${item.SenderName} ${item.CommentsTime}`} />
-                            </ListItem>
+            <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+                <CssBaseline />
+                <AppBar position="relative">
+                    <AppBarComponent />
+                </AppBar>
+                <Box component="main" sx={{ flex: '1' }}>
+                    <Grid container spacing={3} alignItems="center">
+                        {tableGoodsData.map((goods) => (
+                            <Grid item key={goods.GoodsId} xs={12} sm={6} md={4} lg={3}>
+                                <Card>
+                                    <CardMedia component="img" height="140" image={goods.ImageUrl} alt={goods.GoodsName} />
+                                    <CardContent>
+                                        <Typography variant="h6" component="div">
+                                            {goods.GoodsName}
+                                        </Typography>
+                                        <Typography variant="body2" color="textSecondary">
+                                            {goods.GoodsDescription}
+                                        </Typography>
+                                        <Typography variant="body1">
+                                            价格: {goods.GoodsPrice} 元
+                                        </Typography>
+                                        <Typography variant="body1">
+                                            卖家: {goods.GoodsSeller}
+                                        </Typography>
+                                        <Typography variant="body1">
+                                            Star 数量: {goods.GoodsStar}
+                                        </Typography>
+                                        <Button startIcon={<AddShoppingCartIcon />} onClick={handleBuy}>
+                                            购买
+                                        </Button>
+                                        <Button startIcon={<StarIcon />} onClick={handleToggleStar}>
+                                            {tableStarData.includes(goods.GoodsId) ? '取消 Star' : 'Star'}
+                                        </Button>
+                                        <Button startIcon={<RemoveShoppingCart />} onClick={handleToggleCart}>
+                                            {tableCartData.includes(goods.GoodsId) ? '从购物车移除' : '加入购物车'}
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
                         ))}
-                    </List>
-                    <Box sx={{ display: 'flex', alignItems: 'center', margin: '20px 0' }}>
-                        <TextField
-                            id="myComment"
-                            label="评论"
-                            multiline
-                            rows={4}
-                            variant="outlined"
-                            fullWidth
-                        />
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => handleComments((document.getElementById('myComment') as HTMLInputElement).value)}
-                            sx={{ ml: 2 }}
-                        >
-                            发送
-                        </Button>
-                    </Box>
-                    {userName !== goodsSeller && (
-                        <div>
-                    <Button
-                        onClick={handleBuy}
-                        sx={{
-                            color: themeMode === 'dark' ? '#99dc10' : '#99dc10',
-                        }}
-                    >
-                        <ShoppingBagIcon /> 购买
-                    </Button>
-                    <Button
-                        onClick={handleToggleCart}
-                        sx={{
-                            color: tableCartData.includes(goodsId) ? 'red' : 'yellow',
-                        }}
-                    >
-                        {tableCartData.includes(goodsId) ? <RemoveShoppingCart/>:<AddShoppingCartIcon />}
-                        {tableCartData.includes(goodsId) ? '移出购物车' : '加入购物车'}
-                    </Button>
-                            <Button
-                                onClick={handleToggleStar}
-                                sx={{
-                                    color: tableStarData.includes(goodsId) ? 'yellow' : 'grey',
-                                }}
-                            >
-                                <StarIcon />
-                                {tableStarData.includes(goodsId) ? '取消收藏' : '收藏'}
-                            </Button>
-                        </div>
-                )}
-                    <Dialog open={open} onClose={handleClose}>
-                        <DialogTitle>确认购买</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>
-                                你确定要购买商品 {goodsName} 吗？
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={handleClose} color="primary">
-                                取消
-                            </Button>
-                            <Button onClick={handleConfirmBuy} color="secondary">
-                                确认
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-                    <Button variant="outlined" color="primary" onClick={() => history.push('/SellerMain')}
-                            sx={{ mt: 2 }}>
-                        返回
-                    </Button>
+                    </Grid>
                 </Box>
-            </div>
+            </Box>
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>确认购买</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        确定要购买该商品吗？
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        取消
+                    </Button>
+                    <Button onClick={handleConfirmBuy} color="primary">
+                        确定
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </ThemeProvider>
-        </BackgroundImage>
-);
+    );
 }
