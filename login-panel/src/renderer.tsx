@@ -14,6 +14,7 @@ import { RegulatorProfile } from 'Pages/RegulatorPage/RegulatorProfile'
 import { GoodsMain } from 'Pages/SellerPage/GoodsMain'
 import {SellerCart} from 'Pages/SellerPage/SellerCart'
 import {SellerNews} from 'Pages/SellerPage/SellerNews'
+import {SellerRecord} from 'Pages/SellerPage/SellerRecord'
 
 import './Pages/theme/global.css';
 
@@ -33,6 +34,7 @@ const Layout = () => {
                     <Route path="/GoodsMain" exact component={GoodsMain} />
                     <Route path="/SellerCart" exact component={SellerCart} />
                     <Route path="/SellerNews" exact component={SellerNews} />
+                    <Route path="/SellerRecord" exact component={SellerRecord} />
                 </Switch>
             </HashRouter>
     )
