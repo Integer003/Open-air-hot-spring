@@ -32,6 +32,8 @@ import { SellerDeleteMessage } from 'Plugins/OperatorAPI/SellerDeleteMessage';
 import { RegulatorDeleteMessage } from 'Plugins/OperatorAPI/RegulatorDeleteMessage';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BackgroundImage from 'Pages/theme/BackgroungImage'
+import { ShowGoodsTableMessage } from 'Plugins/OperatorAPI/ShowGoodsTableMessage'
+import { ShowCommentsTableMessage } from 'Plugins/OperatorAPI/ShowCommentsTableMesage'
 
 type ThemeMode = 'light' | 'dark';
 
@@ -49,16 +51,66 @@ const parseDataString = (dataString: string): UserData[] => {
     });
 };
 
+type GoodsData = {
+    GoodsId: string;
+    GoodsName: string;
+    GoodsPrice: string;
+    GoodsDescription: string;
+    GoodsCondition: string;
+    GoodsSeller: string;
+    GoodsBuyer: string;
+    GoodsStar?: string;
+    GoodsVerify?: string;
+};
+
+const parseGoodsDataStringGoods = (dataString: string): GoodsData[] => {
+    // Parse the JSON string into an array of objects
+    const parsedArray = JSON.parse(dataString);
+
+    // Map the parsed objects to the GoodsData format
+    return parsedArray.map((item: any) => ({
+        GoodsId: item.goodsID,
+        GoodsName: item.goodsName,
+        GoodsPrice: item.price,
+        GoodsDescription: item.description,
+        GoodsCondition: item.condition,
+        GoodsSeller: item.sellerName,
+        GoodsBuyer: item.buyerName,
+        GoodsStar: item.star,
+        GoodsVerify: item.verify,
+    }));
+};
+type CommentsData = {
+    CommentId: number;
+    SenderName: string;
+    GoodsId: number;
+    CommentsTime: string;
+    Content: string;
+};
+
+const parseCommentsDataStringComments = (dataString: string): CommentsData[] => {
+    const parsedArray = JSON.parse(dataString);
+    return parsedArray.map((item: any) => ({
+        CommentId: item.commentId,
+        SenderName: item.senderName,
+        GoodsId: item.goodsId,
+        CommentsTime: item.time,
+        Content: item.content,
+    }));
+};
+
+
+
 export function OperatorMain() {
     const history = useHistory();
     const { themeMode, storeThemeMode, languageType, storeLanguageType } = useThemeStore();
     const [responseTableData, setResponseTableData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const { userName } = useUserStore();
-    const [tableData, setTableData] = useState<UserData[]>([]);
+    const [tableData, setTableData] = useState<UserData[]|GoodsData[]|CommentsData[]>([]);
     const [open, setOpen] = useState(false);
-    const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
-    const [selectedType, setSelectedType] = useState<'Seller' | 'Regulator'>('Seller');
+    const [selectedObject, setSelectedObject] = useState<UserData | GoodsData | CommentsData| null>(null);
+    const [selectedType, setSelectedType] = useState<'Seller' | 'Regulator'|'Goods'|'Comments'>('Seller');
 
     useEffect(() => {
         if (userName) {
@@ -70,11 +122,23 @@ export function OperatorMain() {
 
     const init = async () => {
         try {
-            const message = selectedType === 'Seller'
-                ? new ShowTableMessage()
-                : new ShowRegulatorTableMessage();
-            const data = await sendPostRequest(message);
-            setResponseTableData(data);
+            if(selectedType==='Seller'){
+                const message = new ShowTableMessage();
+                const data = await sendPostRequest(message);
+                setResponseTableData(data);
+            }else if(selectedType==='Regulator'){
+                const message = new ShowRegulatorTableMessage();
+                const data = await sendPostRequest(message);
+                setResponseTableData(data);
+            }else if(selectedType==='Goods'){
+                const message = new ShowGoodsTableMessage();
+                const data = await sendPostRequest(message);
+                setResponseTableData(data);
+            }else if (selectedType==='Comments'){
+                const message = new ShowCommentsTableMessage();
+                const data = await sendPostRequest(message);
+                setResponseTableData(data);
+            }
         } catch (error: any) {
             setError(error.message);
             setResponseTableData('error');
@@ -87,40 +151,54 @@ export function OperatorMain() {
 
     useEffect(() => {
         if (typeof responseTableData === 'string') {
-            const parsedData = parseDataString(responseTableData);
-            setTableData(parsedData);
+            if(selectedType==='Seller'||selectedType==='Regulator') {
+                const parsedData = parseDataString(responseTableData);
+                setTableData(parsedData);
+            }else if(selectedType==='Goods'){
+                const parsedData = parseGoodsDataStringGoods(responseTableData);
+                setTableData(parsedData);
+            }else if(selectedType==='Comments'){
+                const parsedData = parseCommentsDataStringComments(responseTableData);
+                setTableData(parsedData);
+            }else{
+                console.log('未定义的类型');
+                const parsedData = parseCommentsDataStringComments('');
+                setTableData(parsedData);
+            }
         }
     }, [responseTableData]);
 
-    const handleDelete = (user: UserData) => {
-        setSelectedUser(user);
+    const handleDelete = (object: UserData|GoodsData|CommentsData) => {
+        setSelectedObject(object);
         setOpen(true);
     };
 
     const handleClose = () => {
         setOpen(false);
-        setSelectedUser(null);
+        setSelectedObject(null);
     };
 
     const [deleteResponse, setDeleteResponse] = useState<string | null>(null);
 
     useEffect(() => {
         if (deleteResponse) {
-            if (typeof deleteResponse === 'string' && deleteResponse.startsWith(selectedType)) {
-                alert(selectedUser?.userName + " 注销成功");
-                setTableData(tableData.filter(user => user !== selectedUser));
+            if (typeof deleteResponse === 'string' && deleteResponse.startsWith('Success')) {
+                alert(selectedType+"删除成功");
+                init();
             } else {
-                alert("注销失败！");
+                alert("删除失败！");
             }
         }
     }, [deleteResponse]);
 
     const handleConfirmDelete = async () => {
-        if (selectedUser) {
+        if (selectedObject) {
             try {
-                const message = selectedType === 'Seller'
-                    ? new SellerDeleteMessage(selectedUser?.userName)
-                    : new RegulatorDeleteMessage(selectedUser?.userName);
+                /*const message = selectedType === 'Seller'
+                    ? new SellerDeleteMessage(selectedObject?.userName)
+                    : new RegulatorDeleteMessage(selectedUser?.userName);*/
+                alert('删除还没写好！');
+                const message=new SellerDeleteMessage('');
                 const data = await sendPostRequest(message);
                 setDeleteResponse(data);
             } catch (error) {
@@ -130,7 +208,7 @@ export function OperatorMain() {
         }
     };
 
-    const handleTypeChange = (type: 'Seller' | 'Regulator') => {
+    const handleTypeChange = (type: 'Seller' | 'Regulator'|'Goods'|'Comments') => {
         setSelectedType(type);
     };
 
@@ -162,6 +240,18 @@ export function OperatorMain() {
                         >
                             Regulator
                         </Button>
+                        <Button
+                            variant={selectedType === 'Goods' ? 'contained' : 'outlined'}
+                            onClick={() => handleTypeChange('Goods')}
+                        >
+                            Goods
+                        </Button>
+                        <Button
+                            variant={selectedType === 'Comments' ? 'contained' : 'outlined'}
+                            onClick={() => handleTypeChange('Comments')}
+                        >
+                            Comments
+                        </Button>
                     </Box>
                     <Grid container spacing={3} justifyContent="center">
                         {tableData.map((row, index) => (
@@ -181,10 +271,10 @@ export function OperatorMain() {
                                 }}>
                                     <CardContent>
                                         <Typography gutterBottom variant="h5" component="div">
-                                            用户名: {row.userName}
+                                            用户名: {/*row.userName*/}
                                         </Typography>
                                         <Typography variant="body2" color="text.secondary">
-                                            密码: {row.password}
+                                            密码: {/*row.password*/}
                                         </Typography>
                                         <IconButton
                                             onClick={() => handleDelete(row)}
@@ -224,7 +314,7 @@ export function OperatorMain() {
                         <DialogTitle>确认删除</DialogTitle>
                         <DialogContent>
                             <DialogContentText>
-                                你确定要删除用户 {selectedUser?.userName} 吗？
+                                你确定要删除用户 {/*selectedUser?.userName*/} 吗？
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>

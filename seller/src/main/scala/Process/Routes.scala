@@ -45,7 +45,7 @@ object Routes:
             m.fullPlan.map(_.asJson.toString)
           }
       case "SellerQueryRecordMessage" =>
-        IO(decode[SellerQueryStorageMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SellerQueryRecordMessage")))
+        IO(decode[SellerQueryRecordMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SellerQueryRecordMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }

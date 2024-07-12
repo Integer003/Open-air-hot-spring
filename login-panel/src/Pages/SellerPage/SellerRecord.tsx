@@ -147,7 +147,7 @@ export function SellerRecord() {
                 <div className="content-with-appbar">
                     <Box sx={{ mb: 4, textAlign: 'center' }}>
                         <Typography variant="h1" sx={{ fontSize: '2rem' }}>
-                            <p>欢迎, {userName}来到货仓!</p>
+                            <p>欢迎, {userName}来到消费记录!</p>
                         </Typography>
                     </Box>
                     <Table sx={{ minWidth: 650 }}>

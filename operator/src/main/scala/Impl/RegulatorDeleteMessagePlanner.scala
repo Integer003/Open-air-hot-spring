@@ -21,7 +21,7 @@ case class RegulatorDeleteMessagePlanner(userName: String, override val planCont
         writeDB(s"DELETE FROM regulator.user_name WHERE user_name = ?",
           List(SqlParameter("String", userName))
         ).map { _ =>
-          s"Regulator with userName: $userName deleted successfully."
+          s"Success: Regulator with userName: $userName deleted successfully."
         }
       }
     }
