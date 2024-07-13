@@ -51,27 +51,40 @@ type CommentsData = {
 };
 
 const parseDataStringComments = (dataString: string): CommentsData[] => {
-    let parsedArray;
     try {
-        parsedArray = JSON.parse(dataString);
+        console.log("Input dataString:", dataString); // 打印输入的 dataString 进行调试
+
+        // 检查 dataString 是否已经被错误地双重字符串化
+        if (typeof dataString === 'string') {
+            dataString = JSON.parse(dataString);
+        }
+
+        // 检查解析后的类型
+        console.log("Type after first parse:", typeof dataString);
+
+        const parsedArray = JSON.parse(dataString);
+
+        console.log("Parsed array:", parsedArray); // 打印解析后的数组进行调试
+        console.log("Type of parsed array:", typeof parsedArray); // 打印解析结果的类型
+        console.log("Is array:", Array.isArray(parsedArray)); // 检查解析结果是否为数组
+
+        if (!Array.isArray(parsedArray)) {
+            throw new Error("Parsed data is not an array");
+        }
+
+        return parsedArray.map((item: any) => ({
+            CommentId: item.commentId,
+            SenderName: item.senderName,
+            GoodsId: item.goodsId,
+            CommentsTime: item.time,
+            Content: item.content,
+        }));
     } catch (error) {
-        console.error('Error parsing JSON:', error); // 还没有消息的时候是空，所以无法解析[?]不太确定，但是应该是这样的
+        console.error("Error parsing dataString:", error);
         return [];
     }
-
-    if (!Array.isArray(parsedArray)) {
-        console.error('Parsed data is not an array:', parsedArray);
-        return [];
-    }
-
-    return parsedArray.map((item: any) => ({
-        CommentId: item.commentId,
-        SenderName: item.senderName,
-        GoodsId: item.goodsId,
-        CommentsTime: item.time,
-        Content: item.content,
-    }));
 };
+
 
 const Minio = require('minio');
 
@@ -185,7 +198,7 @@ export function GoodsMain() {
             for (const row of tableGoodsData) {
                 const url = await generatePresignedUrl(row.GoodsImageUrl);
                 if (typeof url === 'string') {
-                    urls[row.GoodsId] = url
+                    urls[row.GoodsId] = url;
                 }
             }
             setPresignedUrls(urls);
@@ -294,7 +307,8 @@ export function GoodsMain() {
 
     useEffect(() => {
         if (commentsResponse) {
-            if (typeof commentsResponse === 'string' && commentsResponse.startsWith('Success')) {
+            alert(commentsResponse);
+            if (typeof commentsResponse === 'string') {
                 alert('评论成功');
                 SendNews(goodsSeller, 'seller', 'comment', '商品' + goodsName + '收到了'+userName+'的评论');
                 init();

@@ -322,8 +322,7 @@ export function SellerMain() {
                                     </ListItemIcon>
                                     <ListItemText primary="个人中心" />
                                 </ListItemButton>
-                                <ListItemButton onClick={() => {
-                                }}>
+                                <ListItemButton onClick={() => history.push(`/SellerRecord`)}>
                                     <ListItemIcon>
                                         <ReceiptIcon />
                                     </ListItemIcon>
@@ -376,15 +375,14 @@ export function SellerMain() {
                         </IconButton>
 
                     )}
-
-                    <Grid container spacing={3} sx={{ padding: 3 }}>
+                    <Grid container spacing={2} sx={{ padding: 2 }}>
                         {tableData.map((row, index) => (
-                            <Grid item xs={12} md={6} lg={4} key={index}>
+                            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                                 <Card
                                     sx={{
                                         height: '100%',
                                         display: 'flex',
-                                        flexDirection: 'row', // 保持水平排列
+                                        flexDirection: 'column',
                                         backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
                                         color: themeMode === 'dark' ? '#cbe681' : '#333333',
                                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
@@ -393,21 +391,31 @@ export function SellerMain() {
                                             transform: 'scale(1.05)',
                                             boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
                                         },
+                                        margin: '10px',
+                                        padding: '10px',
                                     }}
                                 >
-                                    <div style={{ display: 'flex', flexGrow: 1, alignItems: 'center', justifyContent: 'center' }}> {/* 包裹元素以控制图片显示 */}
+                                    <div style={{ position: 'relative', paddingTop: '75%', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid #ddd', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', marginBottom: '10px' }}> {/* Aspect ratio 4:3 */}
                                         <CardMedia
                                             component="img"
-                                            sx={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} // 移除固定宽度，添加最大宽高限制
+                                            sx={{
+                                                position: 'absolute',
+                                                top: 0,
+                                                left: 0,
+                                                width: '100%',
+                                                height: '100%',
+                                                objectFit: 'cover',
+                                                borderRadius: '10px',
+                                            }}
                                             image={presignedUrls[row.GoodsId] || ''}
                                             alt={row.GoodsName}
                                         />
                                     </div>
                                     <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                                        <Typography gutterBottom variant="h5" component="div">
+                                        <Typography gutterBottom variant="h6" component="div">
                                             {row.GoodsName}
                                         </Typography>
-                                        <Typography variant="body2" color="text.secondary">
+                                        <Typography variant="body2" color="text.secondary" sx={{ flexGrow: 1 }}>
                                             {row.GoodsDescription}
                                         </Typography>
                                         <Typography variant="h6" color="text.primary">
@@ -445,6 +453,8 @@ export function SellerMain() {
                             </Grid>
                         ))}
                     </Grid>
+
+
                 </div>
             </div>
         </ThemeProvider>
