@@ -24,8 +24,46 @@ import { useThemeStore, useUserStore } from '../store'
 import { GoodsAddMessage } from 'Plugins/GoodsAPI/GoodsAddMessage'
 import BackgroundImage from 'Pages/theme/BackgroungImage'
 import axios from 'axios'
+import AWS from 'aws-sdk';
 
 type ThemeMode = 'light' | 'dark';
+
+// 配置 AWS SDK
+// eslint-disable-next-line import/no-named-as-default-member
+AWS.config.update({
+    accessKeyId: 'LecfJHLf0PQxlbZqCN2O',
+    secretAccessKey: 'vhOva5RaWe2Qcf5u7iKtTE4KGX4WCx3wfAQcjFJB',
+    // region: 'us-east-1', // 你的 MinIO 服务器配置的区域，如果没有特别设置，可以是默认值
+    s3ForcePathStyle: true, // 这个设置允许我们使用 MinIO 的路径风格
+    signatureVersion: 'v4',
+});
+
+// 创建一个 S3 实例
+const s3 = new AWS.S3({
+    endpoint: 'http://127.0.0.1:9000', // 你的 MinIO 服务器地址
+});
+
+function uploadFileToMinIO(file: File): Promise<string> {
+    const params = {
+        Bucket: 'goods-images', // 你的存储桶名称
+        Key: file.name, // 文件名
+        Body: file, // 文件内容
+        ACL: 'public-read', // 文件权限，根据需要设置
+    };
+
+    return new Promise((resolve, reject) => {
+        s3.upload(params, (err: Error, data: AWS.S3.ManagedUpload.SendData) => {
+            if (err) {
+                console.error('Error uploading file', err);
+                reject(err);
+            } else {
+                console.log('File uploaded successfully', data);
+                // 返回文件的 URL
+                resolve(data.Location);
+            }
+        });
+    });
+}
 
 export function SellerAddGoods() {
     const history = useHistory();
@@ -69,18 +107,8 @@ export function SellerAddGoods() {
         }
 
         try {
-            // 上传图片到 MinIO 服务器
-            const formData = new FormData();
-            formData.append('file', file);
-            alert(file.type); // image/png
-
-            const response = await axios.post('http://localhost:9000/goods-images', formData);
-            alert(response);
-            alert(response.data);
-            alert(response.data.message);
-
-            // 获取图片的 URL
-            const imageUrl = response.data.url; // 假设服务器返回的 URL 在 data.url 中
+            const imageUrl = await uploadFileToMinIO(file);
+            alert(imageUrl);
 
             // 创建消息对象
             const message = new GoodsAddMessage(goodsName, numericPrice, description, "false", userName, 0, imageUrl);

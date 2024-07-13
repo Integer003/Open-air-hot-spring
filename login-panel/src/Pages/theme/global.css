@@ -1,3 +1,10 @@
 .content-with-appbar {
     margin-top: 100px; /* 根据您的 AppBar 高度进行调整 */
 }
+
+img {
+    /*max-width: 100%;*/
+    /*max-height: 100%;*/
+    height: auto;
+    width: auto;
+}

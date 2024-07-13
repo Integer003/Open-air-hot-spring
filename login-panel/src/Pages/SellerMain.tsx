@@ -53,6 +53,35 @@ type ThemeMode = 'light' | 'dark';
 
 const drawerWidth = 240;
 
+const Minio = require('minio');
+
+// MinIO 客户端配置
+const minioClient = new Minio.Client({
+    endPoint: '127.0.0.1',
+    port: 9000,
+    useSSL: false,
+    accessKey: 'LecfJHLf0PQxlbZqCN2O',
+    secretKey: 'vhOva5RaWe2Qcf5u7iKtTE4KGX4WCx3wfAQcjFJB'
+});
+
+function generatePresignedUrl(imageUrl: string) {
+    return new Promise((resolve, reject) => {
+        // 从 URL 中提取存储桶名称和对象键
+        const urlParts = new URL(imageUrl);
+        const bucketName = urlParts.pathname.split('/')[1];
+        const objectName = urlParts.pathname.substring(bucketName.length + 2);
+
+        // 生成预签名 URL
+        minioClient.presignedGetObject(bucketName, objectName, 24 * 60 * 60, (err: Error, presignedUrl: string) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(presignedUrl);
+            }
+        });
+    });
+}
+
 type GoodsData = {
     GoodsId: string;
     GoodsName: string;
@@ -60,6 +89,7 @@ type GoodsData = {
     GoodsDescription: string;
     GoodsSeller: string;
     GoodsStar: string;
+    GoodsImageUrl: string;
 };
 
 const parseDataString = (dataString: string): GoodsData[] => {
@@ -71,8 +101,10 @@ const parseDataString = (dataString: string): GoodsData[] => {
         GoodsDescription: item.description,
         GoodsSeller: item.sellerName,
         GoodsStar: item.star,
+        GoodsImageUrl: item.imageUrl,
     }));
 };
+
 type NewsData = {
     NewsId: string;
     Receiver: string;
@@ -105,6 +137,9 @@ export function SellerMain() {
     const { themeMode, storeThemeMode, languageType, storeLanguageType } = useThemeStore();
     const [mobileOpen, setMobileOpen] = useState(false);
     const { userName } = useUserStore();
+    const [presignedUrls, setPresignedUrls] = useState<Record<string, string>>({});
+
+
 
     useEffect(() => {
         if (userName) {
@@ -123,6 +158,22 @@ export function SellerMain() {
     const [tableStarData, setTableStarData] = useState<string[]>([]);
     const [responseTableStarData, setResponseTableStarData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        // 对每个商品异步获取预签名 URL
+        const fetchPresignedUrls = async () => {
+            const urls: Record<string, string> = {};
+            for (const row of tableData) {
+                const url = await generatePresignedUrl(row.GoodsImageUrl);
+                if (typeof url === 'string') {
+                    urls[row.GoodsId] = url
+                }
+            }
+            setPresignedUrls(urls);
+        };
+
+        fetchPresignedUrls();
+    }, [tableData]); // 依赖于 tableData，当它更新时重新获取 URL
 
 
     useEffect(() => {
@@ -152,7 +203,7 @@ export function SellerMain() {
         }
     }, [responseTableStarData]);
 
-    const { storeGoodsId, storeGoodsName, storeGoodsPrice, storeGoodsDescription, storeGoodsSeller, storeGoodsStar } = useGoodsStore();
+    const { storeGoodsId, storeGoodsName, storeGoodsPrice, storeGoodsDescription, storeGoodsSeller, storeGoodsStar, storeGoodsImageUrl } = useGoodsStore();
 
     const [selectedGoods, setSelectedGoods] = useState<GoodsData | null>(null);
 
@@ -165,6 +216,7 @@ export function SellerMain() {
             storeGoodsDescription(selectedGoods.GoodsDescription);
             storeGoodsSeller(selectedGoods.GoodsSeller);
             storeGoodsStar(selectedGoods.GoodsStar);
+            storeGoodsImageUrl(selectedGoods.GoodsImageUrl);
             history.push('/GoodsMain');
         }
     };
@@ -189,9 +241,6 @@ export function SellerMain() {
     };
 
 
-
-
-
     // shit of news
     const [tableNewsData, setTableNewsData] = useState<NewsData[]>([]);
     const [responseTableNewsData, setResponseTableNewsData] = useState<any>(null);
@@ -214,9 +263,6 @@ export function SellerMain() {
 
 
     // finally init
-
-
-
     const init = async () => {
         try {
             const message = new SellerQueryGoodsMessage(userName);
@@ -338,7 +384,7 @@ export function SellerMain() {
                                     sx={{
                                         height: '100%',
                                         display: 'flex',
-                                        flexDirection: 'column',
+                                        flexDirection: 'row', // 保持水平排列
                                         backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
                                         color: themeMode === 'dark' ? '#cbe681' : '#333333',
                                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
@@ -349,7 +395,15 @@ export function SellerMain() {
                                         },
                                     }}
                                 >
-                                    <CardContent sx={{ flexGrow: 1 }}>
+                                    <div style={{ display: 'flex', flexGrow: 1, alignItems: 'center', justifyContent: 'center' }}> {/* 包裹元素以控制图片显示 */}
+                                        <CardMedia
+                                            component="img"
+                                            sx={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} // 移除固定宽度，添加最大宽高限制
+                                            image={presignedUrls[row.GoodsId] || ''}
+                                            alt={row.GoodsName}
+                                        />
+                                    </div>
+                                    <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                                         <Typography gutterBottom variant="h5" component="div">
                                             {row.GoodsName}
                                         </Typography>

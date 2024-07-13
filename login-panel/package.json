@@ -142,6 +142,7 @@
         "@types/pako": "^2.0.3",
         "@types/qrcode": "^1.5.5",
         "antd": "^5.11.5",
+        "aws-sdk": "^2.1659.0",
         "class-transformer": "^0.5.1",
         "compressing": "^1.10.0",
         "copy-webpack-plugin": "^11.0.0",
