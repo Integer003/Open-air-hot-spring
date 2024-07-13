@@ -2,6 +2,12 @@
 import { createTheme } from '@mui/material/styles';
 
 const lightTheme = createTheme({
+    typography: {
+        fontFamily: '"ZCOOL KuaiLe", sans-serif',
+        h4: {
+            marginBottom: '20px',
+        },
+    },
     palette: {
         mode: 'light',
         primary: {
@@ -9,11 +15,6 @@ const lightTheme = createTheme({
         },
         secondary: {
             main: '#dc004e',
-        },
-    },
-    typography: {
-        h4: {
-            marginBottom: '20px',
         },
     },
     components: {
@@ -35,6 +36,12 @@ const lightTheme = createTheme({
 });
 
 const darkTheme = createTheme({
+    typography: {
+        fontFamily: '"ZCOOL KuaiLe", sans-serif',
+        h4: {
+            marginBottom: '20px',
+        },
+    },
     palette: {
         mode: 'dark',
         primary: {
@@ -42,11 +49,6 @@ const darkTheme = createTheme({
         },
         secondary: {
             main: '#f48fb1',
-        },
-    },
-    typography: {
-        h4: {
-            marginBottom: '20px',
         },
     },
     components: {

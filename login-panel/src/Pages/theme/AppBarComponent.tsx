@@ -45,9 +45,9 @@ const AppBarComponent: React.FC<AppBarComponentProps> = ({ historyPath }) => {
                 <IconButton color="inherit" onClick={toggleTheme}>
                     {themeMode === 'light' ? <Brightness4 /> : <Brightness7 />}
                 </IconButton>
-                <IconButton color="inherit" onClick={toggleLanguage}>
+                {/*<IconButton color="inherit" onClick={toggleLanguage}>
                     <Language />
-                </IconButton>
+                </IconButton>*/}
             </Toolbar>
         </AppBar>
     );

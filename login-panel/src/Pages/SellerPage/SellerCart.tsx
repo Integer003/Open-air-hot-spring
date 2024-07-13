@@ -43,6 +43,7 @@ type GoodsData = {
     GoodsPrice: string;
     GoodsDescription: string;
     GoodsSeller: string;
+    GoodsCondition: string;
     GoodsStar: string;
 };
 
@@ -54,6 +55,7 @@ const parseDataString = (dataString: string): GoodsData[] => {
         GoodsPrice: item.price,
         GoodsDescription: item.description,
         GoodsSeller: item.sellerName,
+        GoodsCondition: item.condition,
         GoodsStar: item.star,
     }));
 };
@@ -132,7 +134,7 @@ export function SellerCart() {
         }
     };
 
-    const { storeGoodsId, storeGoodsName, storeGoodsPrice, storeGoodsDescription, storeGoodsSeller, storeGoodsStar } = useGoodsStore();
+    const { storeGoodsId, storeGoodsName, storeGoodsPrice, storeGoodsDescription, storeGoodsSeller, storeGoodsStar, storeGoodsCondition } = useGoodsStore();
 
     const handleGoodsInfo = (goods: GoodsData) => {
         storeGoodsId(goods.GoodsId);
@@ -141,6 +143,7 @@ export function SellerCart() {
         storeGoodsDescription(goods.GoodsDescription);
         storeGoodsSeller(goods.GoodsSeller);
         storeGoodsStar(goods.GoodsStar);
+        storeGoodsCondition(goods.GoodsCondition);
         history.push('/GoodsMain');
     };
 
@@ -155,7 +158,7 @@ export function SellerCart() {
 
     useEffect(() => {
         if (buyResponse) {
-            if (buyResponse.startsWith('Success')) {
+            if (typeof buyResponse=='string' && buyResponse.startsWith('Success')) {
                 alert(selectedGoods?.GoodsName + '购买成功');
                 SendNews(selectedGoods?.GoodsSeller, 'seller', 'buy', '您的商品' + selectedGoods?.GoodsName + '已被购买');
                 SendNews(userName, 'seller', 'buy', '您已购买商品' + selectedGoods?.GoodsName);
@@ -182,7 +185,7 @@ export function SellerCart() {
             <ThemeProvider theme={themes[themeMode]}>
                 <CssBaseline />
                 <AppBarComponent historyPath={'/SellerMain'} />
-                <div className="content-with-appbar">
+                <div className="content-with-appbar" style={{ padding: '20px' }}>
                     <Toolbar />
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', my: 2 }}>
                         <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>
@@ -207,9 +210,11 @@ export function SellerCart() {
                                             </>
                                         }
                                     />
+                                    {goods.GoodsCondition=='true'&&(<div>已售出</div>)}
+                                    {goods.GoodsCondition=='false'&&(
                                     <Button variant="contained" color="success" onClick={() => handleBuy(goods)} sx={{ mx: 1 }}>
                                         <ShoppingBagIcon /> 购买
-                                    </Button>
+                                    </Button>)}
                                     <Button variant="contained" color="error" onClick={() => handleDeleteCart(goods)} sx={{ mx: 1 }}>
                                         <RemoveShoppingCartIcon /> 移出
                                     </Button>

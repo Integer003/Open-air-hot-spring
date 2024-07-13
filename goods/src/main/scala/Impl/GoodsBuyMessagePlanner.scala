@@ -28,6 +28,14 @@ case class GoodsBuyMessagePlanner(buyerName: String, goodsID: String, override v
 
       // 确保 buyer 余额足够
       _ <- if (buyerMoney >= price) IO.unit else IO.raiseError(new Exception("余额不足"))
+      // 商品状态
+      goodsCondition <- readDBString(
+        s"SELECT condition FROM goods.goods_info WHERE WHERE goods_id = ? ",
+        List(SqlParameter("Int",goodsID ))
+      )
+
+      // 确保 未售出
+      _ <- if (goodsCondition=="true") IO.unit else IO.raiseError(new Exception("商品已售出"))
 
       // 更新 goods_info 表
       _ <- writeDB(

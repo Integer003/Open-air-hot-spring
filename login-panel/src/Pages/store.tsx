@@ -54,6 +54,8 @@ type GoodsState = {
     goodsSeller: string;
     storeGoodsSeller: (seller: string) => void;
     goodsStar: string;
+    storeGoodsCondition: (seller: string) => void;
+    goodsCondition: string;
     storeGoodsStar: (star: string) => void;
     goodsImageUrl: string;
     storeGoodsImageUrl: (imageUrl: string) => void;
@@ -71,6 +73,8 @@ export const useGoodsStore = create<GoodsState>((set) => ({
     goodsSeller: 'defaultGoodsSeller',
     storeGoodsSeller: (seller) => set({ goodsSeller: seller }),
     goodsStar: '0',
+    storeGoodsCondition: (condition) => set({ goodsCondition: condition }),
+    goodsCondition: 'false',
     storeGoodsStar: (star: string) => set({ goodsStar: star }),
     goodsImageUrl: 'default/path',
     storeGoodsImageUrl: (imageUrl) => set({ goodsImageUrl: imageUrl }),

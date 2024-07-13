@@ -122,6 +122,7 @@ type GoodsData = {
     GoodsDescription: string;
     GoodsSeller: string;
     GoodsStar: string;
+    GoodsCondition: string;
     GoodsImageUrl: string;
 };
 
@@ -134,6 +135,7 @@ const parseDataStringGoods = (dataString: string): GoodsData[] => {
         GoodsDescription: item.description,
         GoodsSeller: item.sellerName,
         GoodsStar: item.star,
+        GoodsCondition: item.condition,
         GoodsImageUrl: item.imageUrl,
     }));
 };
@@ -142,7 +144,7 @@ export function GoodsMain() {
     const history = useHistory();
     const { themeMode } = useThemeStore();
     const { userName } = useUserStore();
-    const { goodsId, goodsName, goodsPrice, goodsDescription, goodsSeller, goodsStar, goodsImageUrl } = useGoodsStore();
+    const { goodsId, goodsName, goodsPrice, goodsDescription, goodsSeller, goodsStar,goodsCondition, goodsImageUrl } = useGoodsStore();
     const [tableData, setTableData] = useState<CommentsData[]>([]);
     const [responseTableData, setResponseTableData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
@@ -172,8 +174,8 @@ export function GoodsMain() {
             const messageCart = new SellerQueryGoodsIsCartMessage(userName);
             const dataCart = await sendPostRequest(messageCart);
             setResponseTableCartData(dataCart);
-            alert("goodsId");
-            alert(goodsId);
+            //alert("goodsId");
+            //alert(goodsId);
         } catch (error: any) {
             setError(error.message);
             setResponseTableData('error');
@@ -217,7 +219,7 @@ export function GoodsMain() {
 
     useEffect(() => {
         if (buyResponse) {
-            if (typeof buyResponse === 'string' && buyResponse.startsWith('Success')) {
+            if (typeof buyResponse === 'string' ) {
                 alert(goodsName + '购买成功');
                 history.push('./sellerMain');
             } else {
@@ -395,7 +397,12 @@ export function GoodsMain() {
                                 发送
                             </Button>
                         </Box>
-                        {userName !== goodsSeller && (
+                        {goodsCondition=='true'&&(
+                            <Typography variant="h4" sx={{ mt: 4, mb: 2 }}>
+                                商品已售出
+                            </Typography>
+                        )}
+                        {userName !== goodsSeller && goodsCondition=='false' && (
                             <div>
                                 <Button
                                     onClick={handleBuy}

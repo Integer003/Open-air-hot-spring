@@ -4,6 +4,7 @@ import {
     AppBar,
     Typography,
     Button,
+    Badge,
     CssBaseline,
     Drawer,
     Toolbar,
@@ -89,6 +90,8 @@ type GoodsData = {
     GoodsDescription: string;
     GoodsSeller: string;
     GoodsStar: string;
+    GoodsBuyer: string;
+    GoodsCondition: string;
     GoodsImageUrl: string;
 };
 
@@ -101,6 +104,8 @@ const parseDataString = (dataString: string): GoodsData[] => {
         GoodsDescription: item.description,
         GoodsSeller: item.sellerName,
         GoodsStar: item.star,
+        GoodsBuyer: item.buyerName,
+        GoodsCondition: item.condition,
         GoodsImageUrl: item.imageUrl,
     }));
 };
@@ -203,7 +208,7 @@ export function SellerMain() {
         }
     }, [responseTableStarData]);
 
-    const { storeGoodsId, storeGoodsName, storeGoodsPrice, storeGoodsDescription, storeGoodsSeller, storeGoodsStar, storeGoodsImageUrl } = useGoodsStore();
+    const { storeGoodsId, storeGoodsName, storeGoodsPrice, storeGoodsDescription, storeGoodsSeller, storeGoodsCondition,storeGoodsStar, storeGoodsImageUrl } = useGoodsStore();
 
     const [selectedGoods, setSelectedGoods] = useState<GoodsData | null>(null);
 
@@ -216,6 +221,7 @@ export function SellerMain() {
             storeGoodsDescription(selectedGoods.GoodsDescription);
             storeGoodsSeller(selectedGoods.GoodsSeller);
             storeGoodsStar(selectedGoods.GoodsStar);
+            storeGoodsCondition(selectedGoods.GoodsCondition);
             storeGoodsImageUrl(selectedGoods.GoodsImageUrl);
             history.push('/GoodsMain');
         }
@@ -342,10 +348,11 @@ export function SellerMain() {
                                 </ListItemButton>
                                 <ListItemButton onClick={() => history.push('/SellerNews')}>
                                     <ListItemIcon>
+                                        <Badge badgeContent={unreadCount} color="primary">
                                         <MessageIcon />
+                                        </Badge>
                                     </ListItemIcon>
                                     <ListItemText primary="消息" />
-                                    <UnreadIndicator count={unreadCount} />
                                 </ListItemButton>
                                 <ListItemButton onClick={() => history.push('/')}>
                                     <ListItemIcon>
@@ -358,6 +365,7 @@ export function SellerMain() {
                     </Drawer>
 
                     {!mobileOpen && (
+
                             <IconButton color="inherit"
                                     onClick={handleDrawerToggle}
                                     sx={{
@@ -365,14 +373,12 @@ export function SellerMain() {
                                     left: 20,
                                     top: '1.5%',
                                     zIndex: 2000,
-                                    backgroundColor: themeMode === 'dark' ? '#333333' : '#ffffff',
-
                                 }}
-                            >
+                            ><Badge badgeContent={unreadCount} color="warning">
                                 <AppsIcon/>
-
-                                 <UnreadIndicator count={unreadCount} />
+                            </Badge>
                         </IconButton>
+
 
                     )}
                     <Grid container spacing={2} sx={{ padding: 2 }}>
@@ -383,8 +389,8 @@ export function SellerMain() {
                                         height: '100%',
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
-                                        color: themeMode === 'dark' ? '#cbe681' : '#333333',
+                                        backgroundColor: row.GoodsCondition === 'true' ? '#667087' : (themeMode === 'dark' ? '#a18686' : '#97adc6'),
+                                        color: row.GoodsCondition === 'true' ? '#cbe681' : (themeMode === 'dark' ? '#cbe681' : '#ffffff'),
                                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
                                         transition: 'transform 0.3s',
                                         '&:hover': {
@@ -393,6 +399,7 @@ export function SellerMain() {
                                         },
                                         margin: '10px',
                                         padding: '10px',
+                                        opacity: row.GoodsCondition === 'true' ? 1 : 1,
                                     }}
                                 >
                                     <div style={{ position: 'relative', paddingTop: '75%', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid #ddd', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', marginBottom: '10px' }}> {/* Aspect ratio 4:3 */}
@@ -422,21 +429,30 @@ export function SellerMain() {
                                             ¥{row.GoodsPrice}
                                         </Typography>
                                         <Typography variant="body2" color="text.secondary">
-                                            卖家: {row.GoodsSeller}
+                                            卖家: {row.GoodsSeller === userName ? '你的商品' : row.GoodsSeller}
                                         </Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            Stars: {row.GoodsStar}
-                                        </Typography>
+                                        {row.GoodsCondition === 'true' && (
+                                            <Typography variant="body2" color="text.secondary">
+                                                已售出
+                                            </Typography>
+                                        )}
+                                        {row.GoodsSeller !== userName && (
+                                            <Typography variant="body2" color="text.secondary">
+                                                Stars: {row.GoodsStar}
+                                            </Typography>
+                                        )}
                                     </CardContent>
                                     <CardActions>
-                                        <IconButton
-                                            onClick={() => handleToggleStar(row)}
-                                            sx={{
-                                                color: tableStarData.includes(row.GoodsId) ? 'yellow' : 'grey',
-                                            }}
-                                        >
-                                            <StarIcon />
-                                        </IconButton>
+                                        {row.GoodsSeller !== userName && (
+                                            <IconButton
+                                                onClick={() => handleToggleStar(row)}
+                                                sx={{
+                                                    color: tableStarData.includes(row.GoodsId) ? 'yellow' : 'grey',
+                                                }}
+                                            >
+                                                <StarIcon />
+                                            </IconButton>
+                                        )}
                                         <IconButton
                                             onClick={() => handleGoodsInfo(row)}
                                             sx={{
@@ -450,6 +466,7 @@ export function SellerMain() {
                                         </IconButton>
                                     </CardActions>
                                 </Card>
+
                             </Grid>
                         ))}
                     </Grid>

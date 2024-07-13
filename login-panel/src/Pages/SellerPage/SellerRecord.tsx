@@ -144,13 +144,13 @@ export function SellerRecord() {
             <ThemeProvider theme={themes[themeMode]}>
                 <CssBaseline />
                 <AppBarComponent historyPath={'/SellerMain'} />
-                <div className="content-with-appbar">
+                <div className="content-with-appbar"  style={{ padding: '20px' }}>
                     <Box sx={{ mb: 4, textAlign: 'center' }}>
-                        <Typography variant="h1" sx={{ fontSize: '2rem' }}>
-                            <p>欢迎, {userName}来到消费记录!</p>
+                        <Typography variant="h1" sx={{ fontSize: '2rem', textAlign: 'center', textShadow: '1px 1px 2px #000, 0 0 25px #000' }}>
+                            欢迎, {userName}来到消费记录!
                         </Typography>
                     </Box>
-                    <Table sx={{ minWidth: 650 }}>
+                    <Table sx={{ minWidth: 650, border: '2px #000000' }}  aria-label="simple table">
                         <TableHead>
                             <TableRow>
                                 <TableCell align="center">商品名</TableCell>
@@ -173,6 +173,7 @@ export function SellerRecord() {
                 </div>
             </ThemeProvider>
         </BackgroundImage>
+
     );
 }
 

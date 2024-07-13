@@ -198,7 +198,7 @@ export function SellerStorage() {
         <ThemeProvider theme={themes[themeMode]}>
             <CssBaseline />
             <AppBarComponent historyPath={'/SellerMain'} />
-            <div className="content-with-appbar">
+            <div className="content-with-appbar" style={{ padding: '20px' }}>
                 <Box sx={{ mb: 4, textAlign: 'center' }}>
                     <Typography variant="h1" sx={{ fontSize: '2rem' }}>
                         <p>欢迎, {userName}来到货仓!</p>

@@ -2,6 +2,8 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import light from '../../images/CoolSky.jpg';
 import dark from '../../images/WitchingHour.jpg';
+import ptk from '../../images/ptk.png';
+import sbsq from '../../images/sbsq.png';
 
 interface BackgroundImageProps {
     themeMode: string // 限制为 'light' 或 'dark'
@@ -10,7 +12,7 @@ interface BackgroundImageProps {
 
 const BackgroundImage: React.FC<BackgroundImageProps> = ({ themeMode, children }) => {
     // 根据themeMode选择背景图片
-    const backgroundImage = themeMode === 'light' ? light : dark;
+    const backgroundImage = themeMode === 'light' ? sbsq : ptk;
 
     return (
         <Box
