@@ -138,101 +138,109 @@ export function SellerProfile() {
 
     return (
         <BackgroundImage themeMode={themeMode}>
-        <ThemeProvider theme={themes[themeMode]}>
-            <CssBaseline />
-            <AppBarComponent historyPath={'/SellerMain'} />
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-                <Box sx={{ textAlign: 'center', mb: 4 }}>
-                    <Typography variant="h2" component="h1" gutterBottom>
-                        个人中心
-                    </Typography>
-                    <Typography variant="h5" gutterBottom>
-                        欢迎, {userName}!
-                    </Typography>
-                </Box>
-                <Grid container spacing={3} justifyContent="center">
-                    <Grid item xs={12} md={8}>
-                        <Card sx={{ backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff', color: themeMode === 'dark' ? '#cbe681' : '#333333' }}>
-                            <CardContent>
-                                <Typography variant="h6" gutterBottom>
-                                    当前余额: {responseData1} 元
-                                </Typography>
-                                <TextField
-                                    fullWidth
-                                    margin="normal"
-                                    required
-                                    name="price"
-                                    label="充值金额"
-                                    type="number"
-                                    id="price"
-                                    value={rechargeMoney}
-                                    onChange={(e) => {
-                                        const value = parseInt(e.target.value);
-                                        if (!isNaN(value)) {
-                                            setRechargeMoney(value);
-                                        }
-                                    }}
-                                    InputLabelProps={{
-                                        style: { color: themeMode === 'dark' ? '#cbe681' : '#333333' },
-                                    }}
-                                    InputProps={{
-                                        style: { color: themeMode === 'dark' ? '#cbe681' : '#333333' },
-                                    }}
-                                />
-                            </CardContent>
-                            <CardActions sx={{ justifyContent: 'center' }}>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() => handleRechargeMoney(rechargeMoney)}
-                                    sx={{
-                                        backgroundColor: '#1976d2',
-                                        '&:hover': { backgroundColor: '#1565c0' },
-                                    }}
-                                >
-                                    充值
-                                </Button>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                    <Grid item xs={12} md={8}>
-                        <Card sx={{ backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff', color: themeMode === 'dark' ? '#cbe681' : '#333333' }}>
-                            <CardActions sx={{ justifyContent: 'center' }}>
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    onClick={() => history.push('/SellerMain')}
-                                    sx={{
-                                        backgroundColor: '#d32f2f',
-                                        '&:hover': { backgroundColor: '#c62828' },
-                                    }}
-                                >
-                                    返回
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    color="error"
-                                    onClick={handleOpen}
-                                    sx={{
-                                        backgroundColor: '#f44336',
-                                        '&:hover': { backgroundColor: '#e53935' },
-                                    }}
-                                >
-                                    注销
-                                </Button>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                </Grid>
-                <ConfirmDialog
-                    open={open}
-                    onConfirm={() => handleClose(true)}
-                    onCancel={() => handleClose(false)}
-                    title="提示"
-                    message="您确定要注销吗？"
-                />
-            </Container>
-        </ThemeProvider>
+            <ThemeProvider theme={themes[themeMode]}>
+                <CssBaseline />
+                <AppBarComponent historyPath={'/SellerMain'} />
+                <div className="content-with-appbar">
+                    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+                        <Box sx={{ textAlign: 'center', mb: 4 }}>
+                            <Typography variant="h2" component="h1" gutterBottom>
+                                个人中心
+                            </Typography>
+                            <Typography variant="h5" gutterBottom>
+                                欢迎, {userName}!
+                            </Typography>
+                        </Box>
+                        <Grid container spacing={3} justifyContent="center">
+                            <Grid item xs={12} md={8}>
+                                <Card sx={{
+                                    backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
+                                    color: themeMode === 'dark' ? '#cbe681' : '#333333',
+                                }}>
+                                    <CardContent>
+                                        <Typography variant="h6" gutterBottom>
+                                            当前余额: {responseData1} 元
+                                        </Typography>
+                                        <TextField
+                                            fullWidth
+                                            margin="normal"
+                                            required
+                                            name="price"
+                                            label="充值金额"
+                                            type="number"
+                                            id="price"
+                                            value={rechargeMoney}
+                                            onChange={(e) => {
+                                                const value = parseInt(e.target.value)
+                                                if (!isNaN(value)) {
+                                                    setRechargeMoney(value)
+                                                }
+                                            }}
+                                            InputLabelProps={{
+                                                style: { color: themeMode === 'dark' ? '#cbe681' : '#333333' },
+                                            }}
+                                            InputProps={{
+                                                style: { color: themeMode === 'dark' ? '#cbe681' : '#333333' },
+                                            }}
+                                        />
+                                    </CardContent>
+                                    <CardActions sx={{ justifyContent: 'center' }}>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={() => handleRechargeMoney(rechargeMoney)}
+                                            sx={{
+                                                backgroundColor: '#1976d2',
+                                                '&:hover': { backgroundColor: '#1565c0' },
+                                            }}
+                                        >
+                                            充值
+                                        </Button>
+                                    </CardActions>
+                                </Card>
+                            </Grid>
+                            <Grid item xs={12} md={8}>
+                                <Card sx={{
+                                    backgroundColor: themeMode === 'dark' ? '#1e1e1e' : '#ffffff',
+                                    color: themeMode === 'dark' ? '#cbe681' : '#333333',
+                                }}>
+                                    <CardActions sx={{ justifyContent: 'center' }}>
+                                        <Button
+                                            variant="contained"
+                                            color="secondary"
+                                            onClick={() => history.push('/SellerMain')}
+                                            sx={{
+                                                backgroundColor: '#d32f2f',
+                                                '&:hover': { backgroundColor: '#c62828' },
+                                            }}
+                                        >
+                                            返回
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            color="error"
+                                            onClick={handleOpen}
+                                            sx={{
+                                                backgroundColor: '#f44336',
+                                                '&:hover': { backgroundColor: '#e53935' },
+                                            }}
+                                        >
+                                            注销
+                                        </Button>
+                                    </CardActions>
+                                </Card>
+                            </Grid>
+                        </Grid>
+                        <ConfirmDialog
+                            open={open}
+                            onConfirm={() => handleClose(true)}
+                            onCancel={() => handleClose(false)}
+                            title="提示"
+                            message="您确定要注销吗？"
+                        />
+                    </Container>
+                </div>
+            </ThemeProvider>
         </BackgroundImage>
-    );
+);
 }
