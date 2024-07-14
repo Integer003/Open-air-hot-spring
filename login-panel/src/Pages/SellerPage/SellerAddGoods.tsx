@@ -79,7 +79,7 @@ export function SellerAddGoods() {
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = event.target.files?.[0];
         if (selectedFile) {
-            alert("selectedFile not null");
+            //alert("selectedFile not null");
             setFile(selectedFile);
         }
     };
@@ -108,7 +108,7 @@ export function SellerAddGoods() {
 
         try {
             const imageUrl = await uploadFileToMinIO(file);
-            alert(imageUrl);
+            //alert(imageUrl);
 
             // 创建消息对象
             const message = new GoodsAddMessage(goodsName, numericPrice, description, "false", userName, 0, imageUrl);
@@ -129,7 +129,7 @@ export function SellerAddGoods() {
                 <CssBaseline />
                 <AppBarComponent historyPath={'/SellerStorage'} />
                 <div className="content-with-appbar">
-                    <Container component="main" maxWidth="xs">
+                    <Container component="main" maxWidth="xs" sx={{}}>
                         <CssBaseline />
                         <Box
                             sx={{
@@ -137,6 +137,9 @@ export function SellerAddGoods() {
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
+                                bgcolor: themeMode =='light'? 'rgba(255, 255, 255, 0.8)': 'rgba(152,160,244,0.8)',
+                                p: 4,
+                                borderRadius: 2
                             }}
                         >
                             <Typography component="h1" variant="h5">

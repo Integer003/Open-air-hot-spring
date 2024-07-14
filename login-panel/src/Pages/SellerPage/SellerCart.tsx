@@ -185,17 +185,24 @@ export function SellerCart() {
             <ThemeProvider theme={themes[themeMode]}>
                 <CssBaseline />
                 <AppBarComponent historyPath={'/SellerMain'} />
-                <div className="content-with-appbar" style={{ padding: '20px' }}>
+                <div className="content-with-appbar" >
                     <Toolbar />
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', my: 2 }}>
                         <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>
                             购物车
                         </Typography>
                     </Box>
+                    {tableCartData.length === 0&&(
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', my: 2 }}>
+                            <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>
+                                这里空空如也！
+                            </Typography>
+                        </Box>
+                    )}
                     <List>
                         {tableData.filter(goods => tableCartData.includes(goods.GoodsId)).map((goods, index) => (
-                            <ListItem key={index} disablePadding sx={{ bgcolor: 'background.paper', mb: 2 }}>
-                                <ListItemButton>
+                            <ListItem key={index} disablePadding sx={{ bgcolor: 'background.paper', mb: 2, opacity: 0.8}}>
+                                <ListItemButton onClick={() => handleGoodsInfo(goods)}>
                                     <ListItemIcon onClick={() => handleGoodsInfo(goods)}>
                                         <InfoIcon />
                                     </ListItemIcon>

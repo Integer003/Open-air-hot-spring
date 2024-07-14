@@ -25,6 +25,7 @@ const BackgroundImage: React.FC<BackgroundImageProps> = ({ themeMode, children }
                 backgroundRepeat: 'no-repeat',
                 backgroundAttachment: 'fixed', // 背景图片固定
                 overflowY: 'auto', // 确保内容可以上下滚动
+                opacity: 0.8,
             }}
         >
             <Box

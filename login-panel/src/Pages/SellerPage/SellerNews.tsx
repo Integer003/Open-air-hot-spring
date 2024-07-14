@@ -139,18 +139,13 @@ export function SellerNews() {
             <ThemeProvider theme={themes[themeMode]}>
                 <CssBaseline />
                 <AppBarComponent historyPath={'/SellerMain'} />
-                <div className="content-with-appbar" style={{ padding: '20px' }}>
-                    <Box sx={{ mb: 4, textAlign: 'center' }}>
-                        <Typography variant="h1" sx={{ fontSize: '2rem' }}>
-                            <p>欢迎, {userName}来到消息系统!</p>
+                <div className="content-with-appbar" >
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', my: 2 }}>
+                        <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>
+                            {userName}的消息中心！
                         </Typography>
                     </Box>
-                    <Box sx={{ mb: 4, textAlign: 'center' }}>
-                        <Typography variant="h2" sx={{ fontSize: '1.5rem' }}>
-                            <p>消息列表</p>
-                        </Typography>
-                    </Box>
-                    <Table>
+                    <Table sx={{ mb: 4, textAlign: 'center' , bgcolor: themeMode =='light'? 'rgba(255, 255, 255, 0.8)': 'rgba(152,160,244,0.8)', p: 4, borderRadius: 2 }}>
                         <TableHead>
                             <TableRow>
                                 <TableCell align="center">消息类型</TableCell>

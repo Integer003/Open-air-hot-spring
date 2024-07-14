@@ -223,7 +223,7 @@ export function GoodsMain() {
                 alert(goodsName + '购买成功');
                 history.push('./sellerMain');
             } else {
-                alert('购买失败！');
+                alert('购买失败！余额不足或已被售出！');
             }
         }
     }, [buyResponse]);
@@ -335,16 +335,30 @@ export function GoodsMain() {
                         </Typography>
                         <Grid container spacing={3} justifyContent="center">
                             <Grid item xs={12} md={6} lg={4}>
-                                <Card sx={{
-                                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                                    '&:hover': { boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)' },
-                                    display: 'flex', // 添加此行
-                                    flexDirection: 'column', // 添加此行
-                                    alignItems: 'center', // 添加此行
-                                }}>
+                                <Card
+                                    sx={{
+                                        height: 'auto', // 允许卡片的高度根据内容自动调整
+                                        minHeight: '150px', // 设置一个最小高度，确保卡片不会太矮
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        backgroundColor: goodsCondition === 'true' ? '#667087' : (themeMode === 'dark' ? '#a18686' : '#97adc6'),
+                                        color: goodsCondition === 'true' ? '#cbe681' : (themeMode === 'dark' ? '#cbe681' : '#ffffff'),
+                                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                                        transition: 'transform 0.3s',
+                                        '&:hover': {
+                                            transform: 'scale(1.05)',
+                                            boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
+                                            cursor: 'pointer',
+                                        },
+                                        borderRadius: 5,
+                                        margin: '10px',
+                                        padding: '10px',
+                                        opacity: goodsCondition === 'true' ? 0.9 : 1,
+                                    }}
+                                >
                                     <CardMedia
                                         component="img"
-                                        sx={{ width: '50%', height: 'auto', objectFit: 'cover', margin: 'auto' }} // 修改此处以动态适应大小并居中
+                                        sx={{ width: '50%', height: 'auto', objectFit: 'cover', margin: 'auto' , borderRadius: 5,}} // 修改此处以动态适应大小并居中
                                         image={presignedUrls[goodsId]}
                                         alt={goodsName}
                                     />
@@ -373,13 +387,17 @@ export function GoodsMain() {
                         </Typography>
                         <List>
                             {tableData.map((item) => (
-                                <ListItem key={item.CommentsTime}>
+                                <ListItem key={item.CommentsTime} sx={{
+                                    bgcolor: themeMode =='light'? 'rgba(255, 255, 255, 0.8)': 'rgba(152,160,244,0.8)',
+                                    p: 2, borderRadius: 2,
+                                    spacing: 2
+                                }}>
                                     <ListItemText primary={item.Content}
                                                   secondary={`${item.SenderName} ${item.CommentsTime}`} />
                                 </ListItem>
                             ))}
                         </List>
-                        <Box sx={{ display: 'flex', alignItems: 'center', margin: '20px 0' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', margin: '20px 0',bgcolor: themeMode =='light'? 'rgba(255, 255, 255, 0.8)': 'rgba(152,160,244,0.8)', p: 2, borderRadius: 2  }}>
                             <TextField
                                 id="myComment"
                                 label="评论"
@@ -403,11 +421,13 @@ export function GoodsMain() {
                             </Typography>
                         )}
                         {userName !== goodsSeller && goodsCondition=='false' && (
-                            <div>
+                            <div >
                                 <Button
                                     onClick={handleBuy}
                                     sx={{
                                         color: themeMode === 'dark' ? '#99dc10' : '#99dc10',
+                                        bgcolor: themeMode =='light'? 'rgba(48,12,12,0.8)': 'rgba(135,140,188,0.8)',
+                                        spacing: 2
                                     }}
                                 >
                                     <ShoppingBagIcon /> 购买
@@ -416,6 +436,8 @@ export function GoodsMain() {
                                     onClick={handleToggleCart}
                                     sx={{
                                         color: tableCartData.includes(goodsId) ? 'red' : 'yellow',
+                                        bgcolor: themeMode =='light'? 'rgba(128,58,58,0.8)': 'rgba(97,144,152,0.8)',
+                                        spacing: 2
                                     }}
                                 >
                                     {tableCartData.includes(goodsId) ? <RemoveShoppingCart/>:<AddShoppingCartIcon />}
@@ -425,6 +447,8 @@ export function GoodsMain() {
                                     onClick={handleToggleStar}
                                     sx={{
                                         color: tableStarData.includes(goodsId) ? 'yellow' : 'grey',
+                                        bgcolor: themeMode =='light'? 'rgba(46,46,5,0.8)': 'rgba(101,85,158,0.8)',
+                                        spacing: 2
                                     }}
                                 >
                                     <StarIcon />

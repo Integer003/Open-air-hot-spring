@@ -24,7 +24,8 @@ const AppBarComponent: React.FC<AppBarComponentProps> = ({ historyPath }) => {
 
     const handleBack = () => {
         if (historyPath) {
-            history.push(historyPath);
+            history.goBack();
+           // history.push(historyPath);
         }
     };
 

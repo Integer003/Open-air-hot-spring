@@ -7,11 +7,6 @@ import {
     CssBaseline,
     Box,
     ThemeProvider,
-    Table,
-    TableHead,
-    TableBody,
-    TableRow,
-    TableCell,
     IconButton,
     Dialog,
     DialogActions,
@@ -25,9 +20,8 @@ import {
     ListItem,
     ListItemButton,
     ListItemIcon,
-    ListItemText,
-    Pagination
-} from '@mui/material';
+    ListItemText, CardMedia,
+} from '@mui/material'
 import { themes } from './theme/theme';
 import AppBarComponent from './theme/AppBarComponent';
 import { sendPostRequest } from './tool/apiRequest';
@@ -51,6 +45,36 @@ import { RegulatorModifyGoodsMessage } from 'Plugins/RegulatorAPI/RegulatorModif
 type ThemeMode = 'light' | 'dark';
 
 const drawerWidth = 240;
+
+const Minio = require('minio');
+
+// MinIO 客户端配置
+const minioClient = new Minio.Client({
+    endPoint: '127.0.0.1',
+    port: 9000,
+    useSSL: false,
+    accessKey: 'LecfJHLf0PQxlbZqCN2O',
+    secretKey: 'vhOva5RaWe2Qcf5u7iKtTE4KGX4WCx3wfAQcjFJB'
+});
+
+function generatePresignedUrl(imageUrl: string) {
+    return new Promise((resolve, reject) => {
+        // 从 URL 中提取存储桶名称和对象键
+        const urlParts = new URL(imageUrl);
+        const bucketName = urlParts.pathname.split('/')[1];
+        const objectName = urlParts.pathname.substring(bucketName.length + 2);
+
+        // 生成预签名 URL
+        minioClient.presignedGetObject(bucketName, objectName, 24 * 60 * 60, (err: Error, presignedUrl: string) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(presignedUrl);
+            }
+        });
+    });
+}
+
 type GoodsData = {
     GoodsId: string;
     GoodsName: string;
@@ -58,20 +82,19 @@ type GoodsData = {
     GoodsDescription: string;
     GoodsSeller: string;
     GoodsVerify: string;
+    GoodsImageUrl: string;
 };
 
 const parseDataString = (dataString: string): GoodsData[] => {
-    // Parse the JSON string into an array of objects
     const parsedArray = JSON.parse(dataString);
-
-    // Map the parsed objects to the GoodsData format
     return parsedArray.map((item: any) => ({
         GoodsId: item.goodsID,
         GoodsName: item.goodsName,
         GoodsPrice: item.price,
         GoodsDescription: item.description,
         GoodsSeller: item.sellerName,
-        GoodsVerify: item.verify
+        GoodsVerify: item.verify,
+        GoodsImageUrl: item.imageUrl
     }));
 };
 
@@ -79,6 +102,10 @@ export function RegulatorMain() {
     const history = useHistory();
     const { themeMode } = useThemeStore();
     const { userName } = useUserStore();
+    const [isCompleted, setIsCompleted] = useState(false);
+
+    const [presignedUrls, setPresignedUrls] = useState<Record<string, string>>({});
+
 
     useEffect(() => {
         if (userName) {
@@ -104,57 +131,65 @@ export function RegulatorMain() {
     }, []);
 
     const [tableData, setTableData] = useState<GoodsData[]>([]);
+    const [oriTableData, setOriTableData] = useState<GoodsData[]>([]);
     const [responseTableData, setResponseTableData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const itemsPerPage = 7;
+    const [currentIndex, setCurrentIndex] = useState<number>(0);
 
     useEffect(() => {
         if (typeof responseTableData === 'string') {
             const parsedData = parseDataString(responseTableData);
             const sortedData = parsedData.sort((a, b) => a.GoodsId.localeCompare(b.GoodsId));
-            setTableData(sortedData);
+            setOriTableData(sortedData);
         }
     }, [responseTableData]);
 
     const [selectedGoods, setSelectedGoods] = useState<GoodsData | null>(null);
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
     const [result, setResult] = useState<string | null>(null);
 
-    const handleModify = (goods: GoodsData) => {
-        setSelectedGoods(goods);
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-        setSelectedGoods(null);
-    };
-
-    const [modifyResponse, setModifyResponce] = useState<string | null>(null);
+    useEffect(() => {
+        if (tableData.length > 0) {
+            setSelectedGoods(tableData[currentIndex]);
+        }
+    }, [tableData, currentIndex]);
 
     useEffect(() => {
-        if (modifyResponse) {
-            if (typeof modifyResponse === 'string' && modifyResponse.startsWith("Success")) {
-                alert(selectedGoods?.GoodsName + "管理成功");
-                SendNews(selectedGoods?.GoodsSeller, "seller", "verify", "您的商品" + selectedGoods?.GoodsName + "已经通过审核");
-                init();
-            } else {
-                alert("管理失败！");
+        // 对每个商品异步获取预签名 URL
+        const fetchPresignedUrls = async () => {
+            const urls: Record<string, string> = {};
+            for (const row of oriTableData) {
+                const url = await generatePresignedUrl(row.GoodsImageUrl);
+                if (typeof url === 'string') {
+                    urls[row.GoodsId] = url;
+                }
             }
-        }
-    }, [modifyResponse]);
+            setPresignedUrls(urls);
+        };
+        fetchPresignedUrls();
+        setTableData(oriTableData);
+    }, [oriTableData]);
 
-    const handleConfirmModify = async () => {
+    const handleModify = async () => {
         if (selectedGoods) {
             try {
-                const message = new RegulatorModifyGoodsMessage(selectedGoods?.GoodsId);
+                const message = new RegulatorModifyGoodsMessage(selectedGoods.GoodsId);
                 const data = await sendPostRequest(message);
-                setModifyResponce(data);
+                setResult(data);
             } catch (error) {
                 setError(error.message);
             }
-            handleClose();
+            handleNext();
+        }
+    };
+
+    const handleNext = () => {
+        if (currentIndex < tableData.length - 1) {
+            setCurrentIndex(currentIndex + 1);
+        } else {
+            alert('所有商品已审核完毕！');
+            setOpen(false);
+            setIsCompleted(true);
         }
     };
 
@@ -163,60 +198,56 @@ export function RegulatorMain() {
         setMobileOpen(!mobileOpen);
     };
 
-    const handleChangePage = (event: React.ChangeEvent<unknown>, page: number) => {
-        setCurrentPage(page);
-    };
-
-    const paginatedData = tableData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
     return (
         <BackgroundImage themeMode={themeMode}>
             <ThemeProvider theme={themes[themeMode]}>
                 <CssBaseline />
                 <AppBarComponent />
                 <div className="content-with-appbar">
-                    <Box sx={{ mb: 4, textAlign: 'center' }}>
-                        <Typography variant="h1" sx={{ fontSize: '2rem' }}>
-                            <h1>监管方主页！</h1>
-                            <p>欢迎, {userName}!</p>
-                        </Typography>
-                    </Box>
-                    <Table sx={{ minWidth: 650 }}>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="center">商品名</TableCell>
-                                <TableCell align="center">商品价格</TableCell>
-                                <TableCell align="center">商品描述</TableCell>
-                                <TableCell align="center">商品卖家</TableCell>
-                                <TableCell align="center">审核情况</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {paginatedData.map((row, index) => (
-                                <TableRow key={index}>
-                                    <TableCell align="center">{row.GoodsName}</TableCell>
-                                    <TableCell align="center">{row.GoodsPrice}</TableCell>
-                                    <TableCell align="center">{row.GoodsDescription}</TableCell>
-                                    <TableCell align="center">{row.GoodsSeller}</TableCell>
-                                    <TableCell align="center">
-                                        <Switch
-                                            checked={row.GoodsVerify === 'true'}
-                                            onChange={() => handleModify(row)}
-                                            color="primary"
+                    {isCompleted && (
+                        <Box sx={{ mb: 4, textAlign: 'center' }}>
+                            <Typography variant="h4" sx={{ fontSize: '2rem', color: 'green' }}>
+                                辛苦啦！
+                            </Typography>
+                        </Box>
+                    )}
+                    <Dialog open={open} onClose={handleNext}>
+                        <DialogTitle>商品审核</DialogTitle>
+                        {selectedGoods && (
+                            <>
+                                <DialogContent>
+                                    <DialogContentText>
+                                        <CardMedia
+                                            component="img"
+                                            sx={{
+                                                width: '50%',
+                                                height: 'auto',
+                                                objectFit: 'cover',
+                                                margin: 'auto',
+                                                borderRadius: 5,
+                                            }} // 修改此处以动态适应大小并居中
+                                            image={presignedUrls[selectedGoods.GoodsId]}
+                                            alt={selectedGoods.GoodsId}
                                         />
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-                        <Pagination
-                            count={Math.ceil(tableData.length / itemsPerPage)}
-                            page={currentPage}
-                            onChange={handleChangePage}
-                            color="primary"
-                        />
-                    </Box>
+                                        <Typography variant="h6">商品名: {selectedGoods.GoodsName}</Typography>
+                                        <Typography variant="body1">价格: {selectedGoods.GoodsPrice}</Typography>
+                                        <Typography variant="body1">描述: {selectedGoods.GoodsDescription}</Typography>
+                                        <Typography variant="body1">卖家: {selectedGoods.GoodsSeller}</Typography>
+                                        <Typography
+                                            variant="body1">审核状态: {selectedGoods.GoodsVerify == 'true' ? '已过审' : '未过审'}</Typography>
+                                    </DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={handleNext} color="primary">
+                                        保留审核状态
+                                    </Button>
+                                    <Button onClick={handleModify} color="secondary">
+                                        更改审核状态
+                                    </Button>
+                                </DialogActions>
+                            </>
+                        )}
+                    </Dialog>
                     <Drawer
                         sx={{
                             width: drawerWidth,
@@ -236,7 +267,7 @@ export function RegulatorMain() {
                             display: 'flex',
                             justifyContent: 'flex-start',
                             height: 10,
-                            paddingTop: theme => theme.spacing(1)
+                            paddingTop: theme => theme.spacing(1),
                         }}>
                             <List>
                                 <ListItem>{decodeURIComponent(userName)}, 你好！</ListItem>
@@ -267,29 +298,9 @@ export function RegulatorMain() {
                         >
                             <AppsIcon />
                         </IconButton>
-
                     )}
-                    <Dialog
-                        open={open}
-                        onClose={handleClose}
-                    >
-                        <DialogTitle>确认管理</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>
-                                你确定要修改商品 {selectedGoods?.GoodsName} 审核状态吗？
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={handleClose} color="primary">
-                                取消
-                            </Button>
-                            <Button onClick={handleConfirmModify} color="secondary">
-                                确认
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
+                    </div>
             </ThemeProvider>
         </BackgroundImage>
-    );
+);
 }

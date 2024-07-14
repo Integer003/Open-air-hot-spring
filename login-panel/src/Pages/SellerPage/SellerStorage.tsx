@@ -198,13 +198,13 @@ export function SellerStorage() {
         <ThemeProvider theme={themes[themeMode]}>
             <CssBaseline />
             <AppBarComponent historyPath={'/SellerMain'} />
-            <div className="content-with-appbar" style={{ padding: '20px' }}>
-                <Box sx={{ mb: 4, textAlign: 'center' }}>
-                    <Typography variant="h1" sx={{ fontSize: '2rem' }}>
-                        <p>欢迎, {userName}来到货仓!</p>
+            <div className="content-with-appbar" >
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', my: 2 }}>
+                    <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>
+                        <p> {userName}的商品小窝!</p>
                     </Typography>
                 </Box>
-                <Table sx={{ minWidth: 650 }}>
+                <Table sx={{ minWidth: 650, bgcolor: themeMode =='light'? 'rgba(255, 255, 255, 0.8)': 'rgba(152,160,244,0.8)', p: 4, borderRadius: 2 }}>
                     <TableHead>
                         <TableRow>
                             <TableCell align="center">商品名</TableCell>
@@ -292,11 +292,6 @@ export function SellerStorage() {
                         </Button>
                     </DialogActions>
                 </Dialog>
-
-
-                <Button onClick={() => history.push('./SellerMain')}>
-                    返回
-                </Button>
             </div>
         </ThemeProvider>
         </BackgroundImage>

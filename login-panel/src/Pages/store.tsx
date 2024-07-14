@@ -12,7 +12,7 @@ type ThemeState = {
 };
 
 export const useThemeStore = create<ThemeState>((set) => ({
-    themeMode: 'dark' as ThemeMode,
+    themeMode: 'light' as ThemeMode,
     storeThemeMode: (mode) => {
         // 确保设置的主题模式是有效的
         if (mode === 'light' || mode === 'dark') {

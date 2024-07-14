@@ -102,9 +102,10 @@ export function RegisterPage() {
             <CssBaseline />
             <AppBarComponent />
             <div className="content-with-appbar">
-                <Container maxWidth="sm" sx={{ mt: 4 }}>
+                <Container maxWidth="sm" sx={{ mt: 4,
+                    bgcolor: themeMode =='light'? 'rgba(255, 255, 255, 0.8)': 'rgba(152,160,244,0.8)', p: 4, borderRadius: 2 }}>
                     <Box sx={{ mb: 4, textAlign: 'center' }}>
-                        <Typography variant="h1" sx={{ fontSize: '2rem' }}>
+                        <Typography variant="h1" sx={{ fontSize: '2rem', color: '#333' }}>
                             {languageType === 'zh' ? '注册' : 'Register'}
                         </Typography>
                     </Box>
@@ -116,7 +117,7 @@ export function RegisterPage() {
                                 fullWidth
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                sx={{ mb: 2 }}
+                                sx={{ mb: 2, '& .MuiOutlinedInput-root': { bgcolor:themeMode =='light'? 'white': 'rgba(82,89,136,0.8)' } }}
                             />
                             <TextField
                                 label={languageType === 'zh' ? '密码' : 'Password'}
@@ -125,7 +126,7 @@ export function RegisterPage() {
                                 fullWidth
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                sx={{ mb: 2 }}
+                                sx={{ mb: 2, '& .MuiOutlinedInput-root': { bgcolor:themeMode =='light'? 'white': 'rgba(112,117,177,0.8)' } }}
                             />
                             <TextField
                                 label={languageType === 'zh' ? '确认密码' : 'Confirm Password'}
@@ -134,13 +135,14 @@ export function RegisterPage() {
                                 fullWidth
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                sx={{ mb: 2 }}
+                                sx={{ mb: 2, '& .MuiOutlinedInput-root': { bgcolor:themeMode =='light'? 'white': 'rgba(112,117,177,0.8)' } }}
                             />
                             <FormControl fullWidth sx={{ mb: 2 }}>
-                                <InputLabel>{languageType === 'zh' ? '用户类型' : 'User type'}</InputLabel>
+                                <InputLabel sx={{ color: '#333' }}>{languageType === 'zh' ? '用户类型' : 'User type'}</InputLabel>
                                 <Select
                                     value={userType}
                                     onChange={(e) => setUserType(e.target.value as string)}
+                                    sx={{ '& .MuiOutlinedInput-notchedOutline': { borderColor: '#333' } }}
                                 >
                                     <MenuItem value="Seller">{languageType === 'zh' ? '用户' : 'Seller'}</MenuItem>
                                     <MenuItem value="Regulator">{languageType === 'zh' ? '监管方' : 'Regulator'}</MenuItem>
@@ -160,7 +162,7 @@ export function RegisterPage() {
                                 variant="outlined"
                                 color="primary"
                                 onClick={() => history.goBack()}
-                                sx={{ mb: 2 }}
+                                sx={{ mb: 2, borderColor: '#333', color: '#333' }}
                             >
                                 {languageType === 'zh' ? '返回登录' : 'Back to Login'}
                             </Button>

@@ -144,13 +144,21 @@ export function SellerRecord() {
             <ThemeProvider theme={themes[themeMode]}>
                 <CssBaseline />
                 <AppBarComponent historyPath={'/SellerMain'} />
-                <div className="content-with-appbar"  style={{ padding: '20px' }}>
+                <div className="content-with-appbar" >
                     <Box sx={{ mb: 4, textAlign: 'center' }}>
                         <Typography variant="h1" sx={{ fontSize: '2rem', textAlign: 'center', textShadow: '1px 1px 2px #000, 0 0 25px #000' }}>
                             欢迎, {userName}来到消费记录!
                         </Typography>
                     </Box>
-                    <Table sx={{ minWidth: 650, border: '2px #000000' }}  aria-label="simple table">
+                    {tableData.length === 0&&(
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', my: 2 }}>
+                            <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>
+                                这里空空如也，快去买点东西吧！
+                            </Typography>
+                        </Box>
+                    )}
+                    {tableData.length !=0 &&(
+                    <Table sx={{ minWidth: 650, bgcolor: themeMode =='light'? 'rgba(255, 255, 255, 0.8)': 'rgba(152,160,244,0.8)', p: 4, borderRadius: 2 }} >
                         <TableHead>
                             <TableRow>
                                 <TableCell align="center">商品名</TableCell>
@@ -170,6 +178,7 @@ export function SellerRecord() {
                             ))}
                         </TableBody>
                     </Table>
+                    )}
                 </div>
             </ThemeProvider>
         </BackgroundImage>

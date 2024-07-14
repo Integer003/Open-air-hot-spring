@@ -386,7 +386,8 @@ export function SellerMain() {
                             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                                 <Card
                                     sx={{
-                                        height: '100%',
+                                        height: 'auto', // 允许卡片的高度根据内容自动调整
+                                        minHeight: '150px', // 设置一个最小高度，确保卡片不会太矮
                                         display: 'flex',
                                         flexDirection: 'column',
                                         backgroundColor: row.GoodsCondition === 'true' ? '#667087' : (themeMode === 'dark' ? '#a18686' : '#97adc6'),
@@ -396,13 +397,16 @@ export function SellerMain() {
                                         '&:hover': {
                                             transform: 'scale(1.05)',
                                             boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
+                                            cursor: 'pointer',
                                         },
+                                        borderRadius: 5,
                                         margin: '10px',
                                         padding: '10px',
-                                        opacity: row.GoodsCondition === 'true' ? 1 : 1,
+                                        opacity: row.GoodsCondition === 'true' ? 0.9 : 1,
                                     }}
+                                    onClick={() => handleGoodsInfo(row)}
                                 >
-                                    <div style={{ position: 'relative', paddingTop: '75%', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid #ddd', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', marginBottom: '10px' }}> {/* Aspect ratio 4:3 */}
+                                    <div style={{ position: 'relative', paddingTop: '75%', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid #ddd', borderRadius: '20px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', marginBottom: '10px' }}> {/* Aspect ratio 4:3 */}
                                         <CardMedia
                                             component="img"
                                             sx={{
@@ -412,37 +416,37 @@ export function SellerMain() {
                                                 width: '100%',
                                                 height: '100%',
                                                 objectFit: 'cover',
-                                                borderRadius: '10px',
+                                                borderRadius: '20px',
                                             }}
                                             image={presignedUrls[row.GoodsId] || ''}
                                             alt={row.GoodsName}
                                         />
                                     </div>
-                                    <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                                    <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', padding: '0 10px' }}>
                                         <Typography gutterBottom variant="h6" component="div">
                                             {row.GoodsName}
                                         </Typography>
-                                        <Typography variant="body2" color="text.secondary" sx={{ flexGrow: 1 }}>
+                                        <Typography variant="body2" color="text.secondary" sx={{ flexGrow: 1, padding: '0 10px' }}>
                                             {row.GoodsDescription}
                                         </Typography>
-                                        <Typography variant="h6" color="text.primary">
+                                        <Typography variant="h6" color="text.primary" sx={{ padding: '0 10px' }}>
                                             ¥{row.GoodsPrice}
                                         </Typography>
-                                        <Typography variant="body2" color="text.secondary">
+                                        <Typography variant="body2" color="text.secondary" sx={{ padding: '0 10px' }}>
                                             卖家: {row.GoodsSeller === userName ? '你的商品' : row.GoodsSeller}
                                         </Typography>
                                         {row.GoodsCondition === 'true' && (
-                                            <Typography variant="body2" color="text.secondary">
+                                            <Typography variant="body2" color="text.secondary" sx={{ padding: '0 10px' }}>
                                                 已售出
                                             </Typography>
                                         )}
                                         {row.GoodsSeller !== userName && (
-                                            <Typography variant="body2" color="text.secondary">
+                                            <Typography variant="body2" color="text.secondary" sx={{ padding: '0 10px' }}>
                                                 Stars: {row.GoodsStar}
                                             </Typography>
                                         )}
                                     </CardContent>
-                                    <CardActions>
+                                    <CardActions sx={{ padding: '0 10px', flexGrow: 1 }}>
                                         {row.GoodsSeller !== userName && (
                                             <IconButton
                                                 onClick={() => handleToggleStar(row)}

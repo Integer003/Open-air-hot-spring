@@ -11,7 +11,7 @@ import io.circe.syntax.*
 import io.circe.{Decoder, Encoder, HCursor, Json}
 import cats.syntax.all.*
 
-case class GoodsInfo(goodsID: String, goodsName: String, price: BigDecimal, description: String, sellerName: String, verify: String)
+case class GoodsInfo(goodsID: String, goodsName: String, price: BigDecimal, description: String, sellerName: String, verify: String, imageUrl: String)
 
 object GoodsInfo {
   implicit val decoder: Decoder[GoodsInfo] = new Decoder[GoodsInfo] {
@@ -23,14 +23,15 @@ object GoodsInfo {
         description <- c.downField("description").as[String]
         sellerName <- c.downField("sellerName").as[String]
         verify <- c.downField("verify").as[String]
-      } yield GoodsInfo(goodsID, goodsName, price, description, sellerName, verify)
+        imageUrl <- c.downField("imageUrl").as[String]
+      } yield GoodsInfo(goodsID, goodsName, price, description, sellerName, verify, imageUrl)
   }
 }
 
 case class RegulatorQueryGoodsMessagePlanner(override val planContext: PlanContext) extends Planner[String]:
   override def plan(using planContext: PlanContext): IO[String] = {
     // Query goods_info for entries with condition 'false' and seller_name not equal to the provided userName
-    val query = s"SELECT goods_id, goods_name, price, description, seller_name, verify FROM goods.goods_info"
+    val query = s"SELECT goods_id, goods_name, price, description, seller_name, verify, image_url FROM goods.goods_info"
 
     readDBRows(query, List()).flatMap { rows =>
       // Decode rows to GoodsInfo and then convert to JSON string

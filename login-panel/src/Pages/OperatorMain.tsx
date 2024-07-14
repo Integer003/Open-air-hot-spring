@@ -217,14 +217,16 @@ export function OperatorMain() {
             <ThemeProvider theme={themes[themeMode]}>
                 <CssBaseline />
                 <AppBarComponent />
-                <div className="content-with-appbar">
+                <div className="content-with-appbar" >
                     <Box sx={{ mb: 4, textAlign: 'center', padding: 3 }}>
                         <Typography variant="h1" sx={{ fontSize: '2rem' }}>
                             <h1>运营方主页！</h1>
-                            <p>欢迎, {userName}!</p>
                         </Typography>
                         <Typography variant="h4" sx={{ mb: 2 }}>
-                            用户数据
+                            {selectedType=='Seller'&&('用户数据')}
+                            {selectedType=='Regulator'&&('监管者数据')}
+                            {selectedType=='Goods'&&('商品数据')}
+                            {selectedType=='Comments'&&('评论数据')}
                         </Typography>
                         <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
                             <Button
