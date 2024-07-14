@@ -34,7 +34,7 @@ object Utils {
     }
   }
 
-  val secretKey = "your-secret-key" // 请使用安全的密钥
+  val secretKey = "12349876" // 请使用安全的密钥
 
   def validateToken(token: String): Boolean = {
     Jwt.decode(token, secretKey, Seq(JwtAlgorithm.HS256)) match {
@@ -43,11 +43,11 @@ object Utils {
     }
   }
 
-  def createToken(userId: String): String = {
+  def createToken(userName: String): String = {
     val claim = JwtClaim(
-      expiration = Some(Instant.now.plus(1, ChronoUnit.DAYS).getEpochSecond), // token 有效期为 1 天
+      expiration = Some(Instant.now.plus(60, ChronoUnit.SECONDS).getEpochSecond), // token 有效期为 1 分钟
       issuedAt = Some(Instant.now.getEpochSecond),
-      subject = Some(userId)
+      subject = Some(userName)
     )
     Jwt.encode(claim, secretKey, JwtAlgorithm.HS256)
   }

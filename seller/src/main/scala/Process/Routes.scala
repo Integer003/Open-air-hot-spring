@@ -125,6 +125,7 @@ object Routes:
     }
 
   private def validateAndExecute(req: Request[IO], name: String): IO[Response[IO]] = {
+    println(s"Headers: $req.headers")
     req.headers.get[headers.Authorization] match {
       case Some(authHeader) =>
         println(authHeader)

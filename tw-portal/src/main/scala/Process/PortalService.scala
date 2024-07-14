@@ -40,19 +40,22 @@ object PortalService {
       // 随机选取一个ID，整个都用相同的ID。后端有很多个微服务，后端能做的操作很少，只有读数据库，写数据库。
       // 不同的微服务执行不同的信息，但是都是同一个API执行的。
       // 纯函数做法：monad做
+      _ <- IO.println("req.headers")
+      _ <- IO.println(req.headers)
       bodyJson <- req.as[Json]
       planContext = PlanContext(TraceID(UUID.randomUUID().toString), transactionLevel = 0)
       planContextJson = planContext.asJson
       updatedJson = bodyJson.deepMerge(Json.obj("planContext" -> planContextJson))
+      _ <- IO.println("updatedJson")
       _ <- IO.println(updatedJson)
       newUri <- IO.fromEither(Uri.fromString("http://" + address(serviceName) + "/api/" + messageName))
       _ <- IO.println(newUri)
-      response <- sendRequest(client, newUri, updatedJson)
+      response <- sendRequest(client, newUri, updatedJson, req)
     } yield response
   }
 
-  def sendRequest(client: Client[IO], uri: Uri, json: Json): IO[Either[Throwable, Json]] = {
-    val newReq = Request[IO](method = Method.POST, uri = uri).withEntity(json)
+  def sendRequest(client: Client[IO], uri: Uri, json: Json, req: Request[IO]): IO[Either[Throwable, Json]] = {
+    val newReq = Request[IO](method = Method.POST, uri = uri, headers = req.headers).withEntity(json)
     println("running")
     client.run(newReq).use { response =>
       println("here")

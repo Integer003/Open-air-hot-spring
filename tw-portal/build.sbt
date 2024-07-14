@@ -25,3 +25,5 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-parser" % circeVersion,
   "joda-time" % "joda-time" % "2.12.7" // Use the latest version available
 )
+
+libraryDependencies += "com.pauldijou" %% "jwt-core" % "5.0.0" cross CrossVersion.for3Use2_13
