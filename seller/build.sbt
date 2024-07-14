@@ -21,8 +21,12 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-parser" % circeVersion,
   "org.typelevel" %% "log4cats-core"    % "2.3.1",
   "org.typelevel" %% "log4cats-slf4j"   % "2.3.1",
-  "org.apache.pdfbox" % "pdfbox" % "2.0.24",  // Replace "2.0.24" with the latest version available
-  "ch.qos.logback" % "logback-classic" % "1.2.10", // SLF4J Backend Implementation
-  "joda-time" % "joda-time" % "2.12.7" // Use the latest version available
+  "org.apache.pdfbox" % "pdfbox" % "2.0.24",
+  "ch.qos.logback" % "logback-classic" % "1.2.10",
+  "joda-time" % "joda-time" % "2.12.7",
+  // 添加 pdi.jwt 依赖
+//  "com.pauldijou" %% "jwt-core" % "5.0.0",
 )
 scalacOptions ++= Seq("-feature", "-language:implicitConversions")
+
+libraryDependencies += "com.pauldijou" %% "jwt-core" % "5.0.0" cross CrossVersion.for3Use2_13

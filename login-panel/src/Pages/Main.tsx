@@ -36,9 +36,31 @@ import { Brightness4, Brightness7, Language } from '@mui/icons-material';
 import { sendPostRequest } from './tool/apiRequest';
 import { useUserStore } from './store';
 import { useThemeStore } from './store';
+import { useAPITokenStore} from './store'
 import BackgroundImage from 'Pages/theme/BackgroungImage'
 
 type ThemeMode = 'light' | 'dark';
+
+
+type LoginData = {
+    token: string;
+    message: string;
+    userName: string;
+};
+
+const parseLoginData = (str: string): LoginData | null => {
+    alert(str);
+    try {
+        const obj = JSON.parse(str);
+        // 这里进行类型断言，确保obj符合LoginData的结构
+        const loginData = obj as LoginData;
+        // 你也可以选择添加额外的类型检查，例如使用typeof或者in关键字
+        return loginData;
+    } catch (error) {
+        console.error("Error parsing string:", error);
+        return null;
+    }
+};
 
 export function Main(){
     const history=useHistory()
@@ -51,6 +73,7 @@ export function Main(){
     const [error, setError] = useState<string | null>(null);
     const { storeUserName } = useUserStore();
     const { storeUserType } = useUserStore();
+    const {storeToken}=useAPITokenStore();
 
     const init = async () => {
         storeUserName('');
@@ -83,23 +106,27 @@ export function Main(){
     useEffect(() => {
 
         if (responseData) {
-            if ((responseData as string).startsWith('Valid')){
+            // alert(responseData.message);
+            const parsedData = responseData;
+            if (typeof parsedData.message=='string' && parsedData.message.startsWith('Valid')){
+                const token = parsedData.token;
+                storeToken(token);
                 alert(username+"登录成功");
                 storeUserName(username);
                 storeUserType(userType);
+                if(userType=='Seller') {
+                    history.push('/SellerMain');
+                }
+                else if(userType=='Regulator') {
+                    // alert("登录成功");
+                    history.push('/RegulatorMain');
+                }
+                else if(userType=='Operator')  {
+                    // alert("登录成功");
+                    history.push('/OperatorMain');
+                }
             }else{
                 alert("登录失败！请确认用户名&密码！");
-            }
-            if(responseData=="Valid Seller") {
-                history.push('/SellerMain');
-            }
-            else if(responseData=="Valid Regulator") {
-                // alert("登录成功");
-                history.push('/RegulatorMain');
-            }
-            else if(responseData=="Valid Operator") {
-                // alert("登录成功");
-                history.push('/OperatorMain');
             }
         }
     }, [responseData]); // 监听responseData的变化

@@ -6,6 +6,11 @@ import io.circe.generic.auto.*
 import io.circe.parser.decode
 
 import scala.io.{BufferedSource, Source}
+import pdi.jwt.{Jwt, JwtAlgorithm, JwtClaim}
+
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+import scala.util.{Failure, Success}
 
 object Utils {
   /** 读取config文件 */
@@ -28,5 +33,24 @@ object Utils {
       }
     }
   }
+
+  val secretKey = "your-secret-key" // 请使用安全的密钥
+
+  def validateToken(token: String): Boolean = {
+    Jwt.decode(token, secretKey, Seq(JwtAlgorithm.HS256)) match {
+      case Success(_) => true
+      case Failure(_) => false
+    }
+  }
+
+  def createToken(userId: String): String = {
+    val claim = JwtClaim(
+      expiration = Some(Instant.now.plus(1, ChronoUnit.DAYS).getEpochSecond), // token 有效期为 1 天
+      issuedAt = Some(Instant.now.getEpochSecond),
+      subject = Some(userId)
+    )
+    Jwt.encode(claim, secretKey, JwtAlgorithm.HS256)
+  }
+
 }
 

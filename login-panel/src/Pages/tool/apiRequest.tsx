@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
-import axios, { isAxiosError } from 'axios'
-import { API } from 'Plugins/CommonUtils/API'
+import axios from 'axios';
+import { API } from 'Plugins/CommonUtils/API';
+import { useAPITokenStore } from 'Pages/store';
+
 export const sendPostRequest = async (message: API): Promise<any> => {
     try {
+        const token = useAPITokenStore.getState().token; // 获取 token
+        // alert(token);
         const response = await axios.post(message.getURL(), JSON.stringify(message), {
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token ? `Bearer ${token}` : '', // 如果 token 存在，则添加到请求头中
+            },
         });
         console.log('Response status:', response.status);
         console.log('Response body:', response.data);

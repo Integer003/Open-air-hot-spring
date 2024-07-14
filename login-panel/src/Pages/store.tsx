@@ -1,6 +1,16 @@
 // store.ts
 import create from 'zustand';
 
+type APIToken={
+    token:string|null;
+    storeToken:(token:string|null)=>void;
+}
+
+export const useAPITokenStore=create<APIToken>((set)=>({
+    token:null,
+    storeToken:(token)=>set({token}),
+}));
+
 type ThemeMode = 'light' | 'dark';
 type LanguageType = 'zh' | 'en';
 
