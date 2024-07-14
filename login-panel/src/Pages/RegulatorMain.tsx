@@ -234,7 +234,7 @@ export function RegulatorMain() {
                                         <Typography variant="body1">描述: {selectedGoods.GoodsDescription}</Typography>
                                         <Typography variant="body1">卖家: {selectedGoods.GoodsSeller}</Typography>
                                         <Typography
-                                            variant="body1">审核状态: {selectedGoods.GoodsVerify == 'true' ? '已过审' : '未过审'}</Typography>
+                                            variant="body1" sx={{color:selectedGoods.GoodsVerify == 'true' ?'green':'red'}}>审核状态: {selectedGoods.GoodsVerify == 'true' ? '已过审' : '未过审'}</Typography>
                                     </DialogContentText>
                                 </DialogContent>
                                 <DialogActions>

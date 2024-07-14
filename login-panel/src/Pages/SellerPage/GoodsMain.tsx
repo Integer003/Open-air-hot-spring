@@ -309,9 +309,9 @@ export function GoodsMain() {
 
     useEffect(() => {
         if (commentsResponse) {
-            alert(commentsResponse);
+            //alert(commentsResponse);
             if (typeof commentsResponse === 'string') {
-                alert('评论成功');
+                //alert('评论成功');
                 SendNews(goodsSeller, 'seller', 'comment', '商品' + goodsName + '收到了'+userName+'的评论');
                 init();
             } else {

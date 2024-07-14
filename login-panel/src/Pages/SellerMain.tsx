@@ -214,7 +214,9 @@ export function SellerMain() {
 
     const handleGoodsInfo = async (goods: GoodsData) => {
         setSelectedGoods(goods);
-        if(selectedGoods) {
+    };
+    useEffect(() => {
+        if (selectedGoods) {
             storeGoodsId(selectedGoods.GoodsId);
             storeGoodsName(selectedGoods.GoodsName);
             storeGoodsPrice(selectedGoods.GoodsPrice);
@@ -223,9 +225,9 @@ export function SellerMain() {
             storeGoodsStar(selectedGoods.GoodsStar);
             storeGoodsCondition(selectedGoods.GoodsCondition);
             storeGoodsImageUrl(selectedGoods.GoodsImageUrl);
-            history.push('/GoodsMain');
+            history.push("/GoodsMain");
         }
-    };
+    }, [selectedGoods])
 
     const handleToggleStar = async (goods: GoodsData) => {
         try {
@@ -390,23 +392,50 @@ export function SellerMain() {
                                         minHeight: '150px', // 设置一个最小高度，确保卡片不会太矮
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        backgroundColor: row.GoodsCondition === 'true' ? '#667087' : (themeMode === 'dark' ? '#a18686' : '#97adc6'),
+                                        backgroundColor: row.GoodsCondition === 'true' ? 'rgba(112,117,177,0.8)' : (themeMode === 'dark' ? '#3a5517' : '#3bb155'),
                                         color: row.GoodsCondition === 'true' ? '#cbe681' : (themeMode === 'dark' ? '#cbe681' : '#ffffff'),
                                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
                                         transition: 'transform 0.3s',
                                         '&:hover': {
                                             transform: 'scale(1.05)',
                                             boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
-                                            cursor: 'pointer',
                                         },
                                         borderRadius: 5,
                                         margin: '10px',
                                         padding: '10px',
                                         opacity: row.GoodsCondition === 'true' ? 0.9 : 1,
                                     }}
-                                    onClick={() => handleGoodsInfo(row)}
+
                                 >
-                                    <div style={{ position: 'relative', paddingTop: '75%', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid #ddd', borderRadius: '20px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', marginBottom: '10px' }}> {/* Aspect ratio 4:3 */}
+                                    {row.GoodsCondition === 'true' && (
+                                        <div style={{
+                                            position: 'absolute',
+                                            top: '10px', // 调整位置到卡片顶部
+                                            right: '10px', // 调整位置到卡片右侧
+                                            backgroundColor: 'rgba(255, 0, 0, 0.8)', // 使用更醒目的红色
+                                            color: 'white',
+                                            padding: '10px 20px', // 增加内边距使标签更大
+                                            borderRadius: '10px', // 圆角边框
+                                            fontSize: '24px', // 增大字体大小
+                                            fontWeight: 'bold',
+                                            zIndex: 20, // 确保标签在图片上方
+                                            display: 'block', // 确保始终显示
+                                        }}>
+                                            已售出
+                                        </div>
+                                    )}
+                                    <div style={{
+                                        position: 'relative',
+                                        paddingTop: '75%',
+                                        overflow: 'hidden',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        border: '1px solid #ddd',
+                                        borderRadius: '20px',
+                                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                                        marginBottom: '10px'
+                                    }}>
                                         <CardMedia
                                             component="img"
                                             sx={{
@@ -417,16 +446,27 @@ export function SellerMain() {
                                                 height: '100%',
                                                 objectFit: 'cover',
                                                 borderRadius: '20px',
+                                                '&:hover': { cursor: 'pointer' },
                                             }}
                                             image={presignedUrls[row.GoodsId] || ''}
                                             alt={row.GoodsName}
+                                            onClick={() => handleGoodsInfo(row)}
                                         />
                                     </div>
-                                    <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', padding: '0 10px' }}>
-                                        <Typography gutterBottom variant="h6" component="div">
+                                    <CardContent sx={{
+                                        flexGrow: 1,
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        padding: '0 10px'
+                                    }}>
+                                        <Typography gutterBottom variant="h6"
+                                                    component="div"
+                                                    sx={{'&:hover': { cursor:'pointer' ,boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',}}}
+                                                    onClick={() => handleGoodsInfo(row)}>
                                             {row.GoodsName}
                                         </Typography>
-                                        <Typography variant="body2" color="text.secondary" sx={{ flexGrow: 1, padding: '0 10px' }}>
+                                        <Typography variant="body2" color="text.secondary"
+                                                    sx={{ flexGrow: 1, padding: '0 10px' }}>
                                             {row.GoodsDescription}
                                         </Typography>
                                         <Typography variant="h6" color="text.primary" sx={{ padding: '0 10px' }}>
@@ -436,12 +476,14 @@ export function SellerMain() {
                                             卖家: {row.GoodsSeller === userName ? '你的商品' : row.GoodsSeller}
                                         </Typography>
                                         {row.GoodsCondition === 'true' && (
-                                            <Typography variant="body2" color="text.secondary" sx={{ padding: '0 10px' }}>
+                                            <Typography variant="body2" color="text.secondary"
+                                                        sx={{ padding: '0 10px' }}>
                                                 已售出
                                             </Typography>
                                         )}
                                         {row.GoodsSeller !== userName && (
-                                            <Typography variant="body2" color="text.secondary" sx={{ padding: '0 10px' }}>
+                                            <Typography variant="body2" color="text.secondary"
+                                                        sx={{ padding: '0 10px' }}>
                                                 Stars: {row.GoodsStar}
                                             </Typography>
                                         )}
@@ -480,5 +522,5 @@ export function SellerMain() {
             </div>
         </ThemeProvider>
         </BackgroundImage>
-);
+    );
 }
