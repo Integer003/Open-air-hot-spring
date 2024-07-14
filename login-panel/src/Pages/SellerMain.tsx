@@ -292,6 +292,24 @@ export function SellerMain() {
         init();
     }, []);
 
+
+    const [searchKeyword, setSearchKeyword] = useState('');
+    const [filteredData, setFilteredData] = useState<GoodsData[]>([]);
+
+    const handleSearch = () => {
+        const filtered = tableData.filter((item) =>
+            item.GoodsName.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+            item.GoodsSeller.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+            item.GoodsDescription.toLowerCase().includes(searchKeyword.toLowerCase())
+        );
+        setFilteredData(filtered);
+    };
+
+    useEffect(() => {
+        setFilteredData(tableData);
+    }, [tableData]);
+
+
     return (
         <BackgroundImage themeMode={themeMode}>
         <ThemeProvider theme={themes[themeMode]}>
@@ -299,6 +317,26 @@ export function SellerMain() {
             <AppBarComponent  />
             <div className="content-with-appbar">
                 <div>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', margin: 2 }}>
+                        <input
+                            type="text"
+                            value={searchKeyword}
+                            onChange={(e) => setSearchKeyword(e.target.value)}
+                            placeholder="搜索商品"
+                            style={{
+                                width: '100%',
+                                padding: '10px',
+                                fontSize: '16px',
+                                borderRadius: '5px',
+                                border: '1px solid #ccc',
+                                marginRight: '10px',
+                            }}
+                        />
+                        <Button variant="contained" color="primary" onClick={handleSearch}>
+                            搜索
+                        </Button>
+                    </Box>
+
                     <Drawer
                         sx={{
                             width: drawerWidth,
@@ -384,7 +422,7 @@ export function SellerMain() {
 
                     )}
                     <Grid container spacing={2} sx={{ padding: 2 }}>
-                        {tableData.map((row, index) => (
+                        {filteredData.map((row, index) => (
                             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                                 <Card
                                     sx={{

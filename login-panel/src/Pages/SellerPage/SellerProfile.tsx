@@ -97,6 +97,9 @@ export function SellerProfile() {
             const message = new SellerQueryMoneyMessage(userName);
             const data = await sendPostRequest(message);
             setResponseData1(data);
+            if (typeof data != 'string' && typeof data != 'number') {
+                setResponseData1('error');
+            }
         } catch (error) {
             setError(error.message);
             setResponseData1('error');

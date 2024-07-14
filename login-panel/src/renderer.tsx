@@ -17,10 +17,12 @@ import {SellerNews} from 'Pages/SellerPage/SellerNews'
 import {SellerRecord} from 'Pages/SellerPage/SellerRecord'
 
 import './Pages/theme/global.css';
+import ErrorBoundary from 'Pages/tool/ErrorBoundary'
 
 const Layout = () => {
     return (
             <HashRouter>
+                <ErrorBoundary>
                 <Switch>
                     <Route path="/" exact component={Main} />
                     <Route path="/register" exact component={RegisterPage} />
@@ -36,6 +38,7 @@ const Layout = () => {
                     <Route path="/SellerNews" exact component={SellerNews} />
                     <Route path="/SellerRecord" exact component={SellerRecord} />
                 </Switch>
+                </ErrorBoundary>
             </HashRouter>
     )
 }
