@@ -176,6 +176,7 @@ export function RegulatorMain() {
                 const message = new RegulatorModifyGoodsMessage(selectedGoods.GoodsId);
                 const data = await sendPostRequest(message);
                 setResult(data);
+                SendNews(selectedGoods.GoodsSeller, 'seller','verify', `您的商品${selectedGoods.GoodsName}审核结果为${data}`);
             } catch (error) {
                 setError(error.message);
             }
