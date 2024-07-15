@@ -21,6 +21,7 @@
             "Styles/*": ["Styles/*"],
             "Utils/*": ["Utils/*"]
         },
+        "allowSyntheticDefaultImports": true,
         "jsx": "react"
     },
     "include": ["src/**/*", "src/declaration.d.ts"]
