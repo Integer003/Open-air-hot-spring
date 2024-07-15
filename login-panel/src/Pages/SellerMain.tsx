@@ -328,7 +328,8 @@ export function SellerMain() {
                                 padding: '10px',
                                 fontSize: '16px',
                                 borderRadius: '5px',
-                                border: '1px solid #ccc',
+                                border: '1px solid transparent',
+                                backgroundColor: 'rgba(255, 255, 255, 0.5)', // 设置透明背景
                                 marginRight: '10px',
                             }}
                         />
