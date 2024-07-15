@@ -27,7 +27,8 @@ class ErrorBoundary extends Component<Props, State> {
     }
 
     handleRedirect = () => {
-        this.props.history.push('/');
+        //this.props.history.push('/');
+        window.location.hash = '/';
     };
 
     render() {
@@ -36,6 +37,9 @@ class ErrorBoundary extends Component<Props, State> {
             return (
                 <Box sx={{ textAlign: 'center', marginTop: 4 }}>
                     <h1>Something went wrong. 可能是token已过期，请刷新界面！</h1>
+                    <Button variant="contained" onClick={this.handleRedirect}>
+                        返回登录界面
+                    </Button>
                 </Box>
             );
         }

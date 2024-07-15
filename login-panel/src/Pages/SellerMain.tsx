@@ -446,20 +446,23 @@ export function SellerMain() {
 
                                 >
                                     {row.GoodsCondition === 'true' && (
-                                        <div style={{
-                                            position: 'absolute',
-                                            top: '10px', // 调整位置到卡片顶部
-                                            right: '10px', // 调整位置到卡片右侧
-                                            backgroundColor: 'rgba(255, 0, 0, 0.8)', // 使用更醒目的红色
-                                            color: 'white',
-                                            padding: '10px 20px', // 增加内边距使标签更大
-                                            borderRadius: '10px', // 圆角边框
-                                            fontSize: '24px', // 增大字体大小
-                                            fontWeight: 'bold',
-                                            zIndex: 20, // 确保标签在图片上方
-                                            display: 'block', // 确保始终显示
-                                        }}>
-                                            已售出
+                                        <div style={{ position: 'relative' }}>
+                                            <div
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: '10px',
+                                                    right: '10px',
+                                                    backgroundColor: 'rgba(255, 0, 0, 0.8)',
+                                                    color: 'white',
+                                                    padding: '15px 30px',
+                                                    borderRadius: '10px',
+                                                    fontSize: '25px',
+                                                    fontWeight: 'bold',
+                                                    zIndex: 20,
+                                                }}
+                                            >
+                                                已售出
+                                            </div>
                                         </div>
                                     )}
                                     <div style={{
