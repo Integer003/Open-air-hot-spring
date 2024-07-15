@@ -21,6 +21,8 @@ import org.http4s.circe._
 
 object Routes:
   private def executePlan(messageType:String, str: String): IO[String]=
+    println("str")
+    println(str)
     messageType match {
       case "AddSellerMessage" =>
         IO(decode[AddSellerMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for AddSellerMessage")))
@@ -81,7 +83,7 @@ object Routes:
             m.fullPlan.map(_.asJson.toString)
           }
       case "CommentsDeleteMessage" =>
-        IO(decode[CommentsDeleteMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for CommentDeleteMessage")))
+        IO(decode[CommentsDeleteMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for CommentsDeleteMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
@@ -97,6 +99,8 @@ object Routes:
         println(authHeader)
         val token = authHeader.value.split(" ")(1)
         if (Utils.validateToken(token)) {
+          println("req.asJson")
+          println(req.asJson)
           req.as[String].flatMap(executePlan(name, _)).flatMap(Ok(_))
             .handleErrorWith { e =>
               println(e)

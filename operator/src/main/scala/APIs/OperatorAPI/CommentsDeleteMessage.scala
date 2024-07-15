@@ -1,3 +1,3 @@
 package APIs.OperatorAPI
 
-case class CommentsDeleteMessage(commentsID: String) extends OperatorMessage[String]
+case class CommentsDeleteMessage(commentID: Int) extends OperatorMessage[String]

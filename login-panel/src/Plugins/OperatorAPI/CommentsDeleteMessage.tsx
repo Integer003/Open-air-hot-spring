@@ -1,9 +1,9 @@
 import { OperatorMessage } from 'Plugins/OperatorAPI/OperatorMessage'
 
 export class CommentsDeleteMessage extends OperatorMessage{
-    commentsID: string;
-    constructor(commentsID : string) {
+    commentID: string;
+    constructor(commentID : string) {
         super();
-        this.commentsID = commentsID;
+        this.commentID = commentID;
     }
 }

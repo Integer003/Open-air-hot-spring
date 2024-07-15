@@ -1,4 +1,4 @@
-// GoodsDeleteMessagePlanner.scala
+// CommentsDeleteMessagePlanner.scala
 package Impl
 
 import cats.effect.IO
@@ -8,18 +8,18 @@ import Common.Object.SqlParameter
 import cats.syntax.all.*
 import io.circe.generic.auto.deriveEncoder
 
-case class CommentsDeleteMessagePlanner(commentsID: String, override val planContext: PlanContext) extends Planner[String] {
+case class CommentsDeleteMessagePlanner(commentID: Int, override val planContext: PlanContext) extends Planner[String] {
   override def plan(using planContext: PlanContext): IO[String] = {
     // 删除数据库中对应 goodsID 的数据
-    val deleteQuery = s"DELETE FROM goods.comments WHERE comments_id = ?"
+    val deleteQuery = s"DELETE FROM goods.comments WHERE comment_id = ?"
 
-    writeDB(deleteQuery, List(SqlParameter("Int", commentsID))).flatMap { result =>
+    writeDB(deleteQuery, List(SqlParameter("Int", commentID.toString))).flatMap { result =>
       if (result.nonEmpty) {
         // 删除成功，返回成功信息
-        IO.pure(s"Success: deleted comments ID is $commentsID.")
+        IO.pure(s"Success: deleted comments ID is $commentID.")
       } else {
         // 没有找到对应的记录，返回错误信息
-        IO.raiseError(new Exception(s"No comments found with ID $commentsID."))
+        IO.raiseError(new Exception(s"No comments found with ID $commentID."))
       }
     }
   }
