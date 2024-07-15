@@ -54,13 +54,14 @@ const BackgroundImage: React.FC<BackgroundImageProps> = ({ themeMode, children }
                 src={JellySwim}
                 alt="Jellyfish"
                 sx={{
-                    width: '50px',
-                    height: '50px',
+                    width: '100px',
+                    height: '100px',
                     position: 'absolute',
                     top: 0,
                     left: 0,
                     pointerEvents: 'none', // 确保鼠标事件穿透小水母
-                    transition: 'transform 1s', // 增加平滑动画效果
+                    transition: 'transform 2s, scale 2s', // 增加平滑动画效果
+                    transform: `translate(${mousePosition.x}px, ${mousePosition.y}px) scale(1.2)`, // 添加 scale 变换
                 }}
             />
             <Box
