@@ -14,13 +14,14 @@ export const sendPostRequest = async (message: API): Promise<any> => {
         });
         console.log('Response status:', response.status);
         console.log('Response body:', response.data);
-        if(response.data=='Invalid Token'){
-            alert('Token已过期，请重新登录！');
-            window.location.href='/';
-        }
         return response.data; // 返回响应数据
     } catch (error) {
         if (axios.isAxiosError(error)) {
+            if (error.response && error.response.data && error.response.data.error && error.response.data.error.includes("Unauthorized")) {
+                alert('Token已过期，请重新登录！');
+                window.location.hash = '/'; // 重定向到登录页面
+                return error.response.data; // 返回错误响应数据
+            }
             if (error.response && error.response.data) {
                 console.error('Error sending request:', error.response.data);
                 return error.response.data; // 返回错误响应数据
