@@ -14,6 +14,10 @@ export const sendPostRequest = async (message: API): Promise<any> => {
         });
         console.log('Response status:', response.status);
         console.log('Response body:', response.data);
+        if(response.data=='Invalid Token'){
+            alert('Token已过期，请重新登录！');
+            window.location.href='/';
+        }
         return response.data; // 返回响应数据
     } catch (error) {
         if (axios.isAxiosError(error)) {
