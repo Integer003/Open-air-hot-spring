@@ -45,7 +45,7 @@ object Utils {
 
   def createToken(userName: String): String = {
     val claim = JwtClaim(
-      expiration = Some(Instant.now.plus(300, ChronoUnit.SECONDS).getEpochSecond), // token 有效期为 1 分钟
+      expiration = Some(Instant.now.plus(300, ChronoUnit.SECONDS).getEpochSecond), // token 有效期为 5 分钟
       issuedAt = Some(Instant.now.getEpochSecond),
       subject = Some(userName)
     )
