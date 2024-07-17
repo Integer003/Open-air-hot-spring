@@ -40,20 +40,33 @@ import {
     TableRow,
     Paper,
 } from '@mui/material';
+import { toNumber } from 'lodash'
 
 type ThemeMode = 'light' | 'dark';
 
 const drawerWidth = 240;
 
-type UserData = {
+type SellerData = {
     userName: string;
     password: string;
+    money: number;
 };
 
-const parseDataString = (dataString: string): UserData[] => {
+const parseSellerDataString = (dataString: string): SellerData[] => {
     return dataString.trim().split('\n').map(data => {
-        const user = data.match(/"userName":"(.*?)","password":"(.*?)"/);
-        return user ? { userName: user[1], password: user[2] } : { userName: '', password: '' };
+        const user = data.match(/"userName":"(.*?)","password":"(.*?)","money":(\d+)/);
+        return user ? { userName: user[1], password: user[2], money: toNumber(user[3]) } : { userName: '', password: '',money: 0 };
+    });
+};
+
+type RegulatorData = {
+    userName: string;
+};
+
+const parseRegulatorDataString = (dataString: string): RegulatorData[] => {
+    return dataString.trim().split('\n').map(data => {
+        const user = data.match(/"userName":"(.*?)"/);
+        return user ? { userName: user[1]} : { userName: ''};
     });
 };
 
@@ -111,9 +124,9 @@ export function OperatorMain() {
     const [responseTableData, setResponseTableData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const { userName } = useUserStore();
-    const [tableData, setTableData] = useState<UserData[] | GoodsData[] | CommentsData[]>([]);
+    const [tableData, setTableData] = useState<SellerData[]|RegulatorData[] | GoodsData[] | CommentsData[]>([]);
     const [open, setOpen] = useState(false);
-    const [selectedObject, setSelectedObject] = useState<UserData | GoodsData | CommentsData | null>(null);
+    const [selectedObject, setSelectedObject] = useState<SellerData|RegulatorData| GoodsData | CommentsData | null>(null);
     const [selectedType, setSelectedType] = useState<SelectedType>('Seller');
 
     useEffect(() => {
@@ -150,20 +163,25 @@ export function OperatorMain() {
 
     useEffect(() => {
         if (typeof responseTableData === 'string') {
-            if (selectedType === 'Seller' || selectedType === 'Regulator') {
-                const parsedData = parseDataString(responseTableData);
+            if (selectedType === 'Seller'  ){
+                const parsedData = parseSellerDataString(responseTableData);
                 setTableData(parsedData);
-            } else if (selectedType === 'Goods') {
+            } else if(selectedType==='Regulator'){
+                const parsedData = parseRegulatorDataString(responseTableData);
+                setTableData(parsedData);
+            }
+            else if (selectedType === 'Goods') {
                 const parsedData = parseGoodsDataStringGoods(responseTableData);
                 setTableData(parsedData);
             } else if (selectedType === 'Comments') {
                 const parsedData = parseCommentsDataStringComments(responseTableData);
                 setTableData(parsedData);
             }
+            //alert(tableData);
         }
     }, [responseTableData]);
 
-    const handleDelete = (object: UserData | GoodsData | CommentsData) => {
+    const handleDelete = (object: SellerData|RegulatorData | GoodsData | CommentsData) => {
         setSelectedObject(object);
         setOpen(true);
     };
@@ -191,9 +209,9 @@ export function OperatorMain() {
             try {
                 let message;
                 if (selectedType === 'Seller') {
-                    message = new SellerDeleteMessage((selectedObject as UserData).userName);
+                    message = new SellerDeleteMessage((selectedObject as SellerData).userName);
                 } else if (selectedType === 'Regulator') {
-                    message = new RegulatorDeleteMessage((selectedObject as UserData).userName);
+                    message = new RegulatorDeleteMessage((selectedObject as SellerData).userName);
                 } else if (selectedType === 'Goods') {
                     message = new GoodsDeleteMessage((selectedObject as GoodsData).GoodsId);
                 } else if (selectedType === 'Comments') {
@@ -261,11 +279,16 @@ export function OperatorMain() {
                             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                                 <TableHead>
                                     <TableRow>
-                                        {selectedType === 'Seller' || selectedType === 'Regulator' ? (
+                                        {selectedType === 'Seller'  ? (
+                                            <>
+                                                <TableCell>用户名</TableCell>
+                                                <TableCell>钱</TableCell>
+                                            </>
+                                        ) : selectedType === 'Regulator' ? (
                                             <>
                                                 <TableCell>用户名</TableCell>
                                             </>
-                                        ) : selectedType === 'Goods' ? (
+                                        ) :  selectedType === 'Goods' ? (
                                             <>
                                                 <TableCell>商品名</TableCell>
                                                 <TableCell>商品描述</TableCell>
@@ -285,8 +308,13 @@ export function OperatorMain() {
                                 <TableBody>
                                     {tableData.map((row, index) => (
                                         <TableRow key={index}>
-                                            {selectedType === 'Seller' || selectedType === 'Regulator' ? (
-                                                <TableCell>{(row as UserData).userName}</TableCell>
+                                            {selectedType === 'Seller' ? (
+                                                <>
+                                                    <TableCell>{(row as SellerData).userName}</TableCell>
+                                                    <TableCell>{(row as SellerData).money}</TableCell>
+                                                </>
+                                            ): selectedType === 'Regulator' ? (
+                                                <TableCell>{(row as RegulatorData).userName}</TableCell>
                                             ) : selectedType === 'Goods' ? (
                                                 <>
                                                     <TableCell>{(row as GoodsData).GoodsName}</TableCell>
@@ -341,9 +369,10 @@ export function OperatorMain() {
                             <DialogTitle>确认删除</DialogTitle>
                             <DialogContent>
                                 <DialogContentText>
-                                    你确定要删除 {selectedType === 'Seller' || selectedType === 'Regulator'
-                                    ? '用户 ' + (selectedObject as UserData)?.userName
-                                    : selectedType === 'Goods'
+                                    你确定要删除 {selectedType === 'Seller'
+                                    ? '用户 ' + (selectedObject as SellerData)?.userName
+                                    : selectedType === 'Regulator'
+                                     ? '监管者 ' + (selectedObject as RegulatorData)?.userName                                    : selectedType === 'Goods'
                                         ? '商品 ' + (selectedObject as GoodsData)?.GoodsName
                                         : '评论 ' + (selectedObject as CommentsData)?.CommentId
                                 } 吗？
