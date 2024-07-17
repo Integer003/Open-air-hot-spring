@@ -115,7 +115,7 @@ export function SellerAddGoods() {
 
             // 发送消息对象到后端
             await sendPostRequest(message);
-            history.push('/SellerMain');
+            history.push('/SellerStorage');
         } catch (error) {
             console.error('Failed to add goods:', error);
         }

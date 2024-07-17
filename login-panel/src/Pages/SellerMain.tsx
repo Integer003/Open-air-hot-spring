@@ -184,7 +184,7 @@ export function SellerMain() {
     useEffect(() => {
         if (typeof responseTableData === 'string') {
             const parsedData = parseDataString(responseTableData);
-            parsedData.sort((a, b) => parseInt(a.GoodsId) - parseInt(b.GoodsId));
+            parsedData.sort((a, b) => parseInt(a.GoodsStar) - parseInt(b.GoodsStar));
             setTableData(parsedData);
         }
     }, [responseTableData]);
