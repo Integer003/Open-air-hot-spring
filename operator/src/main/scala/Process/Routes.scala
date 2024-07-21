@@ -24,11 +24,6 @@ object Routes:
     println("str")
     println(str)
     messageType match {
-      case "AddSellerMessage" =>
-        IO(decode[AddSellerMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for AddSellerMessage")))
-          .flatMap{m=>
-            m.fullPlan.map(_.asJson.toString)
-          }
       case "OperatorLoginMessage" =>
         IO(decode[LoginMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for LoginMessage")))
           .flatMap { m =>

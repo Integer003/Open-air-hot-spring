@@ -31,11 +31,6 @@ object Routes:
               case Right(userName) => Map("message" -> "Valid Seller", "userName" -> userName).asJson.noSpaces
             }
           }
-      case "SellerQueryMessage" =>
-        IO(decode[SellerQueryMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SellerQueryMessage")))
-          .flatMap{m=>
-            m.fullPlan.map(_.asJson.toString)
-          }
       case "SellerRegisterMessage" =>
         IO(decode[SellerRegisterMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SellerRegisterMessage")))
           .flatMap{m=>
