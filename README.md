@@ -1,45 +1,48 @@
-# Open-air-hot-spring
+# Open Air Hot Spring
 
-## 实现步骤
+Open Air Hot Spring is a project for Tsinghua University course `Type-safe Modern System Practice' taught by Yang Yuan. It's a platform that allows operators, sellers, and regulators to manage and interact with goods and services in an online marketplace. The project is primarily developed using Scala and TypeScript.
 
-基本功能1（只涉及`Operator`和`Seller`）（2024.7.6,08:00~2024.7.6,12:00）
+## Features
 
-1. 实现数据库`Seller -> user_name, password`的自主删除功能（Seller自主注销账号）
-2. 实现`Operator`的列表显示`Seller -> user_name, password`数据库table功能
-3. 实现`Operator`删除特定`Seller`的功能
+- **User Management**:
+    - Sellers can register, log in, and delete their accounts.
+    - Operators can view and delete seller accounts.
+    - Regulators can register, log in, and delete their accounts.
 
-基本功能2（引入`Goods`）（2024.7.6,13:30~2024.7.6,23:00）
+- **Goods Management**:
+    - Sellers can add and remove products and attach product images.
+    - All sellers can view goods listed by others.
 
-1. 实现`Seller`添加`Goods`，`Seller`删除`Goods`
-2. 实现其他`Seller`能看见所有`Goods`的界面
-3. 简单引入`Regulator`，或者润色前端界面
+- **Regulation**:
+    - Regulators can receive and review goods submitted by sellers.
+    - Funds management for sellers when buying and selling goods.
 
-基本功能3（引入`Regulator`）（2024.7.7,08:00~2024.7.7,17:00）
+- **Comments and Ratings**:
+    - Users can comment on goods.
+    - Users can star goods.
 
-1. `Regulator`的注册、登录，注销
-1. `Operator`列表显示所有`Regulator`，删除操作
-1. `Regulator`能收到所有`Seller`提交商品的信息，主页列表显示
-1. 资金的流动。Seller数据库增添money列，如果购买会减少资金，如果卖出会增加资金。
+- **Messaging System**:
+    - Users can send and receive messages.
 
-基本功能4（2024.7.7,18:00~2024.7.7,20:00，下班！）
+- **Shopping Cart**:
+    - Users can add starred goods to their shopping cart.
 
-1. 评论系统（对商品的评论）
+- **Token System**:
+    - After logging in for a period of time, the token will automatically become invalid and users will need to log in again.
 
-进阶功能1（2024.7.9,08:00~2024.7.10,09:30）
+## Contributing
 
-1. star（每个用户都可以给每个商品进行star操作）（用一个单独的schema:goods, table: stars的表格实现，因为每个goods都可以被每一个人给star，每一个人都可以给每一个goods添加star）
-2. 消息传递系统（提示信息）
-3. Operator删除评论功能
-4. 润色前端界面（黑白，语言，图形化等）
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch`).
+3. Commit your changes (`git commit -m 'Add some feature'`).
+4. Push to the branch (`git push origin feature-branch`).
+5. Open a pull request.
 
-进阶功能2（2024.7.11,08:00~2024.7.11,22:00）
+## License
 
-1. picture（goods_info表格中添加一列，可以存放对应picture的url）
-1. 消息系统（每一条消息(message)都有一个ID，发送方，接收方，时间，内容列）
-1. 监管者页面（使用verify列，只有当监管者确认后才能显示在其他用户的界面上，每个用户也可以查看自己的某个商品是否已经被确认）
-1. 购物车（与star功能重合，只需要将每个人已经star的商品放在购物车中单独展示就行）
+This project is licensed under the GPL-3.0 License.
 
-进阶功能3（2024.7.13,08:00~2024.7.13,22:00）
+## Contact
 
-1. 不直接传输，每次都使用token传输，token经过10分钟就失效
-2. 最后润色界面，找老师在确认最后还需要做什么
+For any questions or concerns, please open an issue in the repository or contact the maintainers.
+
