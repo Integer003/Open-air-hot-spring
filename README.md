@@ -1,8 +1,8 @@
 # Open Air Hot Spring
 
-Open Air Hot Spring is a project for Tsinghua University course `Type-safe Modern System Practice' taught by Yang Yuan. It's a platform that allows operators, sellers, and regulators to manage and interact with goods and services in an online marketplace. The project is primarily developed using Scala and TypeScript.
+Open Air Hot Spring:hotsprings: is a project for Tsinghua University course `Type-safe Modern System Practice' taught by Yang Yuan. It's a platform that allows operators, sellers, and regulators to manage and interact with goods and services in an online marketplace. The project is primarily developed using Scala and TypeScript.
 
-## Features
+## :feather:Features
 
 - **User Management**:
     - Sellers can register, log in, and delete their accounts.
@@ -30,7 +30,7 @@ Open Air Hot Spring is a project for Tsinghua University course `Type-safe Moder
 - **Token System**:
     - After logging in for a period of time, the token will automatically become invalid and users will need to log in again.
 
-## Contributing
+## :hugs:Contributing
 
 1. Fork the repository.
 2. Create a new branch (`git checkout -b feature-branch`).
@@ -42,7 +42,7 @@ Open Air Hot Spring is a project for Tsinghua University course `Type-safe Moder
 
 This project is licensed under the GPL-3.0 License.
 
-## Contact
+## :envelope:Contact
 
 For any questions or concerns, please open an issue in the repository or contact the maintainers.
 
