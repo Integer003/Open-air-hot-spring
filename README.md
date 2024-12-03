@@ -1,6 +1,11 @@
 # Open Air Hot Spring
 
-Open Air Hot Spring:hotsprings: is a project for Tsinghua University course `Type-safe Modern System Practice' taught by Yang Yuan. It's a platform that allows operators, sellers, and regulators to manage and interact with goods and services in an online marketplace. The project is primarily developed using Scala and TypeScript.
+Open Air Hot Spring is a project for Tsinghua University course `Type-safe Modern System Practice' taught by Yang Yuan. It's a platform that allows operators, sellers, and regulators to manage and interact with goods and services in an online marketplace. The project is primarily developed using Scala and TypeScript.
+
+## Demo
+
+https://github.com/user-attachments/assets/863ee0ba-7f0d-4d98-ae56-d4197e1ae11a
+
 
 ## :feather:Features
 
